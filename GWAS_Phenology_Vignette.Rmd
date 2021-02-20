@@ -163,6 +163,10 @@ ggsave("Additional/myYs.png", mp, width = 12, height = 16)
 
 # Supplemental Table 01
 
+```{r echo = F, eval = T}
+DT::datatable(read.csv("Supplemental_Table_01.csv"))
+```
+
 ```{r}
 GWAS_PeakTable <- function(folder = NULL, file = NULL, 
                            g.range = 3000000, rowread = 2000) {
@@ -177,7 +181,7 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
   output <- NULL
   #
   rr <- read.csv(paste0(folder, file), nrows = rowread) %>%
-    mutate(`-log10(p)` = -log10(P.value))
+    mutate(`Neg_log10(p)` = -log10(P.value))
   #
   if(sum(colnames(rr)=="nobs")>0) { rr <- select(rr, -nobs) }
   #
@@ -192,7 +196,7 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
   } else {
     while(nrow(rx) > 0) {
       rp <- rx %>% group_by(Chromosome) %>%
-        top_n(., n = 1, `-log10(p)`) %>% ungroup()
+        top_n(., n = 1, `Neg_log10(p)`) %>% ungroup()
       output <- bind_rows(output, rp)
       # i<-2
       for(i in 1:nrow(rp)) {
@@ -210,7 +214,8 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
   }
   output <- output %>%
     mutate(Model = model, Trait = trait, Expt = expt,
-           FT_Genes = NA, FT_Pos = NA, FT_End = NA, FT_Distance = NA, FT_Distances = NA)
+           FT_Genes = NA, FT_Pos = NA, FT_End = NA, 
+           FT_Distance = NA, FT_Distances = NA)
   #
   if(sum(!is.na(output$Position)) > 0) {
     for(i in 1:nrow(output)) {
@@ -219,7 +224,8 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
       ftg <- myFTGenes[myFTGenes$Chromosome == output$Chromosome[i] &
                        myFTGenes$Position > g.range1 & 
                        myFTGenes$Position < g.range2,]
-      ftg <- ftg %>% mutate(Distance = abs(Position - output$Position[i])) %>% 
+      ftg <- ftg %>% 
+        mutate(Distance = abs(Position - output$Position[i])) %>% 
         arrange(Distance)
       output$FT_Genes[i]     <- paste(ftg$Name,     collapse = " ; ")
       output$FT_Pos[i]       <- paste(ftg$Position, collapse = " ; ")
@@ -230,7 +236,7 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
   }
   output %>%
     select(SNP, Chromosome, Position, Model, Expt, Trait, 
-           P.value, `-log10(p)`, effect, MAF=maf,
+           P.value, `Neg_log10(p)`, effect, MAF=maf,
            Rsquare.of.Model.without.SNP, Rsquare.of.Model.with.SNP, 
            FDR_Adjusted_P.values, 
            FT_Genes, FT_Pos, FT_End, FT_Distance, FT_Distances)
@@ -263,7 +269,7 @@ ww <- ww %>% filter(!is.na(SNP)) %>%
   mutate(Chromosome = factor(Chromosome, levels = 1:7),
          Model = factor(Model, levels = myModels))
 #
-write.csv(ww, "Supplemental_Table_01.csv", row.names = T)
+write.csv(ww, "Supplemental_Table_01.csv", row.names = F)
 ```
 
 ---
@@ -353,6 +359,8 @@ htmlwidgets::saveWidget(plotly::as_widget(mp),
 ```{r echo = F}
 save(mp, file = "Additional/Figure_01_plotly.RData")
 ```
+
+[Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
 
 ```{r echo = F, eval = T}
 load("Additional/Figure_01_plotly.RData")
@@ -810,6 +818,12 @@ save(mp2, file = "Additional/Figure_05_b_plotly.RData")
 save(mp3, file = "Additional/Figure_05_c_plotly.RData")
 ```
 
+[Additional/Figure_05_a_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html)
+
+[Additional/Figure_05_b_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html)
+
+[Additional/Figure_05_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
+
 ```{r echo = F, eval = T}
 load("Additional/Figure_05_a_plotly.RData")
 load("Additional/Figure_05_b_plotly.RData")
@@ -966,6 +980,8 @@ htmlwidgets::saveWidget(plotly::as_widget(mp4),
 save(mp4, file = "Additional/Figure_06_c_plotly.RData")
 ```
 
+[Additional/Figure_06_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
+
 ```{r echo = F, eval = T}
 load("Additional/Figure_06_c_plotly.RData")
 mp4
@@ -1068,6 +1084,8 @@ htmlwidgets::saveWidget(plotly::as_widget(mp),
 ```{r echo = F}
 save(mp, file = "Additional/Supplemental_Figure_01_plotly.RData")
 ```
+
+[Additional/Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
 
 ```{r echo = F, eval = T}
 load("Additional/Supplemental_Figure_01_plotly.RData")

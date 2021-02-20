@@ -3,15 +3,15 @@ title: "Utilizing multi-environment trials to improve genome-wide association st
 author: "Derek Michael Wright <derek.wright@usask.ca>"
 date: "19-02-2021"
 output:
-  github_document: default
-  pdf_document:
-    toc: yes
   rmdformats::readthedown:
     self_contained: true
     lightbox: true
     gallery: true
     highlight: tango
     css: custom.css
+  github_document: default
+  pdf_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -41,6 +41,8 @@ knitr::opts_chunk$set(echo = TRUE, message = F, warning = F, comment = NA, out.w
 
 ![](Additional/img_Agile.png)
 
+\pagebreak
+
 ## Collaborators
 
 - Department of Plant Sciences and Crop Development Centre, University of Saskatchewan, Saskatoon, Saskatchewan, Canada
@@ -56,6 +58,8 @@ knitr::opts_chunk$set(echo = TRUE, message = F, warning = F, comment = NA, out.w
 
 ---
 
+\pagebreak
+
 # Figures
 
 ## Figure 1
@@ -64,7 +68,7 @@ knitr::opts_chunk$set(echo = TRUE, message = F, warning = F, comment = NA, out.w
 
 [Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 load("Additional/Figure_01_plotly.RData")
 mp
 ```
@@ -93,13 +97,13 @@ mp
 
 ![](Figure_05.png)
 
-[Additional/Figure_05_a_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_05_a_plotly.html)
+[Additional/Figure_05_a_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html)
 
-[Additional/Figure_05_b_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_05_b_plotly.html)
+[Additional/Figure_05_b_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html)
 
-[Additional/Figure_05_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_05_c_plotly.html)
+[Additional/Figure_05_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 load("Additional/Figure_05_a_plotly.RData")
 load("Additional/Figure_05_b_plotly.RData")
 load("Additional/Figure_05_c_plotly.RData")
@@ -113,14 +117,28 @@ mp3
 ## Figure 6
 
 ![](Figure_06.png)
-[Additional/Figure_06_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_06_c_plotly.html)
+[Additional/Figure_06_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 load("Additional/Figure_06_c_plotly.RData")
 mp4
 ```
 
 ---
+
+# Supplemental Tables
+
+## Supplemental Table 1
+
+[Supplemental_Table_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
+
+```{r echo = F, eval = T}
+DT::datatable(read.csv("Supplemental_Table_01.csv"))
+```
+
+---
+
+\pagebreak
 
 # Supplemental Figures
 
@@ -128,9 +146,9 @@ mp4
 
 ![](Supplemental_Figure_01.png)
 
-[Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_01_plotly.html)
+[Additional/Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 load("Additional/Supplemental_Figure_01_plotly.RData")
 mp
 ```
@@ -139,13 +157,13 @@ mp
 
 ## Supplemental Figure 2
 
-![](Supplemental_Figure_02.png)
+![](Supplemental_Figure_02.png){width=60%}
 
 ---
 
 ## Supplemental Figure 3
 
-![](Supplemental_Figure_03.png)
+![](Supplemental_Figure_03.png){width=60%}
 
 ---
 
@@ -153,7 +171,7 @@ mp
 
 ## Phenotype Data
 
-![](Additional/myYs.png)
+![](Additional/myYs.png){width=90%}
 
 ---
 
@@ -199,11 +217,11 @@ mp
 
 ![](Additional/Man_Facet/ManQQ_Su18_DTF.png)
 
-![](Additional/Man_Facet/ManQQ_Su18_DTM.png)
+![](Additional/Man_Multi/ManQQ_Su18_DTF.png)
 
 ---
 
-![](Additional/Man_Multi/ManQQ_Su18_DTF.png)
+![](Additional/Man_Facet/ManQQ_Su18_DTM.png)
 
 ![](Additional/Man_Multi/ManQQ_Su18_DTM.png)
 

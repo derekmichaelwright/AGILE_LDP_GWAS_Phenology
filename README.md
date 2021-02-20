@@ -80,18 +80,26 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ![](Figure_05.png)
 
-[Additional/Figure\_05\_a\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_05_a_plotly.html)
+[Additional/Figure\_05\_a\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html)
 
-[Additional/Figure\_05\_b\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_05_b_plotly.html)
+[Additional/Figure\_05\_b\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html)
 
-[Additional/Figure\_05\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_05_c_plotly.html)
+[Additional/Figure\_05\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
 ------------------------------------------------------------------------
 
 ## Figure 6
 
 ![](Figure_06.png)
-[Additional/Figure\_06\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_06_c_plotly.html)
+[Additional/Figure\_06\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
+
+------------------------------------------------------------------------
+
+# Supplemental Tables
+
+## Supplemental Table 1
+
+[Supplemental\_Table\_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
 
 ------------------------------------------------------------------------
 
@@ -101,19 +109,19 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ![](Supplemental_Figure_01.png)
 
-[Additional/Figure\_01\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_01_plotly.html)
+[Additional/Supplemental\_Figure\_01\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
 
 ------------------------------------------------------------------------
 
 ## Supplemental Figure 2
 
-![](Supplemental_Figure_02.png)
+<img src="Supplemental_Figure_02.png" style="width:60.0%" />
 
 ------------------------------------------------------------------------
 
 ## Supplemental Figure 3
 
-![](Supplemental_Figure_03.png)
+<img src="Supplemental_Figure_03.png" style="width:60.0%" />
 
 ------------------------------------------------------------------------
 
@@ -121,7 +129,7 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ## Phenotype Data
 
-![](Additional/myYs.png)
+<img src="Additional/myYs.png" style="width:90.0%" />
 
 ------------------------------------------------------------------------
 
@@ -167,11 +175,11 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ![](Additional/Man_Facet/ManQQ_Su18_DTF.png)
 
-![](Additional/Man_Facet/ManQQ_Su18_DTM.png)
+![](Additional/Man_Multi/ManQQ_Su18_DTF.png)
 
 ------------------------------------------------------------------------
 
-![](Additional/Man_Multi/ManQQ_Su18_DTF.png)
+![](Additional/Man_Facet/ManQQ_Su18_DTM.png)
 
 ![](Additional/Man_Multi/ManQQ_Su18_DTM.png)
 
