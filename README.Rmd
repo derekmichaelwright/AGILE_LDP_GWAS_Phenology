@@ -2,17 +2,16 @@
 title: "Utilizing multi-environment trials to improve genome-wide association studies and our understanding of crop adaptation: a case study with lentil (*Lens culinaris* Medik.)"
 author: "Derek Michael Wright <derek.wright@usask.ca>"
 date: "19-02-2021"
-always_allow_html: true
 output:
+  github_document: default
+  pdf_document:
+    toc: yes
   rmdformats::readthedown:
     self_contained: true
     lightbox: true
     gallery: true
     highlight: tango
     css: custom.css
-  pdf_document:
-    toc: yes
-  github_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -65,7 +64,7 @@ knitr::opts_chunk$set(echo = TRUE, message = F, warning = F, comment = NA, out.w
 
 [Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 load("Additional/Figure_01_plotly.RData")
 mp
 ```
@@ -100,7 +99,7 @@ mp
 
 [Additional/Figure_05_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_05_c_plotly.html)
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 load("Additional/Figure_05_a_plotly.RData")
 load("Additional/Figure_05_b_plotly.RData")
 load("Additional/Figure_05_c_plotly.RData")
@@ -116,7 +115,7 @@ mp3
 ![](Figure_06.png)
 [Additional/Figure_06_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_06_c_plotly.html)
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 load("Additional/Figure_06_c_plotly.RData")
 mp4
 ```
@@ -131,7 +130,7 @@ mp4
 
 [Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_01_plotly.html)
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 load("Additional/Supplemental_Figure_01_plotly.RData")
 mp
 ```
