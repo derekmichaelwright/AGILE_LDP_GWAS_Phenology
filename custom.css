@@ -1,0 +1,20 @@
+<style type="text/css">
+
+body{
+  font-size: 14pt;
+}
+
+#sidebar h2{
+    background: url("Additional/img_Agile.png");
+    background-size: contain;
+    background-position: center top;
+    padding-top: 150px !important;
+    background-repeat: no-repeat;
+    background-color:#1E3D2A;
+}
+
+h1,h2,h3,h4,h5,h6,legend{
+    color:#1E3D2A;
+}
+
+</style>

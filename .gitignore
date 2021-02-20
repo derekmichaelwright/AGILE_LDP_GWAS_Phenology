@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+Results/
+Results_b/
+Results_c/
+myY.csv
+myY_all.csv
+myG.hmp.csv
+myLDP.csv
+Lentil_FT_Genes - Copy.csv
+Lentil_FT_Genes.csv
+Additional/CV/
+Additional/LD/
+Additional/Man_Facet/
+Additional/Man_Multi/
