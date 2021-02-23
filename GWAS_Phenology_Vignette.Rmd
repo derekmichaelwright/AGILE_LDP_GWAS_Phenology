@@ -14,7 +14,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(eval = F, echo = TRUE, message = F, warning = F, comment = NA, out.width = "100%")
+knitr::opts_chunk$set(eval = F, echo = T, message = F, warning = F, comment = NA, out.width = "100%")
 ```
 
 ---
@@ -163,7 +163,7 @@ ggsave("Additional/myYs.png", mp, width = 12, height = 16)
 
 # Supplemental Table 01
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 DT::datatable(read.csv("Supplemental_Table_01.csv"))
 ```
 
@@ -362,7 +362,7 @@ save(mp, file = "Additional/Figure_01_plotly.RData")
 
 [Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 load("Additional/Figure_01_plotly.RData")
 mp
 ```
@@ -571,7 +571,7 @@ ggsave("Figure_03.png", mp, width = 12, height = 10)
 
 ![](Figure_04.png)
 
-```{r}
+```{r eval = F}
 expttraits <- c("Ro16_DTF","Ro17_DTF","Su16_DTF","Su17_DTF","Su18_DTF","Us18_DTF",
                 "In16_DTF","In17_DTF","Ba16_DTF","Ba17_DTF","Ne16_DTF","Ne17_DTF",
                 "Mo16_DTF","Mo17_DTF","Sp16_DTF","Sp17_DTF","It16_DTF","It17_DTF")
@@ -669,7 +669,9 @@ for(i in expttraits) {
   #
   ggsave(paste0("Additional/CV/CV_", i, ".png"), mp, width = 12, height = 6)
 }
-#
+```
+
+```{r}
 im1 <- magick::image_read("Additional/CV/CV_Ro17_DTF.png") %>% 
   magick::image_annotate("a)", size = 70, weight = 600, location = "+30+10")
 im2 <- magick::image_read("Additional/CV/CV_Sp17_DTF.png") %>% 
@@ -824,7 +826,7 @@ save(mp3, file = "Additional/Figure_05_c_plotly.RData")
 
 [Additional/Figure_05_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 load("Additional/Figure_05_a_plotly.RData")
 load("Additional/Figure_05_b_plotly.RData")
 load("Additional/Figure_05_c_plotly.RData")
@@ -982,7 +984,7 @@ save(mp4, file = "Additional/Figure_06_c_plotly.RData")
 
 [Additional/Figure_06_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 load("Additional/Figure_06_c_plotly.RData")
 mp4
 ```
@@ -1087,7 +1089,7 @@ save(mp, file = "Additional/Supplemental_Figure_01_plotly.RData")
 
 [Additional/Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
 
-```{r echo = F, eval = T}
+```{r echo = F, eval = F}
 load("Additional/Supplemental_Figure_01_plotly.RData")
 mp
 ```
@@ -1386,21 +1388,33 @@ ggsave(paste0("Supplemental_Figure_04.png"), mp , width = 12, height = 8)
 
 ![](Additional/Man_Grouped/Man_DTF_Temperate.png)
 
+![](Additional/Man_Grouped/Man_DTF_b_Temperate.png)
+
+![](Additional/Man_Grouped/Man_DTF_c_Temperate.png)
+
 ![](Additional/Man_Grouped/Man_DTF_Mediterranean.png)
 
+![](Additional/Man_Grouped/Man_DTF_b_Mediterranean.png)
+
+![](Additional/Man_Grouped/Man_DTF_c_Mediterranean.png)
+
 ![](Additional/Man_Grouped/Man_DTF_SouthAsia.png)
+
+![](Additional/Man_Grouped/Man_DTF_b_SouthAsia.png)
+
+![](Additional/Man_Grouped/Man_DTF_c_SouthAsia.png)
+
 
 ![](Additional/Man_Grouped/Man_Tf_Tb.png)
 
 ![](Additional/Man_Grouped/Man_Pf_Pc.png)
 
-```{r}
+```{r eval = F}
 gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF"),
-                          markers = myMarkers, 
-                          filename = "Fig01.png", 
-                          height = 8) {
+                          folder = "Results/", filename = "Fig01.png", title = filename,
+                          markers = myMarkers, height = 10) {
   #
-  vi <- read.csv("Results/GAPIT.MLM.Ro17_DTF.GWAS.Results.csv") %>% 
+  vi <- read.csv(paste0(folder, "GAPIT.MLM.Ro17_DTF.GWAS.Results.csv")) %>% 
     filter(SNP %in% markers)
   #
   vt <- ww %>% filter(paste(Expt, Trait, sep = "_") %in% expttraits) %>% 
@@ -1410,12 +1424,12 @@ gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It
            ExptTrait = paste(Expt, Trait, sep="_"))
   xx <- NULL
   for(i in expttraits) {
-    fnames <- grep(paste0(i,".GWAS.Results"), list.files("Results/"))
-    fnames <- list.files("Results/")[fnames]
+    fnames <- grep(paste0(i,".GWAS.Results"), list.files(folder))
+    fnames <- list.files(folder)[fnames]
     for(j in fnames) {
       mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
       mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
-      xj <- read.csv(paste0("Results/", j)) %>% 
+      xj <- read.csv(paste0(folder, j)) %>% 
         mutate(Model = mod, ExptTrait = i,
                `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
       xx <- bind_rows(xx, xj)
@@ -1448,7 +1462,7 @@ gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It
     scale_shape_manual(name = NULL, values = 22:25) +
     theme_AGL +
     theme(legend.position = "top") +
-    labs(y = NULL, x = "100 Mbp")
+    labs(title = title, y = NULL, x = "100 Mbp")
   #
   ggsave(paste0("Additional/Man_Grouped/", filename, ".png"), 
          mp, width = 10, height = height)
@@ -1456,25 +1470,51 @@ gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It
 # DTF
 gg_Custom_Man(expttraits = c("Ro16_DTF", "Ro17_DTF", "Su16_DTF", 
                              "Su17_DTF", "Su18_DTF", "Us18_DTF"),
-              markers = myMarkers, height = 10, filename = "Man_DTF_Temperate")
+              filename = "Man_DTF_Temperate")
 gg_Custom_Man(expttraits = c("It16_DTF", "It17_DTF", "Sp16_DTF", 
                              "Sp17_DTF", "Mo16_DTF", "Mo17_DTF"),
-              markers = myMarkers, height = 10, filename = "Man_DTF_Mediterranean")
+              filename = "Man_DTF_Mediterranean")
 gg_Custom_Man(expttraits = c("Ne16_DTF", "Ne17_DTF", "Ba16_DTF", 
                              "Ba17_DTF", "In16_DTF", "In17_DTF"),
-              markers = myMarkers, height = 10, filename = "Man_DTF_SouthAsia")
+              filename = "Man_DTF_SouthAsia")
 # Tf & Tb
 gg_Custom_Man(expttraits = c("Su17_Tf", "Ba17_Tf", "It17_Tf", 
                              "Su17_Tb", "Ba17_Tb", "It17_Tb"),
-              markers = myMarkers, height = 10, filename = "Man_Tf_Tb")
+              filename = "Man_Tf_Tb")
 # Pf & Pc
 gg_Custom_Man(expttraits = c("Su17_Pf", "Ba17_Pf", "It17_Pf", 
                              "Su17_Pc", "Ba17_Pc", "It17_Pc"),
-              markers = myMarkers, height = 10, filename = "Man_Pf_Pc")
+              filename = "Man_Pf_Pc")
 # PCA & abc
 gg_Custom_Man(expttraits = c("PC1_PCA", "PC2_PCA", "PC3_PCA", 
                              "a.TP_Model", "b.TP_Model", "c.TP_Model"),
-              markers = myMarkers, height = 10, filename = "Man_PCA_abc")
+              filename = "Man_PCA_abc")
+# DTF - c
+gg_Custom_Man(expttraits = c("Ro16_DTF", "Ro17_DTF", "Su16_DTF", 
+                             "Su17_DTF", "Su18_DTF", "Us18_DTF"),
+              folder = "Results_c/",
+              filename = "Man_DTF_c_Temperate")
+gg_Custom_Man(expttraits = c("It16_DTF", "It17_DTF", "Sp16_DTF", 
+                             "Sp17_DTF", "Mo16_DTF", "Mo17_DTF"),
+              folder = "Results_c/",
+              filename = "Man_DTF_c_Mediterranean")
+gg_Custom_Man(expttraits = c("Ne16_DTF", "Ne17_DTF", "Ba16_DTF", 
+                             "Ba17_DTF", "In16_DTF", "In17_DTF"),
+              folder = "Results_c/",
+              filename = "Man_DTF_c_SouthAsia")
+# DTF - b
+gg_Custom_Man(expttraits = c("Ro16_DTF", "Ro17_DTF", "Su16_DTF", 
+                             "Su17_DTF", "Su18_DTF", "Us18_DTF"),
+              folder = "Results_b/",
+              filename = "Man_DTF_b_Temperate")
+gg_Custom_Man(expttraits = c("It16_DTF", "It17_DTF", "Sp16_DTF", 
+                             "Sp17_DTF", "Mo16_DTF", "Mo17_DTF"),
+              folder = "Results_b/",
+              filename = "Man_DTF_b_Mediterranean")
+gg_Custom_Man(expttraits = c("Ne16_DTF", "Ne17_DTF", "Ba16_DTF", 
+                             "Ba17_DTF", "In16_DTF", "In17_DTF"),
+              folder = "Results_b/",
+              filename = "Man_DTF_b_SouthAsia")
 ```
 
 ---
@@ -1485,7 +1525,7 @@ gg_Custom_Man(expttraits = c("PC1_PCA", "PC2_PCA", "PC3_PCA",
 
 ![](Additional/Man_Multi/ManQQ_Su17_DTF.png)
 
-```{r}
+```{r eval = F}
 gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
                    colors = c("darkgreen","darkgoldenrod3","darkgreen","darkgoldenrod3",
                               "darkgreen", "darkgoldenrod3","darkgreen")) {
