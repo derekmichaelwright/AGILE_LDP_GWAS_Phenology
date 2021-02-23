@@ -163,7 +163,7 @@ ggsave("Additional/myYs.png", mp, width = 12, height = 16)
 
 # Supplemental Table 01
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 DT::datatable(read.csv("Supplemental_Table_01.csv"))
 ```
 
@@ -362,7 +362,7 @@ save(mp, file = "Additional/Figure_01_plotly.RData")
 
 [Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 load("Additional/Figure_01_plotly.RData")
 mp
 ```
@@ -826,7 +826,7 @@ save(mp3, file = "Additional/Figure_05_c_plotly.RData")
 
 [Additional/Figure_05_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 load("Additional/Figure_05_a_plotly.RData")
 load("Additional/Figure_05_b_plotly.RData")
 load("Additional/Figure_05_c_plotly.RData")
@@ -984,7 +984,7 @@ save(mp4, file = "Additional/Figure_06_c_plotly.RData")
 
 [Additional/Figure_06_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 load("Additional/Figure_06_c_plotly.RData")
 mp4
 ```
@@ -1089,7 +1089,7 @@ save(mp, file = "Additional/Supplemental_Figure_01_plotly.RData")
 
 [Additional/Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 load("Additional/Supplemental_Figure_01_plotly.RData")
 mp
 ```
