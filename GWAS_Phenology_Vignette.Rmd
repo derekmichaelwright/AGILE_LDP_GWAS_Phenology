@@ -1686,3 +1686,90 @@ for(i in expttraits) {
 ```
 
 ---
+
+## Regional Gene Plots
+
+```{r eval = F}
+pdfGenePlots <- function(GeneName = "LcELF3a") {
+  myGene <- myFTGenes %>% filter(Name == GeneName)
+  expttraits <- c("Ro16_DTF","Ro17_DTF","Su16_DTF","Su17_DTF","Su18_DTF","Us18_DTF",
+                  "In16_DTF","In17_DTF","Ba16_DTF","Ba17_DTF","Ne16_DTF","Ne17_DTF",
+                  "Mo16_DTF","Mo17_DTF","Sp16_DTF","Sp17_DTF","It16_DTF","It17_DTF")
+  expts <- expttraits
+  for(i in 1:length(expts)) { 
+    expts[i] <- substr(expts[i], 1, gregexpr("_", expts)[[i]][1]-1) 
+    }
+  #
+  # i<-"Ro17_DTF"
+  # expttraits <- c("Ro17_DTF","Sp17_DTF")
+  pdf(paste0(myGene$Name, ".pdf"), width = 10, height = 6)
+  for(i in expttraits) {
+    x1 <- NULL; xb <- NULL; xc <- NULL
+    #
+    fnames <- grep(paste0(i,".GWAS.Results"), list.files("Results/"))
+    fnames <- list.files("Results/")[fnames]
+    for(j in fnames) {
+      mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
+      mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
+      xj <- read.csv(paste0("Results/", j)) %>% 
+        mutate(Model = mod, Facet = i,
+               `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
+      x1 <- bind_rows(x1, xj)
+      }
+    #
+    fnames <- grep(paste0(i,".GWAS.Results"), list.files("Results_b/"))
+    fnames <- list.files("Results_b/")[fnames]
+    for(j in fnames) {
+      mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
+      mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
+      xj <- read.csv(paste0("Results_b/", j)) %>% 
+        mutate(Model = mod, Facet = "CV = *b*",
+               `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
+      xb <- bind_rows(xb, xj)
+      }
+    #
+    fnames <- grep(paste0(i,".GWAS.Results"), list.files("Results_c/"))
+    fnames <- list.files("Results_c/")[fnames]
+    for(j in fnames) {
+      mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
+      mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
+      xj <- read.csv(paste0("Results_c/", j)) %>% 
+        mutate(Model = mod, Facet = "CV = *c*",
+               `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
+      xc <- bind_rows(xc, xj)
+      }
+    #
+    xx <- bind_rows(x1, xb, xc) %>%
+      filter(Chromosome == myGene$Chromosome, 
+             Position > myGene$Start - 3000000, 
+             Position < myGene$Start + 3000000) %>%
+      mutate(Model = factor(Model, levels = myModels),
+             Facet = factor(Facet, levels = c("CV = *c*", i, "CV = *b*"))) %>% 
+      arrange(Facet, rev(Model))
+    #
+    x1 <- xx %>% filter(-log10(P.value) < threshold2)
+    x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
+    x3 <- xx %>% filter(-log10(P.value) > threshold)
+    #
+    print(ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
+                         shape = Model, fill = Model)) +
+            geom_vline(data = myGene, xintercept = myGene$Start / 100000000) +
+            geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
+            geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
+            geom_point(size = 0.3, color = alpha("white", 0)) +
+            geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
+            geom_point(data = x3, size = 1.25) +
+            facet_grid(Facet ~ Chromosome, scales = "free", space = "free_x") +
+            scale_fill_manual(values = myModelColors) +
+            scale_shape_manual(values = 22:25) +
+            theme_AGL +
+            theme(axis.title.y = ggtext::element_markdown()) +
+            labs(title = i, y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
+          )
+    }
+  dev.off()
+}
+pdfGenePlots(GeneName = "LcELF3a")
+```
+
+---
