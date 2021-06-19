@@ -10,7 +10,7 @@ Derek Michael Wright <derek.wright@usask.ca>
 [Derek Wright, Sandesh Neupane, … and Kirstin E. Bett. (2021)
 **Utilizing multi-environment trials to improve genome-wide association
 studies and our understanding of crop adaptation: a case study with
-lentil (*Lens culinaris* Medik.)**. *Journal??*.
+lentil (*Lens culinaris* Medik.)**. *???Journal???*.
 .](https://nph.onlinelibrary.wiley.com/doi/10.1002/ppp3.10158)
 
 ------------------------------------------------------------------------
@@ -56,6 +56,8 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 [Additional/Figure\_01\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
 
+<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="100%" />
+
 ------------------------------------------------------------------------
 
 ## Figure 2
@@ -86,12 +88,16 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 [Additional/Figure\_05\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
+<img src="README_files/figure-gfm/unnamed-chunk-2-1.png" width="100%" /><img src="README_files/figure-gfm/unnamed-chunk-2-2.png" width="100%" /><img src="README_files/figure-gfm/unnamed-chunk-2-3.png" width="100%" />
+
 ------------------------------------------------------------------------
 
 ## Figure 6
 
 ![](Figure_06.png)
 [Additional/Figure\_06\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
+
+<img src="README_files/figure-gfm/unnamed-chunk-3-1.png" width="100%" />
 
 ------------------------------------------------------------------------
 
@@ -100,6 +106,8 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 ## Supplemental Table 1
 
 [Supplemental\_Table\_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
+
+<img src="README_files/figure-gfm/unnamed-chunk-4-1.png" width="100%" />
 
 ------------------------------------------------------------------------
 
@@ -110,6 +118,8 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 ![](Supplemental_Figure_01.png)
 
 [Additional/Supplemental\_Figure\_01\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
+
+<img src="README_files/figure-gfm/unnamed-chunk-5-1.png" width="100%" />
 
 ------------------------------------------------------------------------
 

@@ -345,6 +345,7 @@ mp <- ggplot(wi, aes(x = Position / 100000000, y = cat_col, shape = Model)) +
   theme(legend.position = "bottom",
         axis.text.y = element_markdown(),
         strip.text.y = element_markdown()) +
+  guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
   labs(y = NULL, x = "100 Mbp")
 #
 ggsave(paste0("Figure_01.png"), mp, width = 12, height = 9)
@@ -438,6 +439,7 @@ mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
         strip.text.y = element_blank() , 
         strip.background.y = element_blank(),
         axis.title.y = ggtext::element_markdown()) +
+  guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
 #
 mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value), 
@@ -538,6 +540,7 @@ mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
         strip.text.y = element_blank() , 
         strip.background.y = element_blank(),
         axis.title.y = ggtext::element_markdown()) +
+  guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
 #
 mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value), shape = Model, fill = Model)) +
@@ -644,6 +647,7 @@ for(i in expttraits) {
     theme(strip.text.y = element_blank() , 
           strip.background.y = element_blank(),
           axis.title.y = ggtext::element_markdown()) +
+    guides(shape = guide_legend(override.aes = list(size = 3))) +
     labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
   #
   mp2 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value),
@@ -718,7 +722,7 @@ mp1 <- ggplot(x1, aes(x = Markers, y = Value)) +
                        key3 = Origin, key4 = SampStat)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
   scale_color_manual(values = myClusterColors) +
-  guides(color = guide_legend(nrow = 1)) +
+  guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
   theme_AGL +
   theme(panel.grid.major.x = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
@@ -752,7 +756,7 @@ mp2 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Val
                        key3 = Origin, key4 = SampStat)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
   scale_color_manual(values = myClusterColors) +
-  guides(color = guide_legend(nrow = 1)) +
+  guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
   theme_AGL +
   theme(panel.grid.major.x = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
@@ -786,7 +790,7 @@ mp3 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Val
                        key3 = Origin, key4 = SampStat)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
   scale_color_manual(values = myClusterColors) +
-  guides(color = guide_legend(nrow = 1)) +
+  guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
   theme_AGL +
   theme(panel.grid.major.x = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
@@ -911,6 +915,7 @@ mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
   theme(strip.text.y = element_blank() , 
         strip.background.y = element_blank(),
         axis.title.y = ggtext::element_markdown()) +
+  guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
 #
 mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value), shape = Model, fill = Model)) +
@@ -957,7 +962,7 @@ mp4 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Val
                        key3 = Origin, key4 = SampStat)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
   scale_color_manual(values = myClusterColors) +
-  guides(color = guide_legend(nrow = 1)) +
+  guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
   theme_AGL +
   theme(legend.position = "bottom",
         panel.grid.major.x = element_blank(),
@@ -1066,13 +1071,14 @@ mp <- ggplot(wi, aes(x = Position / 100000000, y = cat_col, shape = Model)) +
              aes(fill = MacroEnv, key2 = SNP, key3 = FT_Genes, key4 = FT_Distances)) + 
   geom_hline(yintercept = hlines, alpha = 0.5) +
   facet_grid(CV ~ Chromosome, drop = F, scales = "free_x", space = "free_x") +
-  scale_fill_manual(values = myMacroColors, guide = F) +
+  scale_fill_manual(values = myMacroColors[2:4], guide = F) +
   scale_shape_manual(values = c(22:25)) +
   scale_y_discrete(drop = F) +
   theme_AGL +
   theme(legend.position = "bottom",
         axis.text.y = element_markdown(),
         strip.text.y = element_markdown()) +
+  guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
   labs(y = NULL, x = "100 Mbp")
 #
 ggsave("Supplemental_Figure_01.png", mp, width = 12, height = 9)
@@ -1171,6 +1177,7 @@ mp <- ggplot() +
         panel.grid = element_blank(),
         axis.title.y = ggtext::element_markdown(),
         strip.text.y = ggtext::element_markdown()) +
+  guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
 #
 ggsave("Supplemental_Figure_02.png", mp, width = 5, height = 10)
@@ -1255,6 +1262,7 @@ mp <- ggplot() +
         axis.title.y = ggtext::element_markdown(),
         strip.text.y = ggtext::element_markdown(),
         legend.text = ggtext::element_markdown()) +
+  guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
 ggsave("Supplemental_Figure_03.png", mp, width = 5, height = 10)
 ```
@@ -1458,10 +1466,11 @@ gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It
                              aes(label = FT_Genes, group = ExptTrait)) +
     facet_grid(ExptTrait ~ Chromosome, scales = "free", space = "free_x") +
     scale_x_continuous(breaks = 1:7) +
-    scale_fill_manual(name = NULL, values = myModelColors) +
-    scale_shape_manual(name = NULL, values = 22:25) +
+    scale_fill_manual(values = myModelColors) +
+    scale_shape_manual(values = 22:25) +
     theme_AGL +
-    theme(legend.position = "top") +
+    theme(legend.position = "bottom") +
+    guides(shape = guide_legend(override.aes = list(size = 3))) +
     labs(title = title, y = NULL, x = "100 Mbp")
   #
   ggsave(paste0("Additional/Man_Grouped/", filename, ".png"), 
@@ -1629,10 +1638,11 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     ggrepel::geom_text_repel(data = xs, aes(label = FT_Genes), size = 1.5, nudge_y = 0.5) +
     facet_grid(. ~ Chromosome, scales = "free") +
     scale_x_continuous(breaks = 1:7) +
-    scale_fill_manual(name = NULL, values = myModelColors) +
-    scale_shape_manual(name = NULL, values = 21:25) +
+    scale_fill_manual(values = myModelColors) +
+    scale_shape_manual(values = 21:25) +
     theme_AGL +
     theme(axis.title.y = ggtext::element_markdown()) +
+    guides(shape = guide_legend(override.aes = list(size = 3))) +
     labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
   # QQ plot
   mp3.1 <- ggplot(x1, aes(y = `-log10(p)`, x = `-log10(p)_Exp`, shape = Model, fill = Model)) +
@@ -1666,7 +1676,8 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
   # Append and save plots
   mp1 <- ggarrange(mp1.1, mp1.2, ncol = 1, align = "v")
   mp3 <- ggarrange(mp3.1, mp3.2, ncol = 1, align = "v")
-  mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(1.5,7,1.5), align = "h", legend = "top")
+  mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h",
+                  widths = c(1.5,7,1.5), legend = "top")
   #
   ggsave(paste0("Additional/Man_Multi/ManQQ_", expt, "_", trait, suffix, ".png"), 
          mp, width = 12, height = 4)
@@ -1687,9 +1698,7 @@ for(i in expttraits) {
 
 ---
 
-## Regional Gene Plots
-
-```{r eval = F}
+```{r eval = F, echo = F}
 pdfGenePlots <- function(GeneName = "LcELF3a") {
   myGene <- myFTGenes %>% filter(Name == GeneName)
   expttraits <- c("Ro16_DTF","Ro17_DTF","Su16_DTF","Su17_DTF","Su18_DTF","Us18_DTF",
@@ -1771,5 +1780,3 @@ pdfGenePlots <- function(GeneName = "LcELF3a") {
 }
 pdfGenePlots(GeneName = "LcELF3a")
 ```
-
----
