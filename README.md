@@ -55,8 +55,6 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 [Additional/Figure\_01\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
 
-<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="100%" />
-
 ------------------------------------------------------------------------
 
 ## Figure 2
@@ -87,16 +85,12 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 [Additional/Figure\_05\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
-<img src="README_files/figure-gfm/unnamed-chunk-2-1.png" width="100%" /><img src="README_files/figure-gfm/unnamed-chunk-2-2.png" width="100%" /><img src="README_files/figure-gfm/unnamed-chunk-2-3.png" width="100%" />
-
 ------------------------------------------------------------------------
 
 ## Figure 6
 
 ![](Figure_06.png)
 [Additional/Figure\_06\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
-
-<img src="README_files/figure-gfm/unnamed-chunk-3-1.png" width="100%" />
 
 ------------------------------------------------------------------------
 
@@ -105,8 +99,6 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 ## Supplemental Table 1
 
 [Supplemental\_Table\_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
-
-<img src="README_files/figure-gfm/unnamed-chunk-4-1.png" width="100%" />
 
 ------------------------------------------------------------------------
 
@@ -117,8 +109,6 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 ![](Supplemental_Figure_01.png)
 
 [Additional/Supplemental\_Figure\_01\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
-
-<img src="README_files/figure-gfm/unnamed-chunk-5-1.png" width="100%" />
 
 ------------------------------------------------------------------------
 
