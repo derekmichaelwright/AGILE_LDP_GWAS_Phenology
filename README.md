@@ -7,11 +7,10 @@ Derek Michael Wright <derek.wright@usask.ca>
 
 ------------------------------------------------------------------------
 
-[Derek Wright, Sandesh Neupane, … and Kirstin E. Bett. (2021)
-**Utilizing multi-environment trials to improve genome-wide association
-studies and our understanding of crop adaptation: a case study with
-lentil (*Lens culinaris* Medik.)**. *???Journal???*.
-.](https://nph.onlinelibrary.wiley.com/doi/10.1002/ppp3.10158)
+Derek Wright, Sandesh Neupane, … and Kirstin E. Bett. (2021) **Utilizing
+multi-environment trials to improve genome-wide association studies and
+our understanding of crop adaptation: a case study with lentil (*Lens
+culinaris* Medik.)**.
 
 ------------------------------------------------------------------------
 
