@@ -1,7 +1,7 @@
 ---
-title: "Utilizing multi-environment trials to improve genome-wide association studies and our understanding of crop adaptation: a case study with lentil (*Lens culinaris* Medik.)"
+title: "Focusing the GWAS Lens on days to flower using latent variable phenotypes derived from global multi-environment trials "
 author: "Derek Michael Wright <derek.wright@usask.ca>"
-date: "19-02-2021"
+date: "17-10-2021"
 output:
   github_document: default
   rmdformats::readthedown:
@@ -114,18 +114,6 @@ mp3
 
 ---
 
-## Figure 6
-
-![](Figure_06.png)
-[Additional/Figure_06_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
-
-```{r echo = F, eval = F}
-load("Additional/Figure_06_c_plotly.RData")
-mp4
-```
-
----
-
 # Supplemental Tables
 
 ## Supplemental Table 1
@@ -171,7 +159,7 @@ mp
 
 ## Phenotype Data
 
-![](Additional/myYs.png){width=90%}
+![](Additional/Additional_Figure_00.png){width=90%}
 
 ---
 
@@ -221,8 +209,4 @@ mp
 
 ---
 
-![](Additional/Man_Facet/ManQQ_Su18_DTM.png)
-
-![](Additional/Man_Multi/ManQQ_Su18_DTM.png)
-
----
+&copy; Derek Michael Wright

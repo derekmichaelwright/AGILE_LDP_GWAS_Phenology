@@ -1,9 +1,8 @@
-Utilizing multi-environment trials to improve genome-wide association
-studies and our understanding of crop adaptation: a case study with
-lentil (*Lens culinaris* Medik.)
+Focusing the GWAS Lens on days to flower using latent variable
+phenotypes derived from global multi-environment trials
 ================
 Derek Michael Wright <derek.wright@usask.ca>
-19-02-2021
+17-10-2021
 
 ------------------------------------------------------------------------
 
@@ -18,7 +17,7 @@ culinaris* Medik.)**.
 pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/README.pdf)
 
 [Source Code Vignette
-(GWAS\_Phenology\_Vignette.html)](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/GWAS_Phenology_Vignette.html)
+(GWAS_Phenology_Vignette.html)](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/GWAS_Phenology_Vignette.html)
 
 # Contents
 
@@ -53,7 +52,7 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ![](Figure_01.png)
 
-[Additional/Figure\_01\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
+[Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
 
 ------------------------------------------------------------------------
 
@@ -79,18 +78,11 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ![](Figure_05.png)
 
-[Additional/Figure\_05\_a\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html)
+[Additional/Figure_05_a\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html)
 
-[Additional/Figure\_05\_b\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html)
+[Additional/Figure_05_b\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html)
 
-[Additional/Figure\_05\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
-
-------------------------------------------------------------------------
-
-## Figure 6
-
-![](Figure_06.png)
-[Additional/Figure\_06\_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
+[Additional/Figure_05_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
 ------------------------------------------------------------------------
 
@@ -98,7 +90,7 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ## Supplemental Table 1
 
-[Supplemental\_Table\_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
+[Supplemental_Table_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
 
 ------------------------------------------------------------------------
 
@@ -108,7 +100,7 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ![](Supplemental_Figure_01.png)
 
-[Additional/Supplemental\_Figure\_01\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
+[Additional/Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
 
 ------------------------------------------------------------------------
 
@@ -128,7 +120,7 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ## Phenotype Data
 
-<img src="Additional/myYs.png" style="width:90.0%" />
+<img src="Additional/Additional_Figure_00.png" style="width:90.0%" />
 
 ------------------------------------------------------------------------
 
@@ -178,8 +170,4 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ------------------------------------------------------------------------
 
-![](Additional/Man_Facet/ManQQ_Su18_DTM.png)
-
-![](Additional/Man_Multi/ManQQ_Su18_DTM.png)
-
-------------------------------------------------------------------------
+© Derek Michael Wright

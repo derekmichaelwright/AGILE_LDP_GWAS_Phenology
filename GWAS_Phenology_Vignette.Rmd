@@ -1,8 +1,8 @@
 ---
 title: "R Vignette"
-subtitle: "Utilizing multi-environment trials to improve genome-wide association studies and our understanding of crop adaptation: a case study with lentil (*Lens culinaris* Medik.)"
+subtitle: "Focusing the GWAS *Lens* on days to flower using latent variable phenotypes derived from global multi-environment trials "
 author: "Derek Michael Wright <derek.wright@usask.ca>"
-date: "19-02-2021"
+date: "17-10-2021"
 output:
   rmdformats::readthedown:
     code_folding: show
@@ -14,31 +14,188 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(eval = F, echo = T, message = F, warning = F, comment = NA, out.width = "100%")
+knitr::opts_chunk$set(eval = F, echo = T, message = F, warning = F, 
+                      comment = NA, out.width = "100%")
+```
+
+---
+
+# Introduction
+
+This vignette contains the `R` code and analysis done for the paper: 
+
+Derek Wright, Sandesh Neupane, Jakob Butler, Raul Martinez, Jim Weller, Kirstin E Bett (2020) **Focusing the GWAS Lens on days to flower using latent variable phenotypes derived from global multi-environment trials **. 
+
+which is follow-up to:
+
+Derek Wright, Sandesh Neupane, Taryn Heidecker, Teketel Haile, Clarice Coyne, Sripada Udupa, Eleonora Barilli, Diego Rubiales, Tania Gioia, Reena Mehra, Ashutosh Sarker, Rajeev Dhakal, Babul Anwar, Debashish Sarker, Albert Vandenberg, and Kirstin E. Bett. (2020) **Understanding photothermal interactions can help expand production range and increase genetic diversity of lentil (*Lens culinaris* Medik.)**. *Plants, People, Planet*. 00:1-11.
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://nph.onlinelibrary.wiley.com/doi/10.1002/ppp3.10158",
+  button_label = "to be determined",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "far fa-newspaper",
+  self_contained = F
+)
+downloadthis::download_link(
+  link = "https://nph.onlinelibrary.wiley.com/doi/10.1002/ppp3.10158",
+  button_label = "Plants, People, Planet. 00:1-11",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "far fa-newspaper",
+  self_contained = F
+)
+``` 
+
+---
+
+This work done as part of the AGILE project at the University of Saskatchewan.
+
+![](Additional/img_Agile.png)
+
+```{r echo = F, eval = F}
+# Prep phenotype data
+library(agData)
+#
+names_Expt <- c("Rosthern, Canada 2016",    "Rosthern, Canada 2017",
+                "Sutherland, Canada 2016",  "Sutherland, Canada 2017", 
+                "Sutherland, Canada 2018",  "Central Ferry, USA 2018",
+                "Bhopal, India 2016",       "Bhopal, India 2017",
+                "Jessore, Bangladesh 2016", "Jessore, Bangladesh 2017",
+                "Bardiya, Nepal 2016",      "Bardiya, Nepal 2017",
+                "Cordoba, Spain 2016",      "Cordoba, Spain 2017",
+                "Marchouch, Morocco 2016",  "Marchouch, Morocco 2017",
+                "Metaponto, Italy 2016",    "Metaponto, Italy 2017" )
+# Experiment short names
+names_ExptShort <- c("Ro16", "Ro17", "Su16", "Su17", "Su18", "Us18",
+                     "In16", "In17", "Ba16", "Ba17", "Ne16", "Ne17", 
+                     "Sp16", "Sp17", "Mo16", "Mo17", "It16", "It17" )
+
+
+# Phenology Data
+y1 <- read.csv("C:/Google Drive/gitfolder/AGILE_LDP_Phenology/data/data_raw.csv") %>% 
+  select(Name, Expt, DTF, DTS, DTM) %>% 
+  mutate(REP = DTM - DTF,
+         Expt = plyr::mapvalues(Expt, names_Expt, names_ExptShort)) %>%
+  gather(Trait, Value, DTF, DTS, DTM, REP) %>%
+  mutate(Trait = paste(Expt, Trait, sep = "_")) %>%
+  group_by(Name, Trait) %>%
+  summarise(Value = mean(Value, na.rm = T)) %>%
+  spread(Trait, Value) %>%
+  ungroup()
+# DTF2 data for SA
+y2 <- read.csv("C:/Google Drive/gitfolder/AGILE_LDP_Phenology/data/data_raw.csv") %>% 
+  select(Name, Expt, DTF2) %>% 
+  mutate(Expt = plyr::mapvalues(Expt, names_Expt, names_ExptShort)) %>%
+   filter(Expt %in% names_ExptShort[7:10]) %>%
+  gather(Trait, Value, DTF2) %>%
+  mutate(Trait = paste(Expt, Trait, sep = "_")) %>%
+  group_by(Name, Trait) %>%
+  summarise(Value = mean(Value, na.rm = T)) %>%
+  spread(Trait, Value) %>%
+  ungroup()
+# Photothermal Model coefficients
+y3 <- read.csv("C:/Google Drive/gitfolder/AGILE_LDP_Phenology/data/model_t+p_coefs.csv") %>%
+  select(Name, PTModel_a=a, PTModel_b=b, PTModel_c=c)
+# Photothermal flowering data
+y4 <- read.csv("C:/Google Drive/gitfolder/AGILE_LDP_Phenology/data/data_tb_pc.csv") %>% 
+  select(Name, Expt, Tf, Pf, PTT) %>% 
+  mutate(Expt = plyr::mapvalues(Expt, names_Expt, names_ExptShort)) %>%
+  gather(Trait, Value, Tf, Pf, PTT) %>%
+  mutate(Trait = paste(Expt, Trait, sep = "_")) %>%
+  group_by(Name, Trait) %>%
+  summarise(Value = mean(Value, na.rm = T)) %>%
+  spread(Trait, Value) %>%
+  ungroup()
+# Base temp and critical photoperiod
+y5 <- read.csv("C:/Google Drive/gitfolder/AGILE_LDP_Phenology/data/data_tb_pc.csv") %>% 
+  select(Name, Expt, Tb, Pc) %>% 
+  mutate(Expt = plyr::mapvalues(Expt, names_Expt, names_ExptShort)) %>%
+  filter(Expt %in% c("Su17","Ba17","It17")) %>%
+  gather(Trait, Value, Tb, Pc) %>%
+  mutate(Trait = paste(Expt, Trait, sep = "_")) %>%
+  group_by(Name, Trait) %>%
+  summarise(Value = mean(Value, na.rm = T)) %>%
+  spread(Trait, Value) %>%
+  ungroup()
+# Principal Components
+y6 <- read.csv("C:/Google Drive/gitfolder/AGILE_LDP_Phenology/data/data_pca_results.csv") %>%
+  select(Name, PCA_PC1=PC1, PCA_PC2=PC2, PCA_PC3=PC3, PCA_PC4=PC4, PCA_PC5=PC5, PCA_PC6=PC6)
+myY <- y1 %>%
+  left_join(y2, by = "Name") %>%
+  left_join(y3, by = "Name") %>%
+  left_join(y4, by = "Name") %>%
+  left_join(y5, by = "Name") %>%
+  left_join(y6, by = "Name")  %>%
+  mutate(Name = gsub(" ", "_", Name),
+         Name = gsub("-", "\\.", Name),
+         Name = plyr::mapvalues(Name, "3156.11_AGL", "X3156.11_AGL"))
+write.csv(myY, "myY_all.csv", row.names = F)
+#
+myY <- read.csv("myY_all.csv") %>%
+  select(Name, PCA_PC1, PCA_PC2, PCA_PC3, 
+         PTModel_a, PTModel_b, PTModel_c,
+         Ro16_DTF, Ro17_DTF, Su16_DTF, Su17_DTF, Su18_DTF, Us18_DTF,
+         In16_DTF, In17_DTF, Ba16_DTF, Ba17_DTF, Ne16_DTF, Ne17_DTF,
+         Mo16_DTF, Mo17_DTF, Sp16_DTF, Sp17_DTF, It16_DTF, It17_DTF,
+         Su17_Tf, Ba17_Tf, It17_Tf, 
+         Su17_Tb, Ba17_Tb, It17_Tb, 
+         Su17_Pf, Ba17_Pf, It17_Pf,
+         Su17_Pc, Ba17_Pc, It17_Pc)
+write.csv(myY, "myY.csv", row.names = F)
+#
+myLDP <- read.csv("C:/Google Drive/gitfolder/AGILE_LDP_Phenology/data/data_pca_results.csv") %>%
+  select(Entry, Name, Origin, Cluster) %>%
+  mutate(Name = gsub(" ", "_", Name),
+         Name = gsub("-", "\\.", Name),
+         Name = plyr::mapvalues(Name, "3156.11_AGL", "X3156.11_AGL"))
+write.csv(myLDP, "myLDP.csv", row.names = F)
 ```
 
 ---
 
 # GWAS
 
-```{r echo = F, eval = F}
-library(agiler)
-myY <- read.csv("myY_all.csv") %>%
-  select(Name, PC1_PCA, PC2_PCA, PC3_PCA, a.TP_Model, b.TP_Model, c.TP_Model,
-         Ro16_DTF, Ro17_DTF, Su16_DTF, Su17_DTF, Su18_DTF, Us18_DTF,
-         In16_DTF, In17_DTF, Ba16_DTF, Ba17_DTF, Ne16_DTF, Ne17_DTF,
-         Mo16_DTF, Mo17_DTF, Sp16_DTF, Sp17_DTF, It16_DTF, It17_DTF,
-         Ro17_DTS, Su18_DTM,
-         Su17_Tf, Ba17_Tf, It17_Tf, 
-         Su17_Tb, Ba17_Tb, It17_Tb, 
-         Su17_Pf, Ba17_Pf, It17_Pf,
-         Su17_Pc, Ba17_Pc, It17_Pc)
-write.csv(myY, "myY.csv", row.names = F)
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "myG_LDP.zip",
+  button_label = "myG_LDP.zip",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = F
+)
+downloadthis::download_link(
+  link = "myY.csv",
+  button_label = "myY.csv",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = F
+)
+downloadthis::download_link(
+  link = "myLDP.csv",
+  button_label = "myLDP.csv",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = F
+)
+downloadthis::download_link(
+  link = "Lentil_FT_Genes.csv",
+  button_label = "Lentil_FT_Genes.csv",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = F
+)
 ```
 
 ```{r eval = F}
 # Genotypes
-myG <- read.csv("myG.hmp.csv", header = F)
+myG <- read.csv("myG_LDP.csv", header = F)
 # Phenotypes
 myY <- read.csv("myY.csv")
 # CoVariates
@@ -48,34 +205,31 @@ myCV <- myY[,c("Name","b","c")]
 ```{r eval = F}
 # Load library
 library(GAPIT3) # devtools::install_github("jiabowang/GAPIT3",force=TRUE)
-# Run GWAS (Results moved to folder `Results/`)
+# 
+setwd("Results")
 myGAPIT <- GAPIT(
   Y = myY,
   G = myG,
   model = c("MLM","MLMM","FarmCPU","Blink"),
   PCA.total = 4
 )
-# DTF traits
-dtf_traits <- c(
-  "Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF",
-  "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
-  "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF"
-)
-# GWAS with b covariate (Results moved to folder `Results_b/`)
+# GWAS with b covariate (Results in `Results_b/`)
+setwd("Results_b")
 myGAPIT <- GAPIT(
-  Y = myY[,c("Name",dtf_traits)],
+  Y = myY%>%select(-PTModel_b),
   G = myG,
-  CV = myCV[,c("Name","b")]
+  CV = myCV[,c("Name","PTModel_b")]
   model = c("MLM","MLMM","FarmCPU","Blink"),
-  PCA.total = 4
+  PCA.total = 0
 )
-# GWAS with c covariate (Results moved to folder `Results_c/`)
+# GWAS with c covariate (Results in `Results_c/`)
+setwd("Results_c")
 myGAPIT <- GAPIT(
-  Y = myY[,,c("Name",dtf_traits)],
+  Y = myY%>%select(-PTModel_c),
   G = myG,
-  CV = myCV[,c("Name","c")]
+  CV = myCV[,c("Name","PTModel_c")]
   model = c("MLM","MLMM","FarmCPU","Blink"),
-  PCA.total = 4
+  PCA.total = 0
 )
 ```
 
@@ -90,16 +244,17 @@ library(ggpubr)
 library(ggbeeswarm)
 library(ggtext)
 # Genotype and Phenotype 
-myG <- read.csv("myG.hmp.csv", header = T)
+myG <- read.csv("myG_LDP.csv", header = T)
 myY <- read.csv("myY.csv")
 # Genotype metadata - Cluster groups for the LDP (Wright et al., 2020)
 myLDP <- read.csv("myLDP.csv") %>%
   mutate(Cluster = factor(Cluster))
 # List of flowering time genes
-myFTGenes <- read.csv("Lentil_FT_Genes.csv") %>% rename(Chromosome=Chr) %>%
+myFTGenes <- read.csv("Lentil_FT_Genes.csv") %>% 
+  rename(Chromosome=Chr) %>%
   mutate(Expt = "FT genes", Model = "MLM", Position = as.numeric(Start))
 # Nucleotide symbols
-zz <- read.csv("IUPAC_Nucleotide_Code.csv")
+#myN <- read.csv("IUPAC_Nucleotide_Code.csv")
 # ggplot theme
 theme_AGL <- theme_bw() + 
   theme(strip.background   = element_rect(colour = "black", fill = NA, size = 0.5),
@@ -110,64 +265,74 @@ theme_AGL <- theme_bw() +
         panel.grid.minor.y = element_blank())
 #
 threshold  <- -log10(0.05/nrow(myG))
-threshold2 <- 5
-myModels <- c("MLM","MLMM","Blink","FarmCPU")
-myModelColors <- c("darkgreen","darkred","darkblue","darkslategray4")
-myMacroColors <- c("azure4","darkgreen","darkorange3","darkblue")
-myClusterColors <- c("darkred",   "darkorange3", "darkgoldenrod2", "deeppink3",
+threshold2 <- -log10(0.000005)
+myModels <- c("MLM", "MLMM", "FarmCPU", "Blink")
+myColors_Model <- c("darkgreen","darkred","darkblue","darkslategray4")
+myColors_Macro <- c("azure4","darkgreen","darkorange3","darkblue")
+myColors_Cluster <- c("darkred",   "darkorange3", "darkgoldenrod2", "deeppink3",
                   "steelblue", "darkorchid4", "cornsilk4",      "darkgreen")
-myMarkers  <- c(
-  "SLCU.2RBY.CHR2_42543877", # SLCU.2RBY.CHR2_42556949
-  "SLCU.2RBY.CHR5_1063138",  
-  "SLCU.2RBY.CHR6_2528817",  
-  "SLCU.2RBY.CHR6_306914970" # SLCU.2RBY.CHR6_307256203
-  #SLCU.2RBY.CHR1_356800518
-)
-vv <- read.csv("Results/GAPIT.MLM.Ro17_DTF.GWAS.Results.csv") %>% 
-  filter(SNP %in% myMarkers) 
-```
-
----
-
-# Phenotype Data
-
-![](Additional/myYs.png)
-
-```{r}
+myMs  <- c(
+  "Lcu.2RBY.Chr2p42556949", #"Lcu.2RBY.Chr2p42543877", 
+  "Lcu.2RBY.Chr5p1069654", #"Lcu.2RBY.Chr5p1063138",  
+  "Lcu.2RBY.Chr6p2528817",  
+  "Lcu.2RBY.Chr6p307256203")#"Lcu.2RBY.Chr6p306914970") # 
+myGM <- read.csv("Results/GAPIT.MLM.Ro17_DTF.GWAS.Results.csv") %>% 
+  filter(SNP %in% myMs) 
 #
-expttraits <- c(
-  "PC1_PCA", "PC2_PCA", "PC3_PCA",
-  "a.TP_Model", "b.TP_Model",  "c.TP_Model",
+myLabels <- c(
+  "PC1", "PC2", "PC3",
+  "*a*", "*b*", "*c*",
   "Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF",
   "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
   "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF",
-  "Su17_Tf", "Ba17_Tf",  "It17_Tf",
+  "Su17_*Tf*", "Ba17_*Tf*", "It17_*Tf*",
+  "Su17_*Tb*", "Ba17_*Tb*", "It17_*Tb*",
+  "Su17_*Pf*", "Ba17_*Pf*", "It17_*Pf*",
+  "Su17_*Pc*", "Ba17_*Pc*", "It17_*Pc*")
+# Figure 01
+myTraits <- c(
+  "PCA_PC1", "PCA_PC2", "PCA_PC3",
+  "PTModel_a", "PTModel_b", "PTModel_c",
+  "Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF", 
+  "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
+  "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF",
+  "Su17_Tf", "Ba17_Tf", "It17_Tf",
   "Su17_Tb", "Ba17_Tb", "It17_Tb",
-  "Su17_Pf", "Ba17_Pf",  "It17_Pf",
-  "Su17_Pc", "Ba17_Pc", "It17_Pc",
-  "Ro17_DTS", "Su18_DTM")
-#
-myYY <- myY %>% 
-  gather(ExptTrait, Value, 2:ncol(.)) %>%
-  mutate(ExptTrait = factor(ExptTrait, levels = expttraits))
-#
-mp <- ggplot(myYY, aes(x = Value)) + 
-  geom_histogram(fill = "darkgreen", color = "black", alpha = 0.7) + 
-  facet_wrap(ExptTrait~., ncol = 6, scales = "free") +
-  theme_AGL
-#
-ggsave("Additional/myYs.png", mp, width = 12, height = 16)
+  "Su17_Pf", "Ba17_Pf", "It17_Pf",
+  "Su17_Pc", "Ba17_Pc", "It17_Pc")
+```
+
+```{r echo = F}
+dir.create("Additional/")
+dir.create("Additional/CV/")
+dir.create("Additional/LD/")
+dir.create("Additional/Markers/")
+dir.create("Additional/Man_Facet/")
+dir.create("Additional/Man_Multi/")
+dir.create("Additional/Man_Grouped/")
 ```
 
 ---
 
-# Supplemental Table 01
+# Supplemental Table 1
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "Supplemental_Table_01.csv",
+  button_label = "Supplemental_Table_01.csv",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = F
+)
+```
 
 ```{r echo = F, eval = T}
 DT::datatable(read.csv("Supplemental_Table_01.csv"))
 ```
 
 ```{r}
+dropNAcol <- function (x) { x[, colSums(is.na(x)) < nrow(x)] }
 GWAS_PeakTable <- function(folder = NULL, file = NULL, 
                            g.range = 3000000, rowread = 2000) {
   #
@@ -181,7 +346,7 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
   output <- NULL
   #
   rr <- read.csv(paste0(folder, file), nrows = rowread) %>%
-    mutate(`Neg_log10(p)` = -log10(P.value))
+    mutate(`-log10(p)` = -log10(P.value))
   #
   if(sum(colnames(rr)=="nobs")>0) { rr <- select(rr, -nobs) }
   #
@@ -196,7 +361,7 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
   } else {
     while(nrow(rx) > 0) {
       rp <- rx %>% group_by(Chromosome) %>%
-        top_n(., n = 1, `Neg_log10(p)`) %>% ungroup()
+        top_n(., n = 1, `-log10(p)`) %>% ungroup()
       output <- bind_rows(output, rp)
       # i<-2
       for(i in 1:nrow(rp)) {
@@ -236,136 +401,170 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
   }
   output %>%
     select(SNP, Chromosome, Position, Model, Expt, Trait, 
-           P.value, `Neg_log10(p)`, effect, MAF=maf,
+           P.value, `-log10(p)`, effect, MAF=maf,
            Rsquare.of.Model.without.SNP, Rsquare.of.Model.with.SNP, 
            FDR_Adjusted_P.values, 
-           FT_Genes, FT_Pos, FT_End, FT_Distance, FT_Distances)
+           FT_Genes, FT_Pos, FT_End, FT_Distance, FT_Distances) %>%
+    filter(!(`-log10(p)` < threshold & Model != "MLM"))
 }
 #
-ww <- NULL
+myP <- NULL
 #
 fnames <- grep(".GWAS.Results", list.files("Results"))
 fnames <- list.files("Results")[fnames]
 for(i in fnames) { 
-  ww <- bind_rows(ww, GWAS_PeakTable(folder = "Results/", file = i)) 
+  myP <- bind_rows(myP, GWAS_PeakTable(folder = "Results/", file = i) %>% dropNAcol())
 }
 #
 fnames <- grep(".GWAS.Results", list.files("Results_b"))
 fnames <- list.files("Results_b")[fnames]
 for(i in fnames) { 
-  ww <- bind_rows(ww, GWAS_PeakTable(folder = "Results_b/", file = i) %>%
-                        mutate(Trait = paste0(Trait,"-b"))) 
+  myP <- bind_rows(myP, GWAS_PeakTable(folder = "Results_b/", file = i) %>%
+                        mutate(Trait = paste0(Trait,"-b")) %>% dropNAcol()) 
 }
 #
 fnames <- grep(".GWAS.Results", list.files("Results_c"))
 fnames <- list.files("Results_c")[fnames]
 for(i in fnames) { 
-  ww <- bind_rows(ww, GWAS_PeakTable(folder = "Results_c/", file = i) %>%
-                        mutate(Trait = paste0(Trait,"-c"))) 
+  myP <- bind_rows(myP, GWAS_PeakTable(folder = "Results_c/", file = i) %>%
+                        mutate(Trait = paste0(Trait,"-c")) %>% dropNAcol()) 
 }
 #
-ww <- ww %>% filter(!is.na(SNP)) %>%
+myP <- myP %>% filter(!is.na(SNP)) %>%
   arrange(Chromosome, Position, P.value, Trait) %>%
   mutate(Chromosome = factor(Chromosome, levels = 1:7),
          Model = factor(Model, levels = myModels))
 #
-write.csv(ww, "Supplemental_Table_01.csv", row.names = F)
+write.csv(myP, "Supplemental_Table_01.csv", row.names = F)
+```
+
+```{r echo = F, eval = F}
+nrow(myP %>% filter(`-log10(p)` > threshold) %>% filter(!duplicated(SNP)))
 ```
 
 ---
 
 # Figure 1
 
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Figure_01_plotly.html",
+  button_label = "Figure_01_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_01_plotly.html",
+  button_label = "Additional/Additional_Figure_01_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_02_plotly.html",
+  button_label = "Additional/Additional_Figure_02_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
+
 ![](Figure_01.png)
 
 ```{r}
-traits <- c(
-  "PC1_PCA", "PC2_PCA", "PC3_PCA",
-  "a.TP_Model", "b.TP_Model",  "c.TP_Model",
-  "Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF",
-  "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
-  "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF",
-  "Su17_Tf", "Ba17_Tf",  "It17_Tf",
-  "Su17_Tb", "Ba17_Tb", "It17_Tb",
-  "Su17_Pf", "Ba17_Pf",  "It17_Pf",
-  "Su17_Pc", "Ba17_Pc", "It17_Pc")
+gg_gwas_summary <- function(traits, labels = traits,
+                            hlines, width = 12, height = 8, 
+                            title = NULL, filename) {
+  #
+  me <- c("<b style='color:black'>{ExptTrait}</b>",
+          "<b style='color:darkgreen'>{ExptTrait}</b>",
+          "<b style='color:darkorange3'>{ExptTrait}</b>",
+          "<b style='color:darkblue'>{ExptTrait}</b>")
+  #
+  e1 <- c("Ro16","Ro17","Su16","Su17","Su18","Us18")
+  e2 <- c("Mo16","Mo17","Sp16","Sp17","It16","It17")
+  e3 <- c("In16","In17","Ba16","Ba17","Ne16","Ne17")
+  myMacroEnvs <- c("Multi Environment","Temperate", "South Asia", "Mediterranean")
+  #
+  xx <- myP %>% 
+    filter(paste(Expt, Trait, sep = "_") %in% traits) %>%
+    mutate(ExptTrait = paste(Expt, Trait, sep = "_"),
+           ExptTrait = plyr::mapvalues(ExptTrait, traits, labels),
+           Model = factor(Model, levels = myModels),
+           MacroEnv = NA,
+           MacroEnv = ifelse(Expt %in% e1, "Temperate",     MacroEnv),
+           MacroEnv = ifelse(Expt %in% e2, "Mediterranean", MacroEnv),
+           MacroEnv = ifelse(Expt %in% e3, "South Asia",    MacroEnv),
+           MacroEnv = ifelse(is.na(MacroEnv), "Multi Environment", MacroEnv),
+           cat_col = NA,
+           cat_col = ifelse(MacroEnv == "Multi Environment", glue::glue(me[1]), cat_col),
+           cat_col = ifelse(MacroEnv == "Temperate",         glue::glue(me[2]), cat_col),
+           cat_col = ifelse(MacroEnv == "South Asia",        glue::glue(me[3]), cat_col),
+           cat_col = ifelse(MacroEnv == "Mediterranean",     glue::glue(me[4]), cat_col),
+           cat_col = factor(cat_col, levels = rev(cat_col[match(labels, ExptTrait)])),
+           ExptTrait = factor(ExptTrait, levels = rev(labels)),
+           MacroEnv = factor(MacroEnv, levels = myMacroEnvs)) %>%
+    arrange(ExptTrait)
+  x1 <- xx %>% filter(`-log10(p)` > threshold)
+  x2 <- xx %>% filter(`-log10(p)` < threshold)
+  #
+  mp <- ggplot(x1, aes(x = Position / 100000000, y = cat_col, 
+                       shape = Model, fill = MacroEnv)) + 
+    geom_vline(data = myGM, alpha = 0.5, color = "red",
+               aes(xintercept = Position / 100000000)) +
+    geom_point(data = x2, size = 1, color = "black", alpha = 0.5,
+               aes(key1 = SNP, key2 = FT_Genes, key3 = FT_Distances)) +
+    geom_point(size = 2, color = "black", alpha = 0.5,
+               aes(key1 = SNP, key2 = FT_Genes, key3 = FT_Distances)) + 
+    geom_hline(yintercept = hlines, alpha = 0.7) +
+    facet_grid(. ~ Chromosome, drop = F, scales = "free_x", space = "free_x") +
+    scale_fill_manual(values = myColors_Macro, guide = "none") +
+    scale_shape_manual(values = c(22:25), breaks = myModels) +
+    scale_y_discrete(drop = F) +
+    scale_x_continuous(breaks = 0:6, minor_breaks = 0:6) +
+    theme_AGL +
+    theme(legend.position = "bottom",
+          axis.text.y = element_markdown(),
+          strip.text.y = element_markdown(),
+          plot.title = ggtext::element_markdown()) +
+    guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
+    labs(title = title, y = NULL, x = "100 Mbp")
+  #
+  ggsave(paste0(filename, ".png"), mp, width = width, height = height)
+  #
+  mp <- plotly::ggplotly(mp)
+  htmlwidgets::saveWidget(plotly::as_widget(mp),
+                          paste0(filename,"_plotly.html"),
+                          knitrOptions = list(fig.width = width, fig.height = height), 
+                          selfcontained = T)
+}
 #
-traits2 <- c(
-  "PC1", "PC2", "PC3","*a*", "*b*",  "*c*",
-  "Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF",
-  "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
-  "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF",
-  "Su17_*Tf*", "Ba17_*Tf*",  "It17_*Tf*",
-  "Su17_*Tb*", "Ba17_*Tb*", "It17_*Tb*",
-  "Su17_*Pf*", "Ba17_*Pf*",  "It17_*Pf*",
-  "Su17_*Pc*", "Ba17_*Pc*", "It17_*Pc*")
+gg_gwas_summary(traits = myTraits, labels = myLabels,
+                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
+                width = 12, height = 9, filename = "Figure_01")
 #
-me <- c("<b style='color:black'>{ExptTrait}</b>",
-        "<b style='color:darkgreen'>{ExptTrait}</b>",
-        "<b style='color:darkorange3'>{ExptTrait}</b>",
-        "<b style='color:darkblue'>{ExptTrait}</b>")
+gg_gwas_summary(title = "Covariate = *b*",
+                traits = paste0(myTraits, "-b"),
+                labels = myLabels,
+                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
+                width = 12, height = 9, filename = "Additional/Additional_Figure_01")
 #
-hlines <- c(3.5,6.5,9.5,12.5,18.5,24.5,30.5)
-e1 <- c("Ro16","Ro17","Su16","Su17","Su18","Us18")
-e2 <- c("Mo16","Mo17","Sp16","Sp17","It16","It17")
-e3 <- c("In16","In17","Ba16","Ba17","Ne16","Ne17")
-myMacroEnvs <- c("Multi Environment","Temperate", "South Asia", "Mediterranean")
-#
-wi <- ww %>% 
-  filter(paste(Expt, Trait, sep = "_") %in% traits, -log10(P.value) > threshold) %>%
-  mutate(ExptTrait = paste(Expt, Trait, sep = "_"),
-         ExptTrait = plyr::mapvalues(ExptTrait, traits, traits2),
-         Model = factor(Model, levels = myModels),
-         MacroEnv = NA,
-         MacroEnv = ifelse(Expt %in% e1, "Temperate",     MacroEnv),
-         MacroEnv = ifelse(Expt %in% e2, "Mediterranean", MacroEnv),
-         MacroEnv = ifelse(Expt %in% e3, "South Asia",    MacroEnv),
-         MacroEnv = ifelse(is.na(MacroEnv), "Multi Environment", MacroEnv),
-         cat_col = NA,
-         cat_col = ifelse(MacroEnv == "Multi Environment", glue::glue(me[1]), cat_col),
-         cat_col = ifelse(MacroEnv == "Temperate",         glue::glue(me[2]), cat_col),
-         cat_col = ifelse(MacroEnv == "South Asia",        glue::glue(me[3]), cat_col),
-         cat_col = ifelse(MacroEnv == "Mediterranean",     glue::glue(me[4]), cat_col),
-         cat_col = factor(cat_col, levels = rev(cat_col[match(traits2, ExptTrait)])),
-         ExptTrait = factor(ExptTrait, levels = rev(traits2)),
-         MacroEnv = factor(MacroEnv, levels = myMacroEnvs)) %>%
-  arrange(ExptTrait) 
-#
-mp <- ggplot(wi, aes(x = Position / 100000000, y = cat_col, shape = Model)) + 
-  geom_vline(data = vv, alpha = 0.5, color = "red",
-             aes(xintercept = Position / 100000000)) +
-  geom_point(size = 2, color = "black", alpha = 0.5,
-             aes(fill = MacroEnv, key2 = SNP, key3 = FT_Genes, key4 = FT_Distances)) + 
-  geom_hline(yintercept = hlines, alpha = 0.7) +
-  facet_grid(. ~ Chromosome, drop = F, scales = "free_x", space = "free_x") +
-  scale_fill_manual(values = myMacroColors, guide = F) +
-  scale_shape_manual(values = c(22:25)) +
-  scale_y_discrete(drop = F) +
-  theme_AGL +
-  theme(legend.position = "bottom",
-        axis.text.y = element_markdown(),
-        strip.text.y = element_markdown()) +
-  guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
-  labs(y = NULL, x = "100 Mbp")
-#
-ggsave(paste0("Figure_01.png"), mp, width = 12, height = 9)
-#
-mp <- plotly::ggplotly(mp)
-htmlwidgets::saveWidget(plotly::as_widget(mp),
-   paste0("Additional/Figure_01_plotly.html"),
-   knitrOptions = list(fig.width = 12, fig.height = 9), 
-   selfcontained = T)
-```
-
-```{r echo = F}
-save(mp, file = "Additional/Figure_01_plotly.RData")
-```
-
-[Additional/Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_01_plotly.html)
-
-```{r echo = F, eval = T}
-load("Additional/Figure_01_plotly.RData")
-mp
+gg_gwas_summary(title = "Covariatie = *c*",
+                traits = paste0(myTraits, "-c"),
+                labels = myLabels,
+                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
+                width = 12, height = 9, filename = "Additional/Additional_Figure_02")
 ```
 
 ---
@@ -398,6 +597,7 @@ for(i in expttraits) {
     mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
     xj <- read.csv(paste0("Results/", j)) %>% 
       mutate(Model = mod, ExptTrait = i,
+             `-log10(p)` = -log10(P.value),
              `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
     xx <- bind_rows(xx, xj)
   }
@@ -408,11 +608,13 @@ xx <- xx %>%
          ExptTrait = factor(ExptTrait, levels = expttraits),
          Expt = plyr::mapvalues(ExptTrait, expttraits, expts),
          Expt = factor(Expt, levels = expts)) %>%
-  arrange(rev(Model))
+  arrange(desc(Model))
 #
-x1 <- xx %>% filter(-log10(P.value) < threshold2)
-x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
-x3 <- xx %>% filter(-log10(P.value) > threshold)
+xx <- xx %>% mutate(`-log10(p)` = ifelse(`-log10(p)` > 10, 10, `-log10(p)`))
+#
+x1 <- xx %>% filter(`-log10(p)` < threshold2)
+x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
+x3 <- xx %>% filter(`-log10(p)` > threshold)
 #
 mp1 <- ggplot(yy, aes(x = Value)) +
   geom_histogram(fill = "darkgreen", binwidth = 2) + 
@@ -421,9 +623,12 @@ mp1 <- ggplot(yy, aes(x = Value)) +
   xlim(c(35,160)) +
   labs(x = "Days after planting", y = "Count")
 #
-mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value), 
+mybreaks <- c(0, 3, threshold2, threshold, 8, 10)
+mylabels <- c(0, 3, round(threshold2,1), round(threshold,1), 8, ">10")
+#
+mp2 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`, 
                       shape = Model, fill = Model)) +
-  geom_vline(data = vv, alpha = 0.5, color = "red",
+  geom_vline(data = myGM, alpha = 0.5, color = "red",
              aes(xintercept = Position / 100000000)) +
   geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
   geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
@@ -431,8 +636,9 @@ mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
   geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
   geom_point(data = x3, size = 1.25) +
   facet_grid(Expt ~ Chromosome, scales = "free", space = "free_x") +
-  scale_x_continuous(breaks = 1:7) +
-  scale_fill_manual(values = myModelColors) +
+  scale_x_continuous(breaks = 0:7) +
+  scale_y_continuous(breaks = mybreaks, labels = mylabels) +
+  scale_fill_manual(values = myColors_Model) +
   scale_shape_manual(values = 22:25) +
   theme_AGL +
   theme(legend.position = "none",
@@ -442,7 +648,7 @@ mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
 #
-mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value), 
+mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`, 
                       shape = Model, fill = Model)) +
   geom_point(size = 0.5, color = alpha("white", 0)) +
   geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
@@ -450,7 +656,9 @@ mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value),
   geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
   geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
   geom_abline() +
-  scale_fill_manual(values = myModelColors) +
+  scale_x_continuous(breaks = mybreaks, labels = mylabels) +
+  scale_y_continuous(breaks = mybreaks, labels = mylabels) +
+  scale_fill_manual(values = myColors_Model) +
   scale_shape_manual(values = 22:25) +
   facet_grid(Expt ~ "QQ", scales = "free_y") +
   theme_AGL +
@@ -462,7 +670,7 @@ mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value),
 mpl <- get_legend(mp2, position = "bottom")
 mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h",
                 widths = c(2,7, 1.5), labels = c("a)", "b)", NULL),
-                legend.grob = mpl,legend = "bottom", common.legend = T)
+                legend.grob = mpl, legend = "bottom", common.legend = T)
 #
 ggsave("Figure_02.png", mp, width = 12, height = 7)
 ```
@@ -474,19 +682,16 @@ ggsave("Figure_02.png", mp, width = 12, height = 7)
 ![](Figure_03.png)
 
 ```{r}
-expttraits <- c("PC1_PCA", "b.TP_Model", "PC2_PCA", "c.TP_Model", "PC3_PCA", "Su17_Tb")
-expts <- c("PC1", "b.TP","PC2", "c.TP", "PC3", "Su17_Tb")
+expttraits <- c("PCA_PC1", "PTModel_b", "PCA_PC2", "PTModel_c", "PCA_PC3", "Su17_Tb")
+expts      <- c("PC1",     "*b*",       "PC2",     "*c*",       "PC3",     "Su17_*Tb*")
 #
 yy <- myY 
 for(i in expttraits) { yy[,i] <- scales::rescale(yy[,i], c(0, 1)) }
 yy <- yy %>% 
   gather(ExptTrait, Value, 2:ncol(.)) %>% 
   filter(ExptTrait %in% expttraits) %>% 
-  mutate(ExptTrait = factor(ExptTrait, levels = expttraits),
-         Expt = plyr::mapvalues(ExptTrait, expttraits, expts),
-         Expt = factor(Expt, levels = expts),
-         Expt = plyr::mapvalues(Expt, c("b.TP","c.TP","Su17_Tb"), 
-                                      c("*b*","*c*","Su17_*Tb*")))
+  mutate(ExptTrait = plyr::mapvalues(ExptTrait, expttraits, expts),
+         ExptTrait = factor(ExptTrait, levels = expts))
 #
 xx <- NULL
 for(i in expttraits) {
@@ -497,6 +702,7 @@ for(i in expttraits) {
     mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
     xj <- read.csv(paste0("Results/", j)) %>% 
       mutate(Model = mod, ExptTrait = i,
+             `-log10(p)` = -log10(P.value),
              `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
     xx <- bind_rows(xx, xj)
   }
@@ -504,36 +710,39 @@ for(i in expttraits) {
 #
 xx <- xx %>% 
   mutate(Model = factor(Model, levels = myModels),
-         ExptTrait = factor(ExptTrait, levels = expttraits),
-         Expt = plyr::mapvalues(ExptTrait, expttraits, expts),
-         Expt = factor(Expt, levels = expts),
-         Expt = plyr::mapvalues(Expt, c("b.TP", "c.TP", "Su17_Tb"), 
-                                      c("*b*", "*c*", "Su17_*Tb*"))) %>%
-  arrange(rev(Model))
+         ExptTrait = plyr::mapvalues(ExptTrait, expttraits, expts),
+         ExptTrait = factor(ExptTrait, levels = expts)) %>%
+  arrange(desc(Model))
 #
-x1 <- xx %>% filter(-log10(P.value) < threshold2)
-x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
-x3 <- xx %>% filter(-log10(P.value) > threshold)
+xx <- xx %>% mutate(`-log10(p)` = ifelse(`-log10(p)` > 10, 10, `-log10(p)`))
+#
+x1 <- xx %>% filter(`-log10(p)` < threshold2)
+x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
+x3 <- xx %>% filter(`-log10(p)` > threshold)
 #
 mp1 <- ggplot(yy, aes(x = Value)) +
   geom_histogram(fill = "darkgreen") + 
-  facet_grid(Expt ~ "Phenotype", scales = "free") +
+  facet_grid(ExptTrait ~ "Phenotype", scales = "free") +
   theme_AGL +
   theme(strip.text.y = ggtext::element_markdown()) + 
   labs(x = "Scaled Value", y = "Count")
 #
-mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value), 
+mybreaks <- c(0, 3, threshold2, threshold, 8, 10)
+mylabels <- c(0, 3, round(threshold2,1), round(threshold,1), 8, ">10")
+#
+mp2 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`, 
                       shape = Model, fill = Model)) +
-  geom_vline(data = vv, alpha = 0.5, color = "red",
+  geom_vline(data = myGM, alpha = 0.5, color = "red",
              aes(xintercept = Position / 100000000)) +
   geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
   geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
   geom_point(size = 0.3, color = alpha("white", 0)) +
   geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
   geom_point(data = x3, size = 1.25) +
-  facet_grid(Expt ~ Chromosome, scales = "free", space = "free_x") +
-  scale_x_continuous(breaks = 1:7) +
-  scale_fill_manual(values = myModelColors) +
+  facet_grid(ExptTrait ~ Chromosome, scales = "free", space = "free_x") +
+  scale_x_continuous(breaks = 0:7) +
+  scale_y_continuous(breaks = mybreaks, labels = mylabels) +
+  scale_fill_manual(values = myColors_Model) +
   scale_shape_manual(values = 22:25) +
   theme_AGL +
   theme(legend.position = "none",
@@ -543,16 +752,19 @@ mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
 #
-mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value), shape = Model, fill = Model)) +
+mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`, 
+                      shape = Model, fill = Model)) +
   geom_point(size = 0.5, color = alpha("white", 0)) +
   geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
   geom_point(data = x3, size = 1.25, color = alpha("white", 0)) +
   geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
   geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
   geom_abline() +
-  scale_fill_manual(values = myModelColors) +
+  scale_x_continuous(breaks = mybreaks, labels = mylabels) +
+  scale_y_continuous(breaks = mybreaks, labels = mylabels) +
+  scale_fill_manual(values = myColors_Model) +
   scale_shape_manual(values = 22:25) +
-  facet_grid(Expt ~ "QQ", scales = "free_y") +
+  facet_grid(ExptTrait ~ "QQ", scales = "free_y") +
   theme_AGL +
   theme(legend.position = "none",
         axis.text.y = element_blank(),
@@ -568,23 +780,113 @@ mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5),
 ggsave("Figure_03.png", mp, width = 12, height = 10)
 ```
 
+## Figure 3 Subplots
+
+```{r}
+fig3_Subplot <- function(expttraits = c("PC1", "*b*")) {
+  #
+  x1 <- xx %>% filter(ExptTrait %in% expttraits, `-log10(p)` < threshold2)
+  x2 <- xx %>% filter(ExptTrait %in% expttraits, `-log10(p)` > threshold2, `-log10(p)` < threshold)
+  x3 <- xx %>% filter(ExptTrait %in% expttraits, `-log10(p)` > threshold)
+  #
+  mp1 <- ggplot(yy %>% filter(ExptTrait %in% expttraits), aes(x = Value)) +
+    geom_histogram(fill = "darkgreen") + 
+    facet_grid(ExptTrait ~ "Phenotype", scales = "free") +
+    theme_AGL +
+    theme(strip.text.y = ggtext::element_markdown()) + 
+    labs(x = "Scaled Value", y = "Count")
+  #
+  mybreaks <- c(0, 3, threshold2, threshold, 8, 10)
+  mylabels <- c(0, 3, round(threshold2,1), round(threshold,1), 8, ">10")
+  #
+  mp2 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`, 
+                        shape = Model, fill = Model)) +
+    geom_vline(data = myGM, alpha = 0.5, color = "red",
+               aes(xintercept = Position / 100000000)) +
+    geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
+    geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
+    geom_point(size = 0.3, color = alpha("white", 0)) +
+    geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
+    geom_point(data = x3, size = 1.25) +
+    facet_grid(ExptTrait ~ Chromosome, scales = "free", space = "free_x") +
+    scale_x_continuous(breaks = 1:7) +
+    scale_y_continuous(breaks = mybreaks, labels = mylabels) +
+    scale_fill_manual(values = myColors_Model) +
+    scale_shape_manual(values = 22:25) +
+    theme_AGL +
+    theme(legend.position = "none",
+          strip.text.y = element_blank() , 
+          strip.background.y = element_blank(),
+          axis.title.y = ggtext::element_markdown()) +
+    guides(shape = guide_legend(override.aes = list(size = 3))) +
+    labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
+  #
+  mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`, shape = Model,
+                        fill = Model)) +
+    geom_point(size = 0.5, color = alpha("white", 0)) +
+    geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
+    geom_point(data = x3, size = 1.25, color = alpha("white", 0)) +
+    geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
+    geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
+    geom_abline() +
+    scale_x_continuous(breaks = mybreaks, labels = mylabels) +
+    scale_y_continuous(breaks = mybreaks, labels = mylabels) +
+    scale_fill_manual(values = myColors_Model) +
+    scale_shape_manual(values = 22:25) +
+    facet_grid(ExptTrait ~ "QQ", scales = "free_y") +
+    theme_AGL +
+    theme(legend.position = "none",
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          strip.text.y = ggtext::element_markdown()) +
+    labs(y = NULL, x = "Expected")
+  #
+  mpl <- get_legend(mp2, position = "bottom")
+  mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), 
+                  align = "h", labels = c("a)", "b)", NULL),
+                  legend.grob = mpl, legend = "bottom", common.legend = T)
+  #
+  mp
+}
+ggsave("Additional/Figure_03_1.png", 
+       fig3_Subplot(expttraits = c("PC1", "*b*")), 
+       width = 12, height = 4)
+ggsave("Additional/Figure_03_2.png", 
+       fig3_Subplot(expttraits = c("PC2", "*c*")), 
+       width = 12, height = 4)
+ggsave("Additional/Figure_03_3.png", 
+       fig3_Subplot(expttraits = c("PC3", "Su17_*Tb*")), 
+       width = 12, height = 4)
+```
+
 ---
 
 # Figure 4
 
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/CV",
+  button_label = "Additional/CV/",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
+
 ![](Figure_04.png)
 
-```{r eval = F}
-expttraits <- c("Ro16_DTF","Ro17_DTF","Su16_DTF","Su17_DTF","Su18_DTF","Us18_DTF",
-                "In16_DTF","In17_DTF","Ba16_DTF","Ba17_DTF","Ne16_DTF","Ne17_DTF",
-                "Mo16_DTF","Mo17_DTF","Sp16_DTF","Sp17_DTF","It16_DTF","It17_DTF")
+```{r}
+expttraits <- myTraits
 expts <- expttraits
 for(i in 1:length(expts)) { 
   expts[i] <- substr(expts[i], 1, gregexpr("_", expts)[[i]][1]-1) 
 }
 #
 # i<-"Ro17_DTF"
-# expttraits <- c("Ro17_DTF","Sp17_DTF")
+#expttraits <- c("Ro17_DTF","Sp17_DTF")
 for(i in expttraits) {
   x1 <- NULL; xb <- NULL; xc <- NULL
   #
@@ -595,6 +897,7 @@ for(i in expttraits) {
     mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
     xj <- read.csv(paste0("Results/", j)) %>% 
       mutate(Model = mod, Facet = i,
+             `-log10(p)` = -log10(P.value),
              `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
     x1 <- bind_rows(x1, xj)
   }
@@ -606,6 +909,7 @@ for(i in expttraits) {
     mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
     xj <- read.csv(paste0("Results_b/", j)) %>% 
       mutate(Model = mod, Facet = "CV = *b*",
+             `-log10(p)` = -log10(P.value),
              `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
     xb <- bind_rows(xb, xj)
   }
@@ -617,6 +921,7 @@ for(i in expttraits) {
     mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
     xj <- read.csv(paste0("Results_c/", j)) %>% 
       mutate(Model = mod, Facet = "CV = *c*",
+             `-log10(p)` = -log10(P.value),
              `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
     xc <- bind_rows(xc, xj)
   }
@@ -624,15 +929,20 @@ for(i in expttraits) {
   xx <- bind_rows(x1, xb, xc) %>%
     mutate(Model = factor(Model, levels = myModels),
            Facet = factor(Facet, levels = c("CV = *c*", i, "CV = *b*"))) %>% 
-    arrange(Facet, rev(Model))
+    arrange(Facet, desc(Model))
   #
-  x1 <- xx %>% filter(-log10(P.value) < threshold2)
-  x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
-  x3 <- xx %>% filter(-log10(P.value) > threshold)
+  xx <- xx %>% mutate(`-log10(p)` = ifelse(`-log10(p)` > 10, 10, `-log10(p)`))
   #
-  mp1 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
+  x1 <- xx %>% filter(`-log10(p)` < threshold2)
+  x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
+  x3 <- xx %>% filter(`-log10(p)` > threshold)
+  #
+  mybreaks <- c(0, 3, threshold2, threshold, 8, 10)
+  mylabels <- c(0, 3, round(threshold2,1), round(threshold,1), 8, ">10")
+  #
+  mp1 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`,
                         shape = Model, fill = Model)) +
-    geom_vline(data = vv, alpha = 0.5, color = "red",
+    geom_vline(data = myGM, alpha = 0.5, color = "red",
                aes(xintercept = Position / 100000000)) +
     geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
     geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
@@ -640,8 +950,9 @@ for(i in expttraits) {
     geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
     geom_point(data = x3, size = 1.25) +
     facet_grid(Facet ~ Chromosome, scales = "free", space = "free_x") +
-    scale_x_continuous(breaks = 1:7) +
-    scale_fill_manual(values = myModelColors) +
+    scale_x_continuous(breaks = 0:7) +
+    scale_y_continuous(breaks = mybreaks, labels = mylabels) +
+    scale_fill_manual(values = myColors_Model) +
     scale_shape_manual(values = 22:25) +
     theme_AGL +
     theme(strip.text.y = element_blank() , 
@@ -650,7 +961,7 @@ for(i in expttraits) {
     guides(shape = guide_legend(override.aes = list(size = 3))) +
     labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
   #
-  mp2 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value),
+  mp2 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`,
                         shape = Model, fill = Model)) +
     geom_point(size = 0.5, color = alpha("white", 0)) +
     geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
@@ -658,7 +969,9 @@ for(i in expttraits) {
     geom_hline(yintercept = threshold, color = "red", alpha = 0.7) +
     geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
     geom_abline() +
-    scale_fill_manual(values = myModelColors) +
+    scale_x_continuous(breaks = mybreaks, labels = mylabels) +
+    scale_y_continuous(breaks = mybreaks, labels = mylabels) +
+    scale_fill_manual(values = myColors_Model) +
     scale_shape_manual(values = 22:25) +
     facet_grid(Facet ~ "QQ", scales = "free_y") +
     theme_AGL +
@@ -669,7 +982,7 @@ for(i in expttraits) {
     labs(y = NULL, x = "Expected")
   #
   mp <- ggarrange(mp1, mp2, ncol = 2, widths = c(7,1.5), align = "h",
-                        legend = "bottom", common.legend = T)
+                  legend = "bottom", common.legend = T)
   #
   ggsave(paste0("Additional/CV/CV_", i, ".png"), mp, width = 12, height = 6)
 }
@@ -688,13 +1001,42 @@ magick::image_write(im, "Figure_04.png")
 
 # Figure 5
 
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html",
+  button_label = "Additional/Figure_05_a_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html",
+  button_label = "Additional/Figure_05_b_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html",
+  button_label = "Additional/Figure_05_c_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
+ 
 ![](Figure_05.png)
 
 ```{r}
 expttraits <- c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF")
-expts <- substr(expttraits,1,4)
+expts <- substr(expttraits, 1, 4)
 #
-markers <- myMarkers[c(1,2)]
+markers <- myMs[c(1,2)]
 gg <- myG %>% filter(rs %in% markers) %>% 
   column_to_rownames("rs") %>%
   select(11:ncol(.)) %>%
@@ -715,21 +1057,21 @@ xx <- left_join(yy, gg, by = "Name") %>%
 x1 <- xx %>%
   filter(!grepl("M|R|W|S|Y|K|N", Markers), ExptTrait %in% expttraits) %>%
   arrange(Markers) %>%
-  mutate(Markers = factor(Markers, levels = c("C - G","C - A","T - G","T - A")))
+  mutate(Markers = factor(Markers, levels = c("C - A","C - C","T - A","T - C")))
 #
 mp1 <- ggplot(x1, aes(x = Markers, y = Value)) + 
-  geom_quasirandom(aes(color = Cluster, key1 = Entry, key2 = Name, 
-                       key3 = Origin, key4 = SampStat)) +
+  geom_quasirandom(aes(color = Cluster, key1 = Name, key2 = Origin)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
-  scale_color_manual(values = myClusterColors) +
+  scale_color_manual(values = myColors_Cluster) +
   guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
   theme_AGL +
-  theme(panel.grid.major.x = element_blank(),
+  theme(legend.position = "bottom",
+        panel.grid.major.x = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  labs(x = "SLCU.2RBY.CHR2_42543877 - ( C | T )\nSLCU.2RBY.CHR5_1063138 - ( G | A )",
+  labs(x = "Lcu.2RBY.Chr2p42556949 - ( C | T )\nLcu.2RBY.Chr5p1069654 - ( A | C )",
        y = "DTF")
 #
-markers <- myMarkers[3]
+markers <- myMs[3]
 gg <- myG %>% filter(rs %in% markers) %>% 
   column_to_rownames("rs") %>%
   select(11:ncol(.)) %>%
@@ -752,18 +1094,18 @@ x1 <- xx %>%
   arrange(Markers)
 #
 mp2 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Value)) + 
-  geom_quasirandom(aes(color = Cluster, key1 = Entry, key2 = Name, 
-                       key3 = Origin, key4 = SampStat)) +
+  geom_quasirandom(aes(color = Cluster, key1 = Name, key3 = Origin)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
-  scale_color_manual(values = myClusterColors) +
+  scale_color_manual(values = myColors_Cluster) +
   guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
   theme_AGL +
-  theme(panel.grid.major.x = element_blank(),
+  theme(legend.position = "bottom",
+        panel.grid.major.x = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  labs(x = "SLCU.2RBY.CHR6_2528817",
+  labs(x = "Lcu.2RBY.Chr6p2528817",
        y = "DTF")
 #
-markers <- myMarkers[4]
+markers <- myMs[4]
 gg <- myG %>% filter(rs %in% markers) %>% 
   column_to_rownames("rs") %>%
   select(11:ncol(.)) %>%
@@ -786,21 +1128,24 @@ x1 <- xx %>%
   arrange(Markers) 
 #
 mp3 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Value)) + 
-  geom_quasirandom(aes(color = Cluster, key1 = Entry, key2 = Name, 
-                       key3 = Origin, key4 = SampStat)) +
+  geom_quasirandom(aes(color = Cluster, key1 = Name, key3 = Origin)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
-  scale_color_manual(values = myClusterColors) +
+  scale_color_manual(values = myColors_Cluster) +
   guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
   theme_AGL +
-  theme(panel.grid.major.x = element_blank(),
+  theme(legend.position = "bottom",
+        panel.grid.major.x = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  labs(x = "SLCU.2RBY.CHR6_306914970",
+  labs(x = "Lcu.2RBY.Chr6p307256203",
        y = "DTF")
 #
 mp <- ggarrange(mp1, mp2, mp3, ncol = 1, labels = c("a)","b)","c)"), 
                 heights = c(1.2,1,1), legend = "bottom", common.legend = T)
 #
 ggsave("Figure_05.png", mp, width = 8, height = 8)
+ggsave("Additional/Figure_05_a.png", mp1, width = 8, height = 4)
+ggsave("Additional/Figure_05_b.png", mp2, width = 8, height = 4)
+ggsave("Additional/Figure_05_c.png", mp3, width = 8, height = 4)
 #
 mp1 <- plotly::ggplotly(mp1)
 htmlwidgets::saveWidget(plotly::as_widget(mp1), 
@@ -818,286 +1163,132 @@ htmlwidgets::saveWidget(plotly::as_widget(mp3),
                         selfcontained = T)
 ```
 
-```{r echo = F}
-save(mp1, file = "Additional/Figure_05_a_plotly.RData")
-save(mp2, file = "Additional/Figure_05_b_plotly.RData")
-save(mp3, file = "Additional/Figure_05_c_plotly.RData")
-```
-
-[Additional/Figure_05_a_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html)
-
-[Additional/Figure_05_b_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html)
-
-[Additional/Figure_05_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
-
-```{r echo = F, eval = T}
-load("Additional/Figure_05_a_plotly.RData")
-load("Additional/Figure_05_b_plotly.RData")
-load("Additional/Figure_05_c_plotly.RData")
-mp1
-mp2
-mp3
-```
-
----
-
-# Figure 6
-
-![](Figure_06.png)
-
-```{r}
-marker <- "SLCU.2RBY.CHR1_356800518"
-expttraits <- c("Ro17_DTS","Su18_DTM")
-expts <- expttraits
-for(i in 1:length(expts)) { 
-  expts[i] <- substr(expts[i], 1, gregexpr("_", expts)[[i]][1]-1) 
-}
-#
-yy <- myY %>% 
-  gather(ExptTrait, Value, 2:ncol(.)) %>% 
-  filter(ExptTrait %in% expttraits) %>% 
-  mutate(ExptTrait = factor(ExptTrait, levels = expttraits))
-#
-mp1 <- ggplot(yy, aes(x = Value)) +
-  geom_histogram(fill = "darkgreen") + 
-  facet_grid(ExptTrait ~ "Phenotype", scales = "free") +
-  theme_AGL +
-  labs(x = "Days", y = "Count")
-#
-xx <- NULL
-fnames <- grep("Ro17_DTS.GWAS.Results", list.files("Results/"))
-fnames <- list.files("Results/")[fnames]
-for(j in fnames) {
-  mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
-  mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
-  xj <- read.csv(paste0("Results/", j)) %>% 
-    mutate(Model = mod, Facet = "Ro17_DTS",
-           `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
-  xx <- bind_rows(xx, xj)
-}
-#
-fnames <- grep("Su18_DTM.GWAS.Results", list.files("Results/"))
-fnames <- list.files("Results/")[fnames]
-for(j in fnames) {
-  mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
-  mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
-  xj <- read.csv(paste0("Results/", j)) %>% 
-    mutate(Model = mod, Facet = "Su18_DTM",
-           `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
-  xx <- bind_rows(xx, xj)
-}
-#
-xx <- xx %>%
-  mutate(Model = factor(Model, levels = myModels)) %>% 
-  arrange(rev(Model))
-#
-x1 <- xx %>% filter(-log10(P.value) < threshold2)
-x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
-x3 <- xx %>% filter(-log10(P.value) > threshold)
-#
-vi <- read.csv("Results/GAPIT.MLM.Ro17_DTS.GWAS.Results.csv") %>%
-  filter(SNP == marker)
-#
-mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value), 
-                      shape = Model, fill = Model)) +
-  geom_vline(data = vi, alpha = 0.5, color = "red",
-             aes(xintercept = Position / 100000000)) +
-  geom_hline(yintercept = threshold,  color = "red") +
-  geom_hline(yintercept = threshold2, color = "blue") +
-  geom_point(size = 0.3, color = alpha("white", 0)) +
-  geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
-  geom_point(data = x3, size = 1.25) +
-  facet_grid(Facet ~ Chromosome, scales = "free", space = "free_x") +
-  scale_x_continuous(breaks = 1:7) +
-  scale_fill_manual(values = myModelColors) +
-  scale_shape_manual(values = 22:25) +
-  theme_AGL +
-  theme(strip.text.y = element_blank() , 
-        strip.background.y = element_blank(),
-        axis.title.y = ggtext::element_markdown()) +
-  guides(shape = guide_legend(override.aes = list(size = 3))) +
-  labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
-#
-mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = -log10(P.value), shape = Model, fill = Model)) +
-  geom_point(size = 0.5, color = alpha("white", 0)) +
-  geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
-  geom_point(data = x3, size = 1.25, color = alpha("white", 0)) +
-  geom_hline(yintercept = threshold,  color = "red") +
-  geom_hline(yintercept = threshold2, color = "blue") +
-  geom_abline() +
-  scale_fill_manual(values = myModelColors) +
-  scale_shape_manual(values = 22:25) +
-  facet_grid(Facet ~ "QQ", scales = "free_y") +
-  theme_AGL +
-  theme(legend.position = "none",
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank()) +
-  labs(y = NULL, x = "Expected")
-#
-expttraits <- c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF")
-markers <- "SLCU.2RBY.CHR1_356800518"
-gg <- myG %>% filter(rs %in% markers) %>% 
-  column_to_rownames("rs") %>%
-  select(11:ncol(.)) %>%
-  t() %>% as.data.frame()
-for(i in 1:nrow(gg)) { 
-  gg$Markers[i] <- paste(gg[i,1:length(markers)], collapse = " - ") 
-}
-gg <- gg %>% rownames_to_column("Name")
-#
-yy <- myY %>% select(Name, expttraits) %>%
-  gather(ExptTrait, Value, 2:ncol(.)) %>%
-  separate(ExptTrait, c("Expt","Trait"), remove = F)
-#
-xx <- left_join(yy, gg, by = "Name") %>%
-  left_join(myLDP, by = "Name") %>%
-  mutate(Expt = factor(Expt, levels = c("Su17","Ba17","Ne17","It17")))
-#
-x1 <- xx %>%
-  filter(!grepl("M|R|W|S|Y|K|N", Markers)) %>%
-  arrange(Markers)
-#
-mp4 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Value)) + 
-  geom_quasirandom(aes(color = Cluster, key1 = Entry, key2 = Name, 
-                       key3 = Origin, key4 = SampStat)) +
-  facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
-  scale_color_manual(values = myClusterColors) +
-  guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
-  theme_AGL +
-  theme(legend.position = "bottom",
-        panel.grid.major.x = element_blank(),
-        axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  labs(x = "SLCU.2RBY.CHR1_356800518",
-       y = "DTF")
-#
-mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h",
-                widths = c(2,7,1.5), labels = c("a)", "b)", NULL),
-                legend = "bottom", common.legend = T)
-mp <- ggarrange(mp, mp4, ncol = 1, labels = c("","c)"), heights = c(1.5,1))
-#
-ggsave("Figure_06.png", mp, width = 12, height = 8)
-#
-mp4 <- plotly::ggplotly(mp4)
-htmlwidgets::saveWidget(plotly::as_widget(mp4), 
-                        paste0("Additional/Figure_06_c_plotly.html"), 
-                        selfcontained = T)
-```
-
-```{r echo = F}
-save(mp4, file = "Additional/Figure_06_c_plotly.RData")
-```
-
-[Additional/Figure_06_c_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_06_c_plotly.html)
-
-```{r echo = F, eval = T}
-load("Additional/Figure_06_c_plotly.RData")
-mp4
-```
-
 ---
 
 # Supplemental Figure 1
 
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html",
+  button_label = "Additional/Supplemental_Figure_01_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_03_plotly.html",
+  button_label = "Additional/Additional_Figure_03_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_04_plotly.html",
+  button_label = "Additional/Additional_Figure_04_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
+
 ![](Supplemental_Figure_01.png)
 
 ```{r}
-traits <- c(
-  "Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF",
-  "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
-  "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF",
-  
-  "Ro16_DTF-c", "Ro17_DTF-c", "Su16_DTF-c", "Su17_DTF-c", "Su18_DTF-c", "Us18_DTF-c",
-  "In16_DTF-c", "In17_DTF-c", "Ba16_DTF-c", "Ba17_DTF-c", "Ne16_DTF-c", "Ne17_DTF-c",
-  "Mo16_DTF-c", "Mo17_DTF-c", "Sp16_DTF-c", "Sp17_DTF-c", "It16_DTF-c", "It17_DTF-c",
-  
-  "Ro16_DTF-b", "Ro17_DTF-b", "Su16_DTF-b", "Su17_DTF-b", "Su18_DTF-b", "Us18_DTF-b",
-  "In16_DTF-b", "In17_DTF-b", "Ba16_DTF-b", "Ba17_DTF-b", "Ne16_DTF-b", "Ne17_DTF-b",
-  "Mo16_DTF-b", "Mo17_DTF-b", "Sp16_DTF-b", "Sp17_DTF-b", "It16_DTF-b", "It17_DTF-b"
-)
-#
-traits2 <- c(
-  "Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF",
-  "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
-  "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF",
-  
-  "Ro16_DTF-*c*", "Ro17_DTF-*c*", "Su16_DTF-*c*", "Su17_DTF-*c*", "Su18_DTF-*c*", "Us18_DTF-*c*",
-  "In16_DTF-*c*", "In17_DTF-*c*", "Ba16_DTF-*c*", "Ba17_DTF-*c*", "Ne16_DTF-*c*", "Ne17_DTF-*c*",
-  "Mo16_DTF-*c*", "Mo17_DTF-*c*", "Sp16_DTF-*c*", "Sp17_DTF-*c*", "It16_DTF-*c*", "It17_DTF-*c*",
-  
-  "Ro16_DTF-*b*", "Ro17_DTF-*b*", "Su16_DTF-*b*", "Su17_DTF-*b*", "Su18_DTF-*b*", "Us18_DTF-*b*",
-  "In16_DTF-*b*", "In17_DTF-*b*", "Ba16_DTF-*b*", "Ba17_DTF-*b*", "Ne16_DTF-*b*", "Ne17_DTF-*b*",
-  "Mo16_DTF-*b*", "Mo17_DTF-*b*", "Sp16_DTF-*b*", "Sp17_DTF-*b*", "It16_DTF-*b*", "It17_DTF-*b*"
-)
-#
-me <- c("<b style='color:black'>{ExptTrait}</b>",
-        "<b style='color:darkgreen'>{ExptTrait}</b>",
-        "<b style='color:darkorange3'>{ExptTrait}</b>",
-        "<b style='color:darkblue'>{ExptTrait}</b>")
-#
-hlines = c(18.5,36.5)
-e1 <- c("Ro16","Ro17","Su16","Su17","Su18","Us18")
-e2 <- c("Mo16","Mo17","Sp16","Sp17","It16","It17")
-e3 <- c("In16","In17","Ba16","Ba17","Ne16","Ne17")
-myMacroEnvs <- c("Temperate", "South Asia", "Mediterranean")
-#
-wi <- ww %>% 
-  filter(paste(Expt, Trait, sep = "_") %in% traits, -log10(P.value) > threshold) %>%
-  mutate(ExptTrait = paste(Expt, Trait, sep = "_"),
-         CV = "No Covariate",
-         CV = ifelse(grepl("-b", Trait), "CV = *b*", CV),
-         CV = ifelse(grepl("-c", Trait), "CV = *c*", CV),
-         CV = factor(CV, levels = c("CV = *c*","No Covariate","CV = *b*")),
-         Trait = gsub("-b|-c", "", Trait),
-         ExptTrait = gsub("-b|-c", "", ExptTrait),
-         Model = factor(Model, levels = myModels),
-         MacroEnv = NA,
-         MacroEnv = ifelse(Expt %in% e1, "Temperate",     MacroEnv),
-         MacroEnv = ifelse(Expt %in% e2, "Mediterranean", MacroEnv),
-         MacroEnv = ifelse(Expt %in% e3, "South Asia",    MacroEnv),
-         cat_col = NA,
-         cat_col = ifelse(MacroEnv == "Temperate",         glue::glue(me[2]), cat_col),
-         cat_col = ifelse(MacroEnv == "South Asia",        glue::glue(me[3]), cat_col),
-         cat_col = ifelse(MacroEnv == "Mediterranean",     glue::glue(me[4]), cat_col),
-         cat_col = factor(cat_col, levels = rev(cat_col[match(traits, ExptTrait)])),
-         MacroEnv = factor(MacroEnv, levels = myMacroEnvs)) %>%
-  arrange(ExptTrait)
-#
-hlines <- c(6.5,12.5)
-#
-mp <- ggplot(wi, aes(x = Position / 100000000, y = cat_col, shape = Model)) + 
-  geom_vline(data = vv, alpha = 0.5, color = "red",
-             aes(xintercept = Position / 100000000)) +
-  geom_point(size = 2, alpha = 0.5, 
-             aes(fill = MacroEnv, key2 = SNP, key3 = FT_Genes, key4 = FT_Distances)) + 
-  geom_hline(yintercept = hlines, alpha = 0.5) +
-  facet_grid(CV ~ Chromosome, drop = F, scales = "free_x", space = "free_x") +
-  scale_fill_manual(values = myMacroColors[2:4], guide = F) +
-  scale_shape_manual(values = c(22:25)) +
-  scale_y_discrete(drop = F) +
-  theme_AGL +
-  theme(legend.position = "bottom",
-        axis.text.y = element_markdown(),
-        strip.text.y = element_markdown()) +
-  guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
-  labs(y = NULL, x = "100 Mbp")
-#
-ggsave("Supplemental_Figure_01.png", mp, width = 12, height = 9)
-mp <- plotly::ggplotly(mp)
-htmlwidgets::saveWidget(plotly::as_widget(mp),
-                        paste0("Additional/Supplemental_Figure_01_plotly.html"), 
-                        knitrOptions = list(fig.width = 12, fig.height = 9), 
-                        selfcontained = T)
-```
-
-```{r echo = F}
-save(mp, file = "Additional/Supplemental_Figure_01_plotly.RData")
-```
-
-[Additional/Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html)
-
-```{r echo = F, eval = T}
-load("Additional/Supplemental_Figure_01_plotly.RData")
-mp
+gg_gwas_cv_summary <- function(filename, myTs, hlines, width, height) {
+  #
+  myTs <- c(myTs, paste0(myTs,"-b"), paste0(myTs, "-c"))
+  myLs <- gsub("-b","-*b*", myTs)
+  myLs <- gsub("-c","-*c*", myLs)
+  #
+  me <- c("<b style='color:black'>{ExptTrait}</b>",
+          "<b style='color:darkgreen'>{ExptTrait}</b>",
+          "<b style='color:darkorange3'>{ExptTrait}</b>",
+          "<b style='color:darkblue'>{ExptTrait}</b>")
+  #
+  e1 <- c("Ro16","Ro17","Su16","Su17","Su18","Us18")
+  e2 <- c("Mo16","Mo17","Sp16","Sp17","It16","It17")
+  e3 <- c("In16","In17","Ba16","Ba17","Ne16","Ne17")
+  myMacroEnvs <- c("Temperate", "South Asia", "Mediterranean")
+  #
+  xx <- myP %>% 
+    filter(paste(Expt, Trait, sep = "_") %in% myTs) %>%
+    mutate(ExptTrait = paste(Expt, Trait, sep = "_"),
+           CV = "No Covariate",
+           CV = ifelse(grepl("-b", Trait), "CV = *b*", CV),
+           CV = ifelse(grepl("-c", Trait), "CV = *c*", CV),
+           CV = factor(CV, levels = c("CV = *c*","No Covariate","CV = *b*")),
+           Trait = gsub("-b|-c", "", Trait),
+           ExptTrait = gsub("-b|-c", "", ExptTrait),
+           Model = factor(Model, levels = myModels),
+           MacroEnv = NA,
+           MacroEnv = ifelse(Expt %in% e1, "Temperate",     MacroEnv),
+           MacroEnv = ifelse(Expt %in% e2, "Mediterranean", MacroEnv),
+           MacroEnv = ifelse(Expt %in% e3, "South Asia",    MacroEnv),
+           MacroEnv = ifelse(is.na(MacroEnv), "Multi Environment", MacroEnv),
+           cat_col = NA,
+           cat_col = ifelse(MacroEnv == "Multi Environment", glue::glue(me[1]), cat_col),
+           cat_col = ifelse(MacroEnv == "Temperate",         glue::glue(me[2]), cat_col),
+           cat_col = ifelse(MacroEnv == "South Asia",        glue::glue(me[3]), cat_col),
+           cat_col = ifelse(MacroEnv == "Mediterranean",     glue::glue(me[4]), cat_col),
+           cat_col = factor(cat_col, levels = rev(cat_col[match(myTs, ExptTrait)])),
+           MacroEnv = factor(MacroEnv, levels = myMacroEnvs)) %>%
+    arrange(ExptTrait)
+  #
+  x1 <- xx %>% filter(`-log10(p)` > threshold)
+  x2 <- xx %>% filter(`-log10(p)` < threshold)
+  #
+  mp <- ggplot(x1, aes(x = Position / 100000000, y = cat_col, 
+                       shape = Model, fill = MacroEnv)) + 
+    geom_vline(data = myGM, alpha = 0.5, color = "red",
+               aes(xintercept = Position / 100000000)) +
+    geom_point(data = x2, size = 1, color = "black", alpha = 0.5,
+               aes(key1 = SNP, key2 = FT_Genes, key3 = FT_Distances)) +
+    geom_point(size = 2, alpha = 0.5, 
+               aes(key1 = SNP, key2 = FT_Genes, key3 = FT_Distances)) + 
+    geom_hline(yintercept = hlines, alpha = 0.5) +
+    facet_grid(CV ~ Chromosome, drop = F, scales = "free_x", space = "free_x") +
+    scale_fill_manual(values = myColors_Macro[2:4], guide = "none") +
+    scale_shape_manual(values = c(22:25)) +
+    scale_y_discrete(drop = F) +
+    theme_AGL +
+    theme(legend.position = "bottom",
+          axis.text.y = element_markdown(),
+          strip.text.y = element_markdown()) +
+    guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
+    labs(y = NULL, x = "100 Mbp")
+  #
+  ggsave(paste0(filename, ".png"), mp, width = width, height = height)
+  mp <- plotly::ggplotly(mp)
+  htmlwidgets::saveWidget(plotly::as_widget(mp),
+                          paste0(filename, "_plotly.html"), 
+                          knitrOptions = list(fig.width = width, fig.height = height), 
+                          selfcontained = T)
+}
+gg_gwas_cv_summary(filename = "Supplemental_Figure_01", 
+  myTs = c("Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF",
+           "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
+           "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF"),
+  hlines = c(6.5,12.5), width = 12, height = 9)
+gg_gwas_cv_summary(filename = "Additional/Additional_Figure_03",
+  myTs = c("Su17_Tf", "Ba17_Tf", "It17_Tf",
+           "Su17_Tb", "Ba17_Tb", "It17_Tb",
+           "Su17_Pf", "Ba17_Pf", "It17_Pf",
+           "Su17_Pc", "Ba17_Pc", "It17_Pc"),
+  hlines = c(3.5,6.5,9.6), width = 12, height = 9)
+gg_gwas_cv_summary(filename = "Additional/Additional_Figure_04",
+  myTs = c("PCA_PC1", "PCA_PC2", "PCA_PC3",
+           "PTModel_a", "PTModel_b", "PTModel_c"),
+  hlines = c(3.5), width = 12, height = 6)
 ```
 
 ---
@@ -1108,10 +1299,10 @@ mp
 
 ```{r}
 expttraits <- c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", 
-                "It17_DTF", "PC1_PCA", "b.TP_Model")
+                "Sp17_DTF", "PCA_PC1", "PTModel_b")
 chr <- 2
-pos1 <- 35000000#19000000
-pos2 <- 50000000#100000000
+pos1 <- 35000000
+pos2 <- 50000000
 #
 xx <- NULL
 for(i in expttraits) {
@@ -1121,7 +1312,9 @@ for(i in expttraits) {
     mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
     mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
     xj <- read.csv(paste0("Results/", j)) %>% 
+      filter(Chromosome == chr, Position > pos1, Position < pos2) %>%
       mutate(Model = mod, ExptTrait = i,
+             `-log10(p)` = -log10(P.value),
              `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
     xx <- bind_rows(xx, xj)
   }
@@ -1133,28 +1326,29 @@ for(j in fnames) {
   mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
   mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
   xj <- read.csv(paste0("Results_c/", j)) %>% 
+     filter(Chromosome == chr, Position > pos1, Position < pos2) %>%
     mutate(Model = mod, ExptTrait = paste0(i,"-c"),
+           `-log10(p)` = -log10(P.value),
            `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
   xx <- bind_rows(xx, xj)
 }
 #
-expttraits <- c("Su17_DTF", "Su17_DTF\nCV=*c*", "Ba17_DTF", 
-                "Ne17_DTF", "It17_DTF", "PC1", "*b*")
+expttraits <- c("Su17_DTF", "Su17_DTF (CV=*c*)", 
+                "Ba17_DTF", "Ne17_DTF", "Sp17_DTF", "PC1", "*b*")
 xx <- xx %>% 
   mutate(ExptTrait = plyr::mapvalues(ExptTrait, 
-                       c("Su17_DTF-c",       "PC1_PCA", "b.TP_Model"), 
-                       c("Su17_DTF\nCV=*c*", "PC1",     "*b*")),
+                       c("Su17_DTF-c",        "PCA_PC1", "PTModel_b"), 
+                       c("Su17_DTF (CV=*c*)", "PC1",     "*b*")),
          ExptTrait = factor(ExptTrait, levels = expttraits),
          Model = factor(Model, levels = myModels)) %>%
-  filter(Chromosome == chr, Position > pos1, Position < pos2) %>%
   mutate(Chromosome = paste("Chromosome", Chromosome)) %>%
-  arrange(rev(Model))
+  arrange(desc(Model))
 #
-x1 <- xx %>% filter(-log10(P.value) < threshold2)
-x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
-x3 <- xx %>% filter(-log10(P.value) > threshold)
+x1 <- xx %>% filter(`-log10(p)` < threshold2)
+x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
+x3 <- xx %>% filter(`-log10(p)` > threshold)
 #
-vi <- vv %>% filter(Chromosome == 2) %>%
+vi <- myGM %>% filter(Chromosome == 2) %>%
   mutate(Chromosome = paste("Chromosome",Chromosome))
 #
 mp <- ggplot() +
@@ -1163,13 +1357,13 @@ mp <- ggplot() +
   geom_vline(data = vi, alpha = 0.5, color = "red",
              aes(xintercept = Position / 1000000)) +
   geom_point(data = x1, size = 0.75, color = alpha("white", 0),
-             aes(x = Position / 1000000, y = -log10(P.value), shape = Model, fill = Model)) + 
+             aes(x = Position / 1000000, y = `-log10(p)`, shape = Model, fill = Model)) + 
   geom_point(data = x2, size = 1, color = alpha("white", 0),
-             aes(x = Position / 1000000, y = -log10(P.value), shape = Model, fill = Model)) +
+             aes(x = Position / 1000000, y = `-log10(p)`, shape = Model, fill = Model)) +
   geom_point(data = x3, size = 1.5,
-             aes(x = Position / 1000000, y = -log10(P.value), shape = Model, fill = Model)) +
+             aes(x = Position / 1000000, y = `-log10(p)`, shape = Model, fill = Model)) +
   facet_grid(ExptTrait ~ Chromosome, scales = "free", space = "free_x") +
-  scale_fill_manual(values = myModelColors) +
+  scale_fill_manual(values = myColors_Model) +
   scale_shape_manual(values = 22:25) +
   theme_AGL +
   theme(legend.position = "bottom",
@@ -1190,11 +1384,10 @@ ggsave("Supplemental_Figure_02.png", mp, width = 5, height = 10)
 ![](Supplemental_Figure_03.png)
 
 ```{r}
-expttraits <- c("PC3_PCA", "Su17_Tb", "Su17_Tf",
-                "It17_Tb", "It17_Tf", "Su17_DTF", "Mo16_DTF")
-markers <- c("SLCU.2RBY.CHR6_307256203",
-             "SLCU.2RBY.CHR6_309410465",
-             "SLCU.2RBY.CHR6_306914970")
+expttraits <- c("PCA_PC3", "Su17_Tb", "It17_Tb", "Su17_Tf", "It17_Tf", "Mo16_DTF")
+markers <- c("Lcu.2RBY.Chr6p307256203",
+             "Lcu.2RBY.Chr6p309410465",
+             "Lcu.2RBY.Chr6p306914970")
 chr <- 6
 pos1 <- 300000000
 pos2 <- 315000000
@@ -1208,27 +1401,27 @@ for(i in expttraits) {
     mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
     mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
     xj <- read.csv(paste0("Results/", j)) %>% 
+      filter(Chromosome == chr, Position > pos1, Position < pos2) %>%
       mutate(Model = mod, ExptTrait = i,
+             `-log10(p)` = -log10(P.value),
              `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
     xx <- bind_rows(xx, xj)
   }
 }
 #
-expttraits <- c("Su17_DTF", "Mo16_DTF", "PC3", "Su17_*Tb*", "It17_*Tb*", 
-                "Su17_*Tf*", "It17_*Tf*")
+expttraits <- c("PC3", "Su17_*Tb*", "It17_*Tb*", "Su17_*Tf*", "It17_*Tf*", "Mo16_DTF")
 xx <- xx %>% 
   mutate(Model = factor(Model, levels = myModels),
          ExptTrait = plyr::mapvalues(ExptTrait, 
-            c("PC3_PCA", "Su17_Tb",   "It17_Tb",   "Su17_Tf",   "It17_Tf"),
+            c("PCA_PC3", "Su17_Tb",   "It17_Tb",   "Su17_Tf",   "It17_Tf"),
             c("PC3",     "Su17_*Tb*", "It17_*Tb*", "Su17_*Tf*", "It17_*Tf*")),
          ExptTrait = factor(ExptTrait, levels = expttraits)) %>%
-  filter(Chromosome == chr, Position > pos1, Position < pos2) %>%
   mutate(Chromosome = paste("Chromosome",Chromosome)) %>%
-  arrange(rev(Model))
+  arrange(desc(Model))
 #
-x1 <- xx %>% filter(-log10(P.value) < threshold2)
-x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
-x3 <- xx %>% filter(-log10(P.value) > threshold)
+x1 <- xx %>% filter(`-log10(p)` < threshold2)
+x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
+x3 <- xx %>% filter(`-log10(p)` > threshold)
 #
 myGenes <- c("LcLWD1", "LcFTa1", "LcFTc")
 vg <- myFTGenes %>% 
@@ -1252,7 +1445,7 @@ mp <- ggplot() +
              aes(x = Position / 1000000, y = -log10(P.value), 
                  shape = Model, fill = Model)) +
   facet_grid(ExptTrait ~ Chromosome, scales = "free", space = "free_x") +
-  scale_fill_manual(values = myModelColors) +
+  scale_fill_manual(values = myColors_Model) +
   scale_shape_manual(values = 22:25) +
   scale_linetype_manual(name = "Genes", values = c(4,1,3)) +
   theme_AGL +
@@ -1270,6 +1463,19 @@ ggsave("Supplemental_Figure_03.png", mp, width = 5, height = 10)
 ---
 
 # Supplemental Figure 4
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/LD",
+  button_label = "Additional/LD/",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
 
 ![](Supplemental_Figure_04.png)
 
@@ -1314,7 +1520,8 @@ LD_Decay(x = xx, Chr = 6, Num = 1000)
 LD_Decay(x = xx, Chr = 7, Num = 1000)
 ```
 
-```{r eval = F}
+
+```{r}
 # Create user-defined function
 movingAverage <- function(x, n = 5) {
   stats::filter(x, rep(1 / n, n), sides = 2)
@@ -1338,26 +1545,31 @@ for(i in 1:7) {
   myloess <- stats::loess(LD ~ Distance, data = xii, span=0.50)
   #
   xi <- xi %>% 
-    mutate(Avg = movingAverage(LD, n = 100),
+    mutate(Moving_Avg = movingAverage(LD, n = 100),
            Loess = ifelse(Distance < 1000000, predict(myloess), NA))
   #
   xx <- bind_rows(xx, xi)
 }
 #
-myChr <- left_join(xx %>% filter(Loess < 0.2) %>% group_by(Chr) %>% 
-                     summarise(Threshold = min(Distance, na.rm = T)),
-                   xx %>% group_by(Chr) %>% 
-                     summarise(Chr_Avg = mean(Avg, na.rm = T)),
-                   by = "Chr")
-#
+x1 <- xx %>% group_by(Chr) %>%
+  summarise(Mean_LD = mean(Moving_Avg, na.rm = T))
+x2 <- xx %>% filter(Loess < 0.2) %>% group_by(Chr) %>% 
+  summarise(Threshold_0.2 = min(Distance, na.rm = T))
+x3 <- xx %>% left_join(x1, by = "Chr") %>%
+  group_by(Chr) %>% filter(Moving_Avg < Mean_LD) %>%
+  summarise(Threshold_0.1 = min(Distance, na.rm = T))
+myChr <-  x1 %>%
+  left_join(x2, by = "Chr") %>%
+  left_join(x3, by = "Chr")
+  #
 xx <- left_join(xx, myChr, by = "Chr") %>%
-  mutate(Chr =as.factor(Chr))
+  mutate(Chr = as.factor(Chr))
 #
-mytitle <- paste(myChr$Chr, myChr$Threshold, sep = "-", collapse = "; ")
+#mytitle <- paste(myChr$Chr, myChr$Threshold_0.2, sep = "-", collapse = "; ")
 #
-mp1 <- ggplot(xx, aes(x = Distance/1000000, y = Avg)) +
+mp1 <- ggplot(xx, aes(x = Distance/1000000, y = Moving_Avg)) +
   geom_line(size = 0.5, alpha = 0.5) +
-  geom_hline(data = myChr, aes(yintercept = Chr_Avg), color = "red", lty = 2) +
+  geom_hline(data = myChr, aes(yintercept = Mean_LD), color = "red", lty = 2) +
   geom_hline(yintercept = 0.2, color = "blue", lty = 2) +
   scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0,0.5)) +
   facet_wrap(paste("Chr =", Chr) ~ ., ncol = 7, scales = "free_x") +
@@ -1368,14 +1580,14 @@ mp1 <- ggplot(xx, aes(x = Distance/1000000, y = Avg)) +
 #
 yy <- xx %>% filter(Distance < 1000000)
 mp2 <- ggplot(yy, aes(x = Distance/1000, y = Loess)) +
-  geom_line(aes(y = Avg), alpha = 0.5) +
+  geom_line(aes(y = Moving_Avg), alpha = 0.5) +
   geom_line() +
-  geom_hline(data = myChr, aes(yintercept = Chr_Avg), color = "red", lty = 2) +
+  geom_hline(data = myChr, aes(yintercept = Mean_LD), color = "red", lty = 2) +
   geom_hline(yintercept = 0.2, color = "blue", lty = 2) +
   scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0,0.5)) +
-  facet_wrap(paste("Chr =", Chr) + paste("Threshold =", Threshold) ~ ., ncol = 7, scales = "free_x") +
+  facet_wrap(paste("Chr =", Chr) + paste("Threshold =", Threshold_0.2) ~ ., ncol = 7, scales = "free_x") +
   geom_vline(data = myChr, lty = 2, size = 0.3, alpha = 0.8,
-             aes(xintercept = Threshold/1000)) +
+             aes(xintercept = Threshold_0.2/1000)) +
   theme_AGL + 
   theme(legend.position = "none",
         axis.title.y = ggtext::element_markdown()) +
@@ -1390,7 +1602,38 @@ ggsave(paste0("Supplemental_Figure_04.png"), mp , width = 12, height = 8)
 
 # Additional Plots
 
+# Phenotype Data
+
+![](Additional/Additional_Figure_00.png)
+
+```{r}
+xx <- myY %>% 
+  gather(ExptTrait, Value, 2:ncol(.)) %>%
+  mutate(ExptTrait = factor(ExptTrait, levels = colnames(myY)[-1]))
+#
+mp <- ggplot(xx, aes(x = Value)) + 
+  geom_histogram(fill = "darkgreen", color = "black", alpha = 0.7) + 
+  facet_wrap(ExptTrait~., ncol = 9, scales = "free") +
+  theme_AGL
+ggsave("Additional/Additional_Figure_00.png", mp, width = 14, height = 7)
+```
+
+---
+
 ## Grouped Manhattan Plots
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Grouped/",
+  button_label = "Additional/Man_Grouped/",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
 
 ![](Additional/Man_Grouped/Man_PCA_abc.png)
 
@@ -1420,53 +1663,61 @@ ggsave(paste0("Supplemental_Figure_04.png"), mp , width = 12, height = 8)
 ```{r eval = F}
 gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF"),
                           folder = "Results/", filename = "Fig01.png", title = filename,
-                          markers = myMarkers, height = 10) {
+                          markers = myMs, height = 10) {
   #
-  vi <- read.csv(paste0(folder, "GAPIT.MLM.Ro17_DTF.GWAS.Results.csv")) %>% 
-    filter(SNP %in% markers)
-  #
-  vt <- ww %>% filter(paste(Expt, Trait, sep = "_") %in% expttraits) %>% 
-    arrange(P.value) %>% 
-    filter(!duplicated(SNP)) %>%
-    mutate(FT_Genes = ifelse(FT_Distance < 1000000, FT_Genes, NA),
-           ExptTrait = paste(Expt, Trait, sep="_"))
+  #vt <- myP %>% filter(paste(Expt, Trait, sep = "_") %in% expttraits) %>% 
+  #  arrange(P.value) %>% 
+  #  filter(!duplicated(SNP)) %>%
+  #  mutate(FT_Genes = ifelse(FT_Distance < 1000000, FT_Genes, NA),
+  #         ExptTrait = paste(Expt, Trait, sep="_"))
   xx <- NULL
+  xs <- NULL
   for(i in expttraits) {
     fnames <- grep(paste0(i,".GWAS.Results"), list.files(folder))
     fnames <- list.files(folder)[fnames]
     for(j in fnames) {
       mod <- substr(j, gregexpr("\\.", j)[[1]][1]+1, nchar(j))
       mod <- substr(mod, 1, gregexpr("\\.", mod)[[1]][1]-1 )
+      xsi <- GWAS_PeakTable(folder = folder, file = j) %>%
+        arrange(P.value) %>%
+        filter(!duplicated(paste(FT_Genes, Model))) %>%
+        mutate(FT_Genes = gsub(" ; ", "\n", FT_Genes))
       xj <- read.csv(paste0(folder, j)) %>% 
         mutate(Model = mod, ExptTrait = i,
+               `-log10(p)` = -log10(P.value),
                `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)))
       xx <- bind_rows(xx, xj)
+      if(nrow(xsi)>0) { xs <- bind_rows(xs, xsi) }
     }
   }
   #
   xx <- xx %>% 
     mutate(Model = factor(Model, levels = myModels),
            ExptTrait = factor(ExptTrait, levels = expttraits)) %>%
-    arrange(rev(Model))
+    arrange(desc(Model))
   #
-  x1 <- xx %>% filter(-log10(P.value) < threshold2)
-  x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
-  x3 <- xx %>% filter(-log10(P.value) > threshold)
+  xx <- xx %>% mutate(`-log10(p)` = ifelse(`-log10(p)` > 10, 10, `-log10(p)`))
+  xs <- xs %>% mutate(`-log10(p)` = ifelse(`-log10(p)` > 10, 10, `-log10(p)`),
+                      ExptTrait = paste(Expt, Trait, sep = "_")) 
   #
-  mp <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value), 
+  x1 <- xx %>% filter(`-log10(p)` < threshold2)
+  x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
+  x3 <- xx %>% filter(`-log10(p)` > threshold)
+  #
+  mp <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`, 
                        shape = Model, fill = Model)) +
-    geom_vline(data = vi, color = "red", alpha = 0.6,
+    geom_vline(data = myGM, color = "red", alpha = 0.6,
                aes(xintercept = Position / 100000000)) +
     geom_hline(yintercept = threshold,  color = "red") +
     geom_hline(yintercept = threshold2, color = "blue") +
     geom_point(size = 0.3, color = alpha("white", 0)) +
     geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
     geom_point(data = x3, size = 1.25) +
-    ggrepel::geom_text_repel(data = vt, size = 1.5, nudge_y = 0.5,
-                             aes(label = FT_Genes, group = ExptTrait)) +
-    facet_grid(ExptTrait ~ Chromosome, scales = "free", space = "free_x") +
+    ggrepel::geom_text_repel(data = xs, aes(label = FT_Genes, ggroup = ExptTrait), 
+                             size = 1.5, nudge_y = 0.5) +
+    facet_grid(ExptTrait ~ Chromosome, scales = "free_x", space = "free_x") +
     scale_x_continuous(breaks = 1:7) +
-    scale_fill_manual(values = myModelColors) +
+    scale_fill_manual(values = myColors_Model) +
     scale_shape_manual(values = 22:25) +
     theme_AGL +
     theme(legend.position = "bottom") +
@@ -1495,8 +1746,8 @@ gg_Custom_Man(expttraits = c("Su17_Pf", "Ba17_Pf", "It17_Pf",
                              "Su17_Pc", "Ba17_Pc", "It17_Pc"),
               filename = "Man_Pf_Pc")
 # PCA & abc
-gg_Custom_Man(expttraits = c("PC1_PCA", "PC2_PCA", "PC3_PCA", 
-                             "a.TP_Model", "b.TP_Model", "c.TP_Model"),
+gg_Custom_Man(expttraits = c("PCA_PC1",   "PCA_PC2",   "PCA_PC3", 
+                             "PTModel_a", "PTModel_b", "PTModel_c"),
               filename = "Man_PCA_abc")
 # DTF - c
 gg_Custom_Man(expttraits = c("Ro16_DTF", "Ro17_DTF", "Su16_DTF", 
@@ -1530,7 +1781,34 @@ gg_Custom_Man(expttraits = c("Ne16_DTF", "Ne17_DTF", "Ba16_DTF",
 
 ## Facetted & Multi-Modeled Manhattan Plots
 
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Facet",
+  button_label = "Additional/Man_Facet/",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
+
 ![](Additional/Man_Facet/ManQQ_Su17_DTF.png)
+
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Multi",
+  button_label = "Additional/Man_Multi/",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<br>
 
 ![](Additional/Man_Multi/ManQQ_Su17_DTF.png)
 
@@ -1564,7 +1842,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
              `-log10(p)_Exp` = -log10((rank(P.value, ties.method="first")-.5)/nrow(.)),
              `-log10(p)_FDR` = -log10(FDR_Adjusted_P.values))
     xx <- bind_rows(xx, xi)
-    xs <- bind_rows(xs, xsi)
+    if(nrow(xsi)>0) { xs <- bind_rows(xs, xsi) }
   }
   #
   xs2 <- xs %>% select(SNP, Model, FT_Genes)
@@ -1573,14 +1851,16 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
            Sig = ifelse(-log10(P.value) > threshold, "Significant", Sig)) %>% 
     left_join(xs2, by = c("SNP", "Model")) %>% 
     mutate(Model = factor(Model, levels = myModels)) %>%
-    arrange(rev(Model))
+    arrange(desc(Model))
+  #
+  xx <- xx %>% mutate(`-log10(p)` = ifelse(`-log10(p)` > 10, 10, `-log10(p)`))
   #
   x1 <- xx %>% filter(-log10(P.value) > 0.5, -log10(P.value) < threshold2)
   x2 <- xx %>% filter(-log10(P.value) > threshold2 & -log10(P.value) < threshold)
   x3 <- xx %>% filter(-log10(P.value) > threshold)
   # Man plot
   mp1 <- ggplot(xx, aes(x = Position / 100000000, y = -log10(P.value))) +
-    geom_vline(data = vv, alpha = 0.5, color = "red",
+    geom_vline(data = myGM, alpha = 0.5, color = "red",
              aes(xintercept = Position / 100000000)) +
     geom_hline(yintercept = threshold,  color = "red") +
     geom_hline(yintercept = threshold2, color = "blue") +
@@ -1589,7 +1869,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     geom_point(data = x3, pch = 23, size = 1.25, color = "black", fill = "darkred") +
     ggrepel::geom_text_repel(aes(label = FT_Genes), size = 1.5, nudge_y = 0.5) +
     facet_grid(Model ~ Chromosome, scales = "free") +
-    scale_x_continuous(breaks = 1:7) +
+    scale_x_continuous(breaks = 0:7) +
     scale_color_manual(values = colors) +
     theme_AGL +
     theme(legend.position = "none",
@@ -1628,7 +1908,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
   # Manhattan Plot
   mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value), 
                         shape = Model, fill = Model)) +
-    geom_vline(data = vv, alpha = 0.5, color = "red",
+    geom_vline(data = myGM, alpha = 0.5, color = "red",
              aes(xintercept = Position / 100000000)) +
     geom_hline(yintercept = threshold,  color = "red") +
     geom_hline(yintercept = threshold2, color = "blue") +
@@ -1637,9 +1917,9 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     geom_point(data = x3, size = 1.25) +
     ggrepel::geom_text_repel(data = xs, aes(label = FT_Genes), size = 1.5, nudge_y = 0.5) +
     facet_grid(. ~ Chromosome, scales = "free") +
-    scale_x_continuous(breaks = 1:7) +
-    scale_fill_manual(values = myModelColors) +
-    scale_shape_manual(values = 21:25) +
+    scale_x_continuous(breaks = 0:7) +
+    scale_fill_manual(values = myColors_Model) +
+    scale_shape_manual(values = 22:25) +
     theme_AGL +
     theme(axis.title.y = ggtext::element_markdown()) +
     guides(shape = guide_legend(override.aes = list(size = 3))) +
@@ -1653,8 +1933,8 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     geom_hline(yintercept = threshold2, color = "blue") +
     geom_point(size = 0.3, color = alpha("white", 0)) +
     geom_abline() +
-    scale_fill_manual(name = NULL, values = myModelColors) +
-    scale_shape_manual(name = NULL, values = 21:25) +
+    scale_fill_manual(name = NULL, values = myColors_Model) +
+    scale_shape_manual(name = NULL, values = 22:25) +
     facet_grid(. ~ "QQ", scales = "free_y") +
     theme_AGL +
     theme(legend.position = "none") +
@@ -1668,8 +1948,8 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     geom_hline(yintercept = threshold2, color = "blue") +
     geom_point(size = 0.3, color = alpha("white", 0)) +
     facet_grid(. ~ "MAF", scales = "free_y") +
-    scale_fill_manual(name = NULL, values = myModelColors) +
-    scale_shape_manual(name = NULL, values = 21:25) +
+    scale_fill_manual(name = NULL, values = myColors_Model) +
+    scale_shape_manual(name = NULL, values = 22:25) +
     theme_AGL +
     theme(legend.position = "none") +
     labs(y = NULL, x = "%")
@@ -1687,31 +1967,297 @@ expttraits <- colnames(myY)[2:ncol(myY)]
 for(i in expttraits) {
   gg_Man(folder = "Results/", expttrait = i)
 }
-expttraits <- expttraits[grepl("DTF", expttraits)]
-for(i in expttraits) {
+for(i in expttraits[!grepl("PTModel_b", expttraits)]) {
   gg_Man(folder = "Results_b/", expttrait = i, suffix = "-b")
 }
-for(i in expttraits) {
+for(i in expttraits[!grepl("PTModel_c", expttraits)]) {
   gg_Man(folder = "Results_c/", expttrait = i, suffix = "-c")
 }
 ```
 
 ---
 
+## Marker Plots
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "Additiona/Markers/Markers_Chr_1.pdf",
+  button_label = "Additiona/Markers/Markers_Chr_1.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "Additiona/Markers/Markers_Chr_2.pdf",
+  button_label = "Additiona/Markers/Markers_Chr_2.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "Additiona/Markers/Markers_Chr_3.pdf",
+  button_label = "Additiona/Markers/Markers_Chr_3.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "Additiona/Markers/Markers_Chr_4.pdf",
+  button_label = "Additiona/Markers/Markers_Chr_4.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "Additiona/Markers/Markers_Chr_5.pdf",
+  button_label = "Additiona/Markers/Markers_Chr_5.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "Additiona/Markers/Markers_Chr_6.pdf",
+  button_label = "Additiona/Markers/Markers_Chr_6.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = FALSE
+)
+downloadthis::download_link(
+  link = "Additiona/Markers/Markers_Chr_7.pdf",
+  button_label = "Additiona/Markers/Markers_Chr_7.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = FALSE
+)
+```
+
+<br>
+
+![](Additional/Markers/Markers_Lcu.2RBY.Chr2p42556949.png)
+
+![](Additional/Markers/Markers_Lcu.2RBY.Chr5p1069654.png)
+
+![](Additional/Markers/Markers_Lcu.2RBY.Chr6p2528817.png)
+
+![](Additional/Markers/Markers_Lcu.2RBY.Chr6p307256203.png)
+
+```{r eval = F}
+gg_Marker <- function(marker = myMs[1],
+                      expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF",
+                                     "Su17_Tf", "Su17_Pf", "PTModel_b", "PTModel_c")) {
+  #
+  gg <- myG %>% filter(rs == marker) %>% 
+    column_to_rownames("rs") %>%
+    select(11:ncol(.)) %>%
+    t() %>% as.data.frame() %>%
+    rownames_to_column("Name") %>%
+    rename(Marker=2)
+  #
+  yy <- myY %>% select(Name, expttraits) %>%
+    gather(ExptTrait, Value, 2:ncol(.)) 
+  #
+  xx <- left_join(yy, gg, by = "Name") %>%
+    left_join(myLDP, by = "Name") %>%
+    mutate(ExptTrait = factor(ExptTrait, levels = expttraits))
+  #
+  x1 <- xx %>%
+    filter(!grepl("M|R|W|S|Y|K|N", Marker), ExptTrait %in% expttraits) %>%
+    arrange(Marker) 
+  #
+  fg <- myP %>% filter(SNP == marker) %>% slice(1)
+  fg <- paste(fg$FT_Genes, fg$FT_Distances, sep = "\n")
+  mp <- ggplot(x1, aes(x = Marker, y = Value)) + 
+    geom_quasirandom(aes(color = Cluster)) +
+    facet_wrap(ExptTrait ~ ., ncol = 4, scales = "free_y") +
+    scale_color_manual(values = myColors_Cluster) +
+    guides(color = guide_legend(nrow = 1, override.aes = list(size = 3))) +
+    theme_AGL +
+    theme(legend.position = "bottom",
+          panel.grid.major.x = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+    labs(title = marker, caption = fg,
+         x = NULL, y = "DTF")
+  mp
+}
+#
+i<-myMs[1]
+for(i in myMs) {
+  mp <- gg_Marker(marker = i)
+  ggsave(paste0("Additional/Markers/Markers_",i,".png"), mp, width = 8, height = 6)
+}
+pdf("Additional/Markers/Markers_Chr_1.pdf", width = 8, height = 6)
+myPi <- myP %>% filter(Chromosome == 1)
+for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
+dev.off()
+#
+pdf("Additional/Markers/Markers_Chr_2.pdf", width = 8, height = 6)
+myPi <- myP %>% filter(Chromosome == 2)
+for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
+dev.off()
+#
+pdf("Additional/Markers/Markers_Chr_3.pdf", width = 8, height = 6)
+myPi <- myP %>% filter(Chromosome == 3)
+for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
+dev.off()
+#
+pdf("Additional/Markers/Markers_Chr_4.pdf", width = 8, height = 6)
+myPi <- myP %>% filter(Chromosome == 4)
+for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
+dev.off()
+#
+pdf("Additional/Markers/Markers_Chr_5.pdf", width = 8, height = 6)
+myPi <- myP %>% filter(Chromosome == 5)
+for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
+dev.off()
+#
+pdf("Additional/Markers/Markers_Chr_6.pdf", width = 8, height = 6)
+myPi <- myP %>% filter(Chromosome == 6)
+for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
+dev.off()
+#
+pdf("Additional/Markers/Markers_Chr_7.pdf", width = 8, height = 6)
+myPi <- myP %>% filter(Chromosome == 7)
+for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
+dev.off()
+```
+
+
 ```{r eval = F, echo = F}
+myMs2 <- c(
+  "Lcu.2RBY.Chr1p356800518", "Lcu.2RBY.Chr1p356693849", #LcGI - these are the same 
+  "Lcu.2RBY.Chr1p466144493","Lcu.2RBY.Chr1p454933984", #Tb,Tf
+  "Lcu.2RBY.Chr2p530433205", #PC1,Tb,DTF   #"Lcu.2RBY.Chr2p606453410",
+  "Lcu.2RBY.Chr6p165249352", #PC2,Pf  #"Lcu.2RBY.Chr6p400770424","Lcu.2RBY.Chr3p356512683",
+  "Lcu.2RBY.Chr6p420547483", #PC3,c,Tf,Tb,Pc,Pf
+  #
+  "Lcu.2RBY.Chr6p306782667", #LcLWD1
+  "Lcu.2RBY.Chr6p420547483", #LcLHY
+  "Lcu.2RBY.Chr3p224533991", #Myb TF
+  "Lcu.2RBY.Chr2p296172227", # FTa3
+  "Lcu.2RBY.Chr6p2630281", #FTb2
+   
+)
+#
+for(i in myMs2) {
+  mp <- gg_Marker(markers = i)
+  ggsave(paste0("Additional/Markers/",i,".png"), mp, width = 8, height = 4)
+}
+#
+for(i in x4$SNP) {
+  mp <- gg_Marker(markers = i)
+  ggsave(paste0("Additional/Markers/FTa/",i,".png"), mp, width = 8, height = 3)
+}
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p305380467", "Lcu.2RBY.Chr6p306916618"))
+ggsave(paste0("Additional/Markers/Markers_PC13.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p306916618", "Lcu.2RBY.Chr6p306916827"))
+ggsave(paste0("Additional/Markers/Markers_FTa.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p306916618","Lcu.2RBY.Chr2p530433205", "Lcu.2RBY.Chr6p306916827"))
+ggsave(paste0("Additional/Markers/Markers_FTa_2.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p306916827", 
+                            "Lcu.2RBY.Chr6p2528817",
+                            "Lcu.2RBY.Chr6p306916618",
+                            "Lcu.2RBY.Chr2p530433205"
+                            ))
+ggsave(paste0("Additional/Markers/Markers_FTa_3.png"), mp, width = 8, height = 4)
+#
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2630281", "Lcu.2RBY.Chr2p296172227"))
+ggsave(paste0("Additional/Markers/Markers_FTb2_FTa3.png"), mp, width = 8, height = 4)
+#
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2630281", "Lcu.2RBY.Chr6p2528817"))
+ggsave(paste0("Additional/Markers/Markers_FTb12.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2630281", "Lcu.2RBY.Chr6p2528817", "Lcu.2RBY.Chr2p530433205"))
+ggsave(paste0("Additional/Markers/Markers_FTb12_PC1.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2528817", "Lcu.2RBY.Chr2p296172227"))
+ggsave(paste0("Additional/Markers/Markers_FTb12_a3.png"), mp, width = 8, height = 4)
+#
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138"))
+ggsave(paste0("Additional/Markers/Markers_temp1.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138",
+                            "Lcu.2RBY.Chr1p454933984"))
+ggsave(paste0("Additional/Markers/Markers_temp2.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138",
+                            "Lcu.2RBY.Chr2p530433205"))
+ggsave(paste0("Additional/Markers/Markers_temp3.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138",
+                            "Lcu.2RBY.Chr6p420547483"))
+ggsave(paste0("Additional/Markers/Markers_temp4.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138",
+                            "Lcu.2RBY.Chr2p530433205","Lcu.2RBY.Chr6p420547483"))
+ggsave(paste0("Additional/Markers/Markers_temp5.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr5p1063138", "Lcu.2RBY.Chr2p530433205"))
+ggsave(paste0("Additional/Markers/Markers_temp6.png"), mp, width = 8, height = 4)
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr2p530433205"))
+ggsave(paste0("Additional/Markers/Markers_temp7.png"), mp, width = 8, height = 4)
+#
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2528817","Lcu.2RBY.Chr6p165249352"))
+ggsave(paste0("Additional/Markers/Markers_Photo1.png"), mp, width = 8, height = 4)
+#
+mp <- gg_Marker(markers = c("Lcu.2RBY.Chr1p454933984", "Lcu.2RBY.Chr6p306914970"))
+ggsave(paste0("Additional/Markers/Markers_PC3.png"), mp, width = 8, height = 4)
+
+```
+
+---
+
+## Flowering Time Genes GWAS Results
+
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "Additional/LcFTa1.pdf",
+  button_label = "Additional/LcFTa1.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = F
+)
+downloadthis::download_link(
+  link = "Additional/LcFTb1.pdf",
+  button_label = "Additional/LcFTb1.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = F
+)
+downloadthis::download_link(
+  link = "Additional/LcELF3a.pdf",
+  button_label = "Additional/LcELF3a.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = F
+)
+downloadthis::download_link(
+  link = "Additional/LcGI.pdf",
+  button_label = "Additional/LcGI.pdf",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-file-pdf",
+  self_contained = F
+)
+```
+
+```{r}
 pdfGenePlots <- function(GeneName = "LcELF3a") {
   myGene <- myFTGenes %>% filter(Name == GeneName)
-  expttraits <- c("Ro16_DTF","Ro17_DTF","Su16_DTF","Su17_DTF","Su18_DTF","Us18_DTF",
-                  "In16_DTF","In17_DTF","Ba16_DTF","Ba17_DTF","Ne16_DTF","Ne17_DTF",
-                  "Mo16_DTF","Mo17_DTF","Sp16_DTF","Sp17_DTF","It16_DTF","It17_DTF")
-  expts <- expttraits
-  for(i in 1:length(expts)) { 
-    expts[i] <- substr(expts[i], 1, gregexpr("_", expts)[[i]][1]-1) 
-    }
+  expttraits <- c(
+    "PCA_PC1", "PCA_PC2", "PCA_PC3",
+    "PTModel_a", "PTModel_b", "PTModel_c",
+    "Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF", 
+    "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
+    "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF",
+    "Su17_Tf", "Ba17_Tf", "It17_Tf",
+    "Su17_Tb", "Ba17_Tb", "It17_Tb",
+    "Su17_Pf", "Ba17_Pf", "It17_Pf",
+    "Su17_Pc", "Ba17_Pc", "It17_Pc")
   #
-  # i<-"Ro17_DTF"
-  # expttraits <- c("Ro17_DTF","Sp17_DTF")
-  pdf(paste0(myGene$Name, ".pdf"), width = 10, height = 6)
+  pdf(paste0("Additional/",myGene$Name, ".pdf"), width = 10, height = 6)
   for(i in expttraits) {
     x1 <- NULL; xb <- NULL; xc <- NULL
     #
@@ -1750,8 +2296,8 @@ pdfGenePlots <- function(GeneName = "LcELF3a") {
     #
     xx <- bind_rows(x1, xb, xc) %>%
       filter(Chromosome == myGene$Chromosome, 
-             Position > myGene$Start - 3000000, 
-             Position < myGene$Start + 3000000) %>%
+             Position > myGene$Start - 10000000, 
+             Position < myGene$Start + 10000000) %>%
       mutate(Model = factor(Model, levels = myModels),
              Facet = factor(Facet, levels = c("CV = *c*", i, "CV = *b*"))) %>% 
       arrange(Facet, rev(Model))
@@ -1765,18 +2311,27 @@ pdfGenePlots <- function(GeneName = "LcELF3a") {
             geom_vline(data = myGene, xintercept = myGene$Start / 100000000) +
             geom_hline(yintercept = threshold,  color = "red", alpha = 0.7) +
             geom_hline(yintercept = threshold2, color = "blue", alpha = 0.7) +
-            geom_point(size = 0.3, color = alpha("white", 0)) +
+            geom_point(size = 0.5, color = alpha("white", 0)) +
             geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
             geom_point(data = x3, size = 1.25) +
             facet_grid(Facet ~ Chromosome, scales = "free", space = "free_x") +
-            scale_fill_manual(values = myModelColors) +
+            scale_fill_manual(values = myColors_Model) +
             scale_shape_manual(values = 22:25) +
             theme_AGL +
-            theme(axis.title.y = ggtext::element_markdown()) +
-            labs(title = i, y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
+            theme(axis.title.y = ggtext::element_markdown(),
+                  strip.text.y = ggtext::element_markdown()) +
+            labs(title = i, subtitle = GeneName,
+                 y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
           )
     }
   dev.off()
 }
 pdfGenePlots(GeneName = "LcELF3a")
+pdfGenePlots(GeneName = "LcFTb1")
+pdfGenePlots(GeneName = "LcFTa1")
+pdfGenePlots(GeneName = "LcGI")
 ```
+
+---
+
+&copy; Derek Michael Wright
