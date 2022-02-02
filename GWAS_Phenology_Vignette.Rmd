@@ -1600,6 +1600,18 @@ ggsave(paste0("Supplemental_Figure_04.png"), mp , width = 12, height = 8)
 
 ---
 
+# Supplemental Figure 5
+
+![](Supplemental_Figure_05.png)
+
+---
+
+# Supplemental Table 2
+
+https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_02.xlsx
+
+---
+
 # Additional Plots
 
 # Phenotype Data
@@ -2126,82 +2138,6 @@ pdf("Additional/Markers/Markers_Chr_7.pdf", width = 8, height = 6)
 myPi <- myP %>% filter(Chromosome == 7)
 for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
 dev.off()
-```
-
-
-```{r eval = F, echo = F}
-myMs2 <- c(
-  "Lcu.2RBY.Chr1p356800518", "Lcu.2RBY.Chr1p356693849", #LcGI - these are the same 
-  "Lcu.2RBY.Chr1p466144493","Lcu.2RBY.Chr1p454933984", #Tb,Tf
-  "Lcu.2RBY.Chr2p530433205", #PC1,Tb,DTF   #"Lcu.2RBY.Chr2p606453410",
-  "Lcu.2RBY.Chr6p165249352", #PC2,Pf  #"Lcu.2RBY.Chr6p400770424","Lcu.2RBY.Chr3p356512683",
-  "Lcu.2RBY.Chr6p420547483", #PC3,c,Tf,Tb,Pc,Pf
-  #
-  "Lcu.2RBY.Chr6p306782667", #LcLWD1
-  "Lcu.2RBY.Chr6p420547483", #LcLHY
-  "Lcu.2RBY.Chr3p224533991", #Myb TF
-  "Lcu.2RBY.Chr2p296172227", # FTa3
-  "Lcu.2RBY.Chr6p2630281", #FTb2
-   
-)
-#
-for(i in myMs2) {
-  mp <- gg_Marker(markers = i)
-  ggsave(paste0("Additional/Markers/",i,".png"), mp, width = 8, height = 4)
-}
-#
-for(i in x4$SNP) {
-  mp <- gg_Marker(markers = i)
-  ggsave(paste0("Additional/Markers/FTa/",i,".png"), mp, width = 8, height = 3)
-}
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p305380467", "Lcu.2RBY.Chr6p306916618"))
-ggsave(paste0("Additional/Markers/Markers_PC13.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p306916618", "Lcu.2RBY.Chr6p306916827"))
-ggsave(paste0("Additional/Markers/Markers_FTa.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p306916618","Lcu.2RBY.Chr2p530433205", "Lcu.2RBY.Chr6p306916827"))
-ggsave(paste0("Additional/Markers/Markers_FTa_2.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p306916827", 
-                            "Lcu.2RBY.Chr6p2528817",
-                            "Lcu.2RBY.Chr6p306916618",
-                            "Lcu.2RBY.Chr2p530433205"
-                            ))
-ggsave(paste0("Additional/Markers/Markers_FTa_3.png"), mp, width = 8, height = 4)
-#
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2630281", "Lcu.2RBY.Chr2p296172227"))
-ggsave(paste0("Additional/Markers/Markers_FTb2_FTa3.png"), mp, width = 8, height = 4)
-#
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2630281", "Lcu.2RBY.Chr6p2528817"))
-ggsave(paste0("Additional/Markers/Markers_FTb12.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2630281", "Lcu.2RBY.Chr6p2528817", "Lcu.2RBY.Chr2p530433205"))
-ggsave(paste0("Additional/Markers/Markers_FTb12_PC1.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2528817", "Lcu.2RBY.Chr2p296172227"))
-ggsave(paste0("Additional/Markers/Markers_FTb12_a3.png"), mp, width = 8, height = 4)
-#
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138"))
-ggsave(paste0("Additional/Markers/Markers_temp1.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138",
-                            "Lcu.2RBY.Chr1p454933984"))
-ggsave(paste0("Additional/Markers/Markers_temp2.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138",
-                            "Lcu.2RBY.Chr2p530433205"))
-ggsave(paste0("Additional/Markers/Markers_temp3.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138",
-                            "Lcu.2RBY.Chr6p420547483"))
-ggsave(paste0("Additional/Markers/Markers_temp4.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr5p1063138",
-                            "Lcu.2RBY.Chr2p530433205","Lcu.2RBY.Chr6p420547483"))
-ggsave(paste0("Additional/Markers/Markers_temp5.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr5p1063138", "Lcu.2RBY.Chr2p530433205"))
-ggsave(paste0("Additional/Markers/Markers_temp6.png"), mp, width = 8, height = 4)
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr2p42543877", "Lcu.2RBY.Chr2p530433205"))
-ggsave(paste0("Additional/Markers/Markers_temp7.png"), mp, width = 8, height = 4)
-#
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr6p2528817","Lcu.2RBY.Chr6p165249352"))
-ggsave(paste0("Additional/Markers/Markers_Photo1.png"), mp, width = 8, height = 4)
-#
-mp <- gg_Marker(markers = c("Lcu.2RBY.Chr1p454933984", "Lcu.2RBY.Chr6p306914970"))
-ggsave(paste0("Additional/Markers/Markers_PC3.png"), mp, width = 8, height = 4)
-
 ```
 
 ---

@@ -126,6 +126,12 @@ DT::datatable(read.csv("Supplemental_Table_01.csv"))
 
 ---
 
+## Supplemental Table 2
+
+[Supplemental_Table_02.xlsx](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_02.xlsx)
+
+---
+
 \pagebreak
 
 # Supplemental Figures
@@ -152,6 +158,18 @@ mp
 ## Supplemental Figure 3
 
 ![](Supplemental_Figure_03.png){width=60%}
+
+---
+
+## Supplemental Figure 4
+
+![](Supplemental_Figure_04.png)
+
+---
+
+## Supplemental Figure 5
+
+![](Supplemental_Figure_05.png)
 
 ---
 

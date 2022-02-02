@@ -94,6 +94,12 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 
 ------------------------------------------------------------------------
 
+## Supplemental Table 2
+
+[Supplemental_Table_02.xlsx](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_02.xlsx)
+
+------------------------------------------------------------------------
+
 # Supplemental Figures
 
 ## Supplemental Figure 1
@@ -113,6 +119,18 @@ pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/R
 ## Supplemental Figure 3
 
 <img src="Supplemental_Figure_03.png" style="width:60.0%" />
+
+------------------------------------------------------------------------
+
+## Supplemental Figure 4
+
+![](Supplemental_Figure_04.png)
+
+------------------------------------------------------------------------
+
+## Supplemental Figure 5
+
+![](Supplemental_Figure_05.png)
 
 ------------------------------------------------------------------------
 
