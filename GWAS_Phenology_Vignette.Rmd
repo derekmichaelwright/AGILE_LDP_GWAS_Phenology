@@ -2,7 +2,7 @@
 title: "R Vignette"
 subtitle: "Focusing the GWAS *Lens* on days to flower using latent variable phenotypes derived from global multi-environment trials "
 author: "Derek Michael Wright <derek.wright@usask.ca>"
-date: "17-10-2021"
+date: "07-02-2022"
 output:
   rmdformats::readthedown:
     code_folding: show

@@ -1,0 +1,29 @@
+\contentsline {section}{Contents}{2}{section*.2}%
+\contentsline {section}{AGILE Project}{2}{section*.3}%
+\contentsline {subsection}{Collaborators}{3}{section*.4}%
+\contentsline {subsection}{Sponsors}{3}{section*.5}%
+\contentsline {section}{Figures}{4}{section*.6}%
+\contentsline {subsection}{Figure 1}{4}{section*.7}%
+\contentsline {subsection}{Figure 2}{5}{section*.8}%
+\contentsline {subsection}{Figure 3}{6}{section*.9}%
+\contentsline {subsection}{Figure 4}{7}{section*.10}%
+\contentsline {subsection}{Figure 5}{8}{section*.11}%
+\contentsline {section}{Supplemental Tables}{8}{section*.12}%
+\contentsline {subsection}{Supplemental Table 1}{9}{section*.13}%
+\contentsline {subsection}{Supplemental Table 2}{9}{section*.14}%
+\contentsline {section}{Supplemental Figures}{10}{section*.15}%
+\contentsline {subsection}{Supplemental Figure 1}{10}{section*.16}%
+\contentsline {subsection}{Supplemental Figure 2}{11}{section*.17}%
+\contentsline {subsection}{Supplemental Figure 3}{12}{section*.18}%
+\contentsline {subsection}{Supplemental Figure 4}{13}{section*.19}%
+\contentsline {subsection}{Supplemental Figure 5}{14}{section*.20}%
+\contentsline {section}{Additional Figures}{14}{section*.21}%
+\contentsline {subsection}{Phenotype Data}{15}{section*.22}%
+\contentsline {subsection}{Grouped Manhattan Plots}{15}{section*.23}%
+\contentsline {subsubsection}{DTF Temperate}{16}{section*.24}%
+\contentsline {subsubsection}{DTF South Asia}{17}{section*.25}%
+\contentsline {subsubsection}{DTF Mediterranean}{18}{section*.26}%
+\contentsline {subsubsection}{\emph {Tf} and \emph {Tc}}{19}{section*.27}%
+\contentsline {subsubsection}{\emph {Pf} and \emph {Pc}}{20}{section*.28}%
+\contentsline {subsubsection}{PCA + abc Coefficients}{21}{section*.29}%
+\contentsline {subsection}{Facetted \& Multi-Modeled Manhattan Plots}{22}{section*.30}%

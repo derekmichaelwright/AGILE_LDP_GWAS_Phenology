@@ -2,7 +2,7 @@ Focusing the GWAS Lens on days to flower using latent variable
 phenotypes derived from global multi-environment trials
 ================
 Derek Michael Wright <derek.wright@usask.ca>
-17-10-2021
+07-02-2022
 
 ------------------------------------------------------------------------
 
