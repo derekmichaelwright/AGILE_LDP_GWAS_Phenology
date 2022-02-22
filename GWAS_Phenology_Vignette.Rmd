@@ -2,7 +2,7 @@
 title: "R Vignette"
 subtitle: "Focusing the GWAS *Lens* on days to flower using latent variable phenotypes derived from global multi-environment trials "
 author: "Derek Michael Wright <derek.wright@usask.ca>"
-date: "07-02-2022"
+date: "22-02-2022"
 output:
   rmdformats::readthedown:
     code_folding: show
@@ -24,30 +24,15 @@ knitr::opts_chunk$set(eval = F, echo = T, message = F, warning = F,
 
 This vignette contains the `R` code and analysis done for the paper: 
 
-Derek Wright, Sandesh Neupane, Jakob Butler, Raul Martinez, Jim Weller, Kirstin E Bett (2020) **Focusing the GWAS Lens on days to flower using latent variable phenotypes derived from global multi-environment trials **. 
+`r shiny::icon("newspaper")` [Derek Wright, Sandesh Neupane, Jakob Butler, Raul Martinez, Jim Weller, Kirstin E Bett (2020) **Focusing the GWAS Lens on days to flower using latent variable phenotypes derived from global multi-environment trials **](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology) 
+
+`r shiny::icon("github")` https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology
 
 which is follow-up to:
 
-Derek Wright, Sandesh Neupane, Taryn Heidecker, Teketel Haile, Clarice Coyne, Sripada Udupa, Eleonora Barilli, Diego Rubiales, Tania Gioia, Reena Mehra, Ashutosh Sarker, Rajeev Dhakal, Babul Anwar, Debashish Sarker, Albert Vandenberg, and Kirstin E. Bett. (2020) **Understanding photothermal interactions can help expand production range and increase genetic diversity of lentil (*Lens culinaris* Medik.)**. *Plants, People, Planet*. 00:1-11.
+`r shiny::icon("newspaper")` [Derek M Wright, Sandesh Neupane, Taryn Heidecker, Teketel A Haile, Clarice J Coyne, Rebecca J McGee, Sripada Udupa, Fatima Henkrar, Eleonora Barilli, Diego Rubiales, Tania Gioia, Giuseppina Logozzo, Stefania Marzario, Reena Mehra, Ashutosh Sarker, Rajeev Dhakal, Babul Anwar, Debashish Sarker, Albert Vandenberg, and Kirstin E. Bett. (2020) **Understanding photothermal interactions can help expand production range and increase genetic diversity of lentil (*Lens culinaris* Medik.)**. *Plants, People, Planet*. 00:1-11.](https://nph.onlinelibrary.wiley.com/doi/10.1002/ppp3.10158)
 
-```{r eval = T, echo = F}
-downloadthis::download_link(
-  link = "https://nph.onlinelibrary.wiley.com/doi/10.1002/ppp3.10158",
-  button_label = "to be determined",
-  button_type = "success",
-  has_icon = TRUE,
-  icon = "far fa-newspaper",
-  self_contained = F
-)
-downloadthis::download_link(
-  link = "https://nph.onlinelibrary.wiley.com/doi/10.1002/ppp3.10158",
-  button_label = "Plants, People, Planet. 00:1-11",
-  button_type = "success",
-  has_icon = TRUE,
-  icon = "far fa-newspaper",
-  self_contained = F
-)
-``` 
+`r shiny::icon("github")` https://github.com/derekmichaelwright/AGILE_LDP_Phenology
 
 ---
 
@@ -133,7 +118,7 @@ myY <- y1 %>%
          Name = gsub("-", "\\.", Name),
          Name = plyr::mapvalues(Name, "3156.11_AGL", "X3156.11_AGL"))
 write.csv(myY, "myY_all.csv", row.names = F)
-#
+# Phenotype data
 myY <- read.csv("myY_all.csv") %>%
   select(Name, PCA_PC1, PCA_PC2, PCA_PC3, 
          PTModel_a, PTModel_b, PTModel_c,
@@ -145,7 +130,7 @@ myY <- read.csv("myY_all.csv") %>%
          Su17_Pf, Ba17_Pf, It17_Pf,
          Su17_Pc, Ba17_Pc, It17_Pc)
 write.csv(myY, "myY.csv", row.names = F)
-#
+# Lentil Diversity Panel
 myLDP <- read.csv("C:/Google Drive/gitfolder/AGILE_LDP_Phenology/data/data_pca_results.csv") %>%
   select(Entry, Name, Origin, Cluster) %>%
   mutate(Name = gsub(" ", "_", Name),
@@ -216,7 +201,7 @@ myGAPIT <- GAPIT(
 # GWAS with b covariate (Results in `Results_b/`)
 setwd("Results_b")
 myGAPIT <- GAPIT(
-  Y = myY%>%select(-PTModel_b),
+  Y = myY %>% select(-PTModel_b),
   G = myG,
   CV = myCV[,c("Name","PTModel_b")]
   model = c("MLM","MLMM","FarmCPU","Blink"),
@@ -225,7 +210,7 @@ myGAPIT <- GAPIT(
 # GWAS with c covariate (Results in `Results_c/`)
 setwd("Results_c")
 myGAPIT <- GAPIT(
-  Y = myY%>%select(-PTModel_c),
+  Y = myY %>% select(-PTModel_c),
   G = myG,
   CV = myCV[,c("Name","PTModel_c")]
   model = c("MLM","MLMM","FarmCPU","Blink"),
@@ -243,6 +228,8 @@ library(tidyverse)
 library(ggpubr)
 library(ggbeeswarm)
 library(ggtext)
+library(plotly)
+library(htmlwidgets)
 # Genotype and Phenotype 
 myG <- read.csv("myG_LDP.csv", header = T)
 myY <- read.csv("myY.csv")
@@ -289,7 +276,6 @@ myLabels <- c(
   "Su17_*Tb*", "Ba17_*Tb*", "It17_*Tb*",
   "Su17_*Pf*", "Ba17_*Pf*", "It17_*Pf*",
   "Su17_*Pc*", "Ba17_*Pc*", "It17_*Pc*")
-# Figure 01
 myTraits <- c(
   "PCA_PC1", "PCA_PC2", "PCA_PC3",
   "PTModel_a", "PTModel_b", "PTModel_c",
@@ -327,15 +313,18 @@ downloadthis::download_link(
 )
 ```
 
+*Supplemental Table 1: GWAS results for SNPs significantly associated with the traits of interest used in this study. Traits include days from sowing to flower (DTF), the first three principal components from a principal component analysis (PCA) of the DTF data (PC1, PC2, PC3), the a, b and c coefficients from a photothermal model (PTModel), the nominal base temperature (Tb), nominal base photoperiod (Pc), thermal sum required for flowering (Tf) and the photoperiod sum required for flowering (Pf). Rosthern, Canada 2016 and 2017 (Ro16 and Ro17), Sutherland, Canada 2016, 2017 and 2018 (Su16, Su17 and Su18), Central Ferry, USA 2018 (Us18), Bhopal, India 2016 and 2017 (In16 and In17), Jessore, Bangladesh 2016 and 2017 (Ba16 and Ba17), Bardiya, Nepal 2016 and 2017 (Ne16 and Ne17), Marchouch, Morocco 2016 and 2017 (Mo16 and Mo17), Cordoba, Spain (Sp16 and Sp17), Metaponto, Italy 2016 and 2017 (It16 and It17). For further details see Wright et al. (2020). Traits run with the b or c coefficients as a covariate are indicated with the “-b” and “-c” suffix in the trait column.*
+
 ```{r echo = F, eval = T}
 DT::datatable(read.csv("Supplemental_Table_01.csv"))
 ```
 
 ```{r}
+# Create functions
 dropNAcol <- function (x) { x[, colSums(is.na(x)) < nrow(x)] }
 GWAS_PeakTable <- function(folder = NULL, file = NULL, 
                            g.range = 3000000, rowread = 2000) {
-  #
+  # Prep data
   trait <- substr(file, gregexpr("GAPIT.", file)[[1]][1]+6,
                   gregexpr(".GWAS.Results.csv", file)[[1]][1]-1 )
   model <- substr(trait, 1, gregexpr("\\.", trait)[[1]][1]-1 )
@@ -363,7 +352,6 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
       rp <- rx %>% group_by(Chromosome) %>%
         top_n(., n = 1, `-log10(p)`) %>% ungroup()
       output <- bind_rows(output, rp)
-      # i<-2
       for(i in 1:nrow(rp)) {
         g.range1 <- rp$Position[i] - g.range
         g.range2 <- rp$Position[i] + g.range
@@ -407,22 +395,22 @@ GWAS_PeakTable <- function(folder = NULL, file = NULL,
            FT_Genes, FT_Pos, FT_End, FT_Distance, FT_Distances) %>%
     filter(!(`-log10(p)` < threshold & Model != "MLM"))
 }
-#
+# Table for significant markers
 myP <- NULL
-#
+# No covariate
 fnames <- grep(".GWAS.Results", list.files("Results"))
 fnames <- list.files("Results")[fnames]
 for(i in fnames) { 
   myP <- bind_rows(myP, GWAS_PeakTable(folder = "Results/", file = i) %>% dropNAcol())
 }
-#
+# covariate = b
 fnames <- grep(".GWAS.Results", list.files("Results_b"))
 fnames <- list.files("Results_b")[fnames]
 for(i in fnames) { 
   myP <- bind_rows(myP, GWAS_PeakTable(folder = "Results_b/", file = i) %>%
                         mutate(Trait = paste0(Trait,"-b")) %>% dropNAcol()) 
 }
-#
+# covariate = c
 fnames <- grep(".GWAS.Results", list.files("Results_c"))
 fnames <- list.files("Results_c")[fnames]
 for(i in fnames) { 
@@ -434,11 +422,11 @@ myP <- myP %>% filter(!is.na(SNP)) %>%
   arrange(Chromosome, Position, P.value, Trait) %>%
   mutate(Chromosome = factor(Chromosome, levels = 1:7),
          Model = factor(Model, levels = myModels))
-#
+# Save
 write.csv(myP, "Supplemental_Table_01.csv", row.names = F)
 ```
 
-```{r echo = F, eval = F}
+```{r eval = F, echo = F}
 nrow(myP %>% filter(`-log10(p)` > threshold) %>% filter(!duplicated(SNP)))
 ```
 
@@ -446,134 +434,12 @@ nrow(myP %>% filter(`-log10(p)` > threshold) %>% filter(!duplicated(SNP)))
 
 # Figure 1
 
-```{r eval = T, echo = F}
-downloadthis::download_link(
-  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Figure_01_plotly.html",
-  button_label = "Figure_01_plotly.html",
-  button_type = "success",
-  has_icon = TRUE,
-  icon = "fas fa-chart-bar",
-  self_contained = FALSE
-)
-```
-
-<br>
-
-```{r eval = T, echo = F}
-downloadthis::download_link(
-  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_01_plotly.html",
-  button_label = "Additional/Additional_Figure_01_plotly.html",
-  button_type = "success",
-  has_icon = TRUE,
-  icon = "fas fa-chart-bar",
-  self_contained = FALSE
-)
-downloadthis::download_link(
-  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_02_plotly.html",
-  button_label = "Additional/Additional_Figure_02_plotly.html",
-  button_type = "success",
-  has_icon = TRUE,
-  icon = "fas fa-chart-bar",
-  self_contained = FALSE
-)
-```
-
-<br>
-
 ![](Figure_01.png)
 
-```{r}
-gg_gwas_summary <- function(traits, labels = traits,
-                            hlines, width = 12, height = 8, 
-                            title = NULL, filename) {
-  #
-  me <- c("<b style='color:black'>{ExptTrait}</b>",
-          "<b style='color:darkgreen'>{ExptTrait}</b>",
-          "<b style='color:darkorange3'>{ExptTrait}</b>",
-          "<b style='color:darkblue'>{ExptTrait}</b>")
-  #
-  e1 <- c("Ro16","Ro17","Su16","Su17","Su18","Us18")
-  e2 <- c("Mo16","Mo17","Sp16","Sp17","It16","It17")
-  e3 <- c("In16","In17","Ba16","Ba17","Ne16","Ne17")
-  myMacroEnvs <- c("Multi Environment","Temperate", "South Asia", "Mediterranean")
-  #
-  xx <- myP %>% 
-    filter(paste(Expt, Trait, sep = "_") %in% traits) %>%
-    mutate(ExptTrait = paste(Expt, Trait, sep = "_"),
-           ExptTrait = plyr::mapvalues(ExptTrait, traits, labels),
-           Model = factor(Model, levels = myModels),
-           MacroEnv = NA,
-           MacroEnv = ifelse(Expt %in% e1, "Temperate",     MacroEnv),
-           MacroEnv = ifelse(Expt %in% e2, "Mediterranean", MacroEnv),
-           MacroEnv = ifelse(Expt %in% e3, "South Asia",    MacroEnv),
-           MacroEnv = ifelse(is.na(MacroEnv), "Multi Environment", MacroEnv),
-           cat_col = NA,
-           cat_col = ifelse(MacroEnv == "Multi Environment", glue::glue(me[1]), cat_col),
-           cat_col = ifelse(MacroEnv == "Temperate",         glue::glue(me[2]), cat_col),
-           cat_col = ifelse(MacroEnv == "South Asia",        glue::glue(me[3]), cat_col),
-           cat_col = ifelse(MacroEnv == "Mediterranean",     glue::glue(me[4]), cat_col),
-           cat_col = factor(cat_col, levels = rev(cat_col[match(labels, ExptTrait)])),
-           ExptTrait = factor(ExptTrait, levels = rev(labels)),
-           MacroEnv = factor(MacroEnv, levels = myMacroEnvs)) %>%
-    arrange(ExptTrait)
-  x1 <- xx %>% filter(`-log10(p)` > threshold)
-  x2 <- xx %>% filter(`-log10(p)` < threshold)
-  #
-  mp <- ggplot(x1, aes(x = Position / 100000000, y = cat_col, 
-                       shape = Model, fill = MacroEnv)) + 
-    geom_vline(data = myGM, alpha = 0.5, color = "red",
-               aes(xintercept = Position / 100000000)) +
-    geom_point(data = x2, size = 1, color = "black", alpha = 0.5,
-               aes(key1 = SNP, key2 = FT_Genes, key3 = FT_Distances)) +
-    geom_point(size = 2, color = "black", alpha = 0.5,
-               aes(key1 = SNP, key2 = FT_Genes, key3 = FT_Distances)) + 
-    geom_hline(yintercept = hlines, alpha = 0.7) +
-    facet_grid(. ~ Chromosome, drop = F, scales = "free_x", space = "free_x") +
-    scale_fill_manual(values = myColors_Macro, guide = "none") +
-    scale_shape_manual(values = c(22:25), breaks = myModels) +
-    scale_y_discrete(drop = F) +
-    scale_x_continuous(breaks = 0:6, minor_breaks = 0:6) +
-    theme_AGL +
-    theme(legend.position = "bottom",
-          axis.text.y = element_markdown(),
-          strip.text.y = element_markdown(),
-          plot.title = ggtext::element_markdown()) +
-    guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
-    labs(title = title, y = NULL, x = "100 Mbp")
-  #
-  ggsave(paste0(filename, ".png"), mp, width = width, height = height)
-  #
-  mp <- plotly::ggplotly(mp)
-  htmlwidgets::saveWidget(plotly::as_widget(mp),
-                          paste0(filename,"_plotly.html"),
-                          knitrOptions = list(fig.width = width, fig.height = height), 
-                          selfcontained = T)
-}
-#
-gg_gwas_summary(traits = myTraits, labels = myLabels,
-                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
-                width = 12, height = 9, filename = "Figure_01")
-#
-gg_gwas_summary(title = "Covariate = *b*",
-                traits = paste0(myTraits, "-b"),
-                labels = myLabels,
-                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
-                width = 12, height = 9, filename = "Additional/Additional_Figure_01")
-#
-gg_gwas_summary(title = "Covariatie = *c*",
-                traits = paste0(myTraits, "-c"),
-                labels = myLabels,
-                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
-                width = 12, height = 9, filename = "Additional/Additional_Figure_02")
-```
-
----
-
-# Figure 2
-
-![](Figure_02.png)
+*Figure 1: Genome-wide association results for days from sowing to flower (DTF) in Sutherland, Canada 2017 (Su17), Jessore, Bangladesh 2017 (Ba17), Bardiya, Nepal 2017 (Ne17) and Metaponto, Italy 2017 (It17) for a lentil diversity panel. (a) Histograms of DTF. (b) Manhattan and QQ plots for GWAS results using MLM, MLMM, FarmCPU and Blink models. Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
 
 ```{r}
+# Prep data
 expttraits <- c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF")
 expts <- expttraits
 for(i in 1:length(expts)) { 
@@ -615,7 +481,7 @@ xx <- xx %>% mutate(`-log10(p)` = ifelse(`-log10(p)` > 10, 10, `-log10(p)`))
 x1 <- xx %>% filter(`-log10(p)` < threshold2)
 x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
 x3 <- xx %>% filter(`-log10(p)` > threshold)
-#
+# Plot phenotypes
 mp1 <- ggplot(yy, aes(x = Value)) +
   geom_histogram(fill = "darkgreen", binwidth = 2) + 
   facet_grid(Expt ~ "DTF") +
@@ -625,7 +491,7 @@ mp1 <- ggplot(yy, aes(x = Value)) +
 #
 mybreaks <- c(0, 3, threshold2, threshold, 8, 10)
 mylabels <- c(0, 3, round(threshold2,1), round(threshold,1), 8, ">10")
-#
+# Plot GWAS
 mp2 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`, 
                       shape = Model, fill = Model)) +
   geom_vline(data = myGM, alpha = 0.5, color = "red",
@@ -647,7 +513,7 @@ mp2 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`,
         axis.title.y = ggtext::element_markdown()) +
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
-#
+# Plot QQ
 mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`, 
                       shape = Model, fill = Model)) +
   geom_point(size = 0.5, color = alpha("white", 0)) +
@@ -666,13 +532,176 @@ mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`,
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   labs(y = NULL, x = "Expected")
-#
+# Append
 mpl <- get_legend(mp2, position = "bottom")
 mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h",
-                widths = c(2,7, 1.5), labels = c("a)", "b)", NULL),
+                widths = c(2,7, 1.5), labels = c("(a)", "(b)", NULL),
                 legend.grob = mpl, legend = "bottom", common.legend = T)
-#
-ggsave("Figure_02.png", mp, width = 12, height = 7)
+# Save
+ggsave("Figure_01.png", mp, width = 12, height = 7)
+```
+
+---
+
+# Figure 2
+
+![](Figure_02.png)
+
+*Figure 2: Summary of genome-wide association results using MLM, MLMM, FarmCPU and Blink models on single environment and multi-environment traits related to days from sowing to flower (DTF) in a lentil diversity panel. Larger points represent a significant association (-log10(p) > 6.7) with a trait of interest under one of the GWAS models, while smaller points represent a suggestive association (-log10(p) > 5.3). PC1, PC2, PC3, represent the first three principal components of an analysis of 18 site-years of DTF data (Wright et al., 2020) in Rosthern, Canada 2016 and 2017 (Ro16 and Ro17), Sutherland, Canada 2016, 2017 and 2018 (Su16, Su17 and Su18), Central Ferry, USA 2018 (Us18), Bhopal, India 2016 and 2017 (In16 and In17), Jessore, Bangladesh 2016 and 2017 (Ba16 and Ba17), Bardiya, Nepal 2016 and 2017 (Ne16 and Ne17), Marchouch, Morocco 2016 and 2017 (Mo16 and Mo17), Cordoba, Spain (Sp16 and Sp17), Metaponto, Italy 2016 and 2017 (It16 and It17). a, b and c are coefficients from a photothermal model (Wright et al., 2020) and used to calculate the nominal base temperature (Tb), nominal base photoperiod (Pc), thermal sum required for flowering (Tf) and the photoperiod sum required for flowering (Pf). Colors are representative of macroenvironments: Temperate (green), South Asian (orange) Mediterranean (blue) and multi-environment traits (grey). Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
+
+```{r echo = F, eval = T}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Figure_02_plotly.html",
+  button_label = "Figure_02_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<iframe
+  src="Figure_02_plotly.html"
+  style="width:100%; height:600px;"
+  data-external="1"
+></iframe>
+
+```{r}
+# Create function
+gg_gwas_summary <- function(traits, labels = traits,
+                            hlines, width = 12, height = 8, 
+                            title = NULL, filename) {
+  # Prep data
+  me <- c("<b style='color:black'>{ExptTrait}</b>",
+          "<b style='color:darkgreen'>{ExptTrait}</b>",
+          "<b style='color:darkorange3'>{ExptTrait}</b>",
+          "<b style='color:darkblue'>{ExptTrait}</b>")
+  #
+  e1 <- c("Ro16","Ro17","Su16","Su17","Su18","Us18")
+  e2 <- c("Mo16","Mo17","Sp16","Sp17","It16","It17")
+  e3 <- c("In16","In17","Ba16","Ba17","Ne16","Ne17")
+  myMacroEnvs <- c("Multi Environment","Temperate", "South Asia", "Mediterranean")
+  #
+  xx <- myP %>% 
+    filter(paste(Expt, Trait, sep = "_") %in% traits) %>%
+    mutate(ExptTrait = paste(Expt, Trait, sep = "_"),
+           ExptTrait = plyr::mapvalues(ExptTrait, traits, labels),
+           Model = factor(Model, levels = myModels),
+           MacroEnv = NA,
+           MacroEnv = ifelse(Expt %in% e1, "Temperate",     MacroEnv),
+           MacroEnv = ifelse(Expt %in% e2, "Mediterranean", MacroEnv),
+           MacroEnv = ifelse(Expt %in% e3, "South Asia",    MacroEnv),
+           MacroEnv = ifelse(is.na(MacroEnv), "Multi Environment", MacroEnv),
+           cat_col = NA,
+           cat_col = ifelse(MacroEnv == "Multi Environment", glue::glue(me[1]), cat_col),
+           cat_col = ifelse(MacroEnv == "Temperate",         glue::glue(me[2]), cat_col),
+           cat_col = ifelse(MacroEnv == "South Asia",        glue::glue(me[3]), cat_col),
+           cat_col = ifelse(MacroEnv == "Mediterranean",     glue::glue(me[4]), cat_col),
+           cat_col = factor(cat_col, levels = rev(cat_col[match(labels, ExptTrait)])),
+           ExptTrait = factor(ExptTrait, levels = rev(labels)),
+           MacroEnv = factor(MacroEnv, levels = myMacroEnvs)) %>%
+    arrange(ExptTrait)
+  x1 <- xx %>% filter(`-log10(p)` > threshold)
+  x2 <- xx %>% filter(`-log10(p)` < threshold)
+  # Plot
+  mp <- ggplot(x1, aes(x = Position / 100000000, y = cat_col, 
+                       shape = Model, fill = MacroEnv)) + 
+    geom_vline(data = myGM, alpha = 0.5, color = "red",
+               aes(xintercept = Position / 100000000)) +
+    geom_point(data = x2, size = 1, color = "black", alpha = 0.5,
+               aes(key1 = SNP, key2 = FT_Genes, key3 = FT_Distances)) +
+    geom_point(size = 2, color = "black", alpha = 0.5,
+               aes(key1 = SNP, key2 = FT_Genes, key3 = FT_Distances)) + 
+    geom_hline(yintercept = hlines, alpha = 0.7) +
+    facet_grid(. ~ Chromosome, drop = F, scales = "free_x", space = "free_x") +
+    scale_fill_manual(values = myColors_Macro, guide = "none") +
+    scale_shape_manual(values = c(22:25), breaks = myModels) +
+    scale_y_discrete(drop = F) +
+    scale_x_continuous(breaks = 0:6, minor_breaks = 0:6) +
+    theme_AGL +
+    theme(legend.position = "bottom",
+          axis.text.y = element_markdown(),
+          strip.text.y = element_markdown(),
+          plot.title = ggtext::element_markdown()) +
+    guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
+    labs(title = title, y = NULL, x = "100 Mbp")
+  # Save
+  ggsave(paste0(filename, ".png"), mp, width = width, height = height)
+  # Save HTML
+  mp <- ggplotly(mp) %>% layout(showlegend = FALSE)
+  saveWidget(as_widget(mp),
+             paste0(filename,"_plotly.html"),
+             knitrOptions = list(fig.width = width, fig.height = height), 
+             selfcontained = T)
+}
+# Plot GWAS results
+gg_gwas_summary(traits = myTraits, labels = myLabels,
+                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
+                width = 12, height = 9, filename = "Figure_02")
+```
+
+---
+
+## Additional Figure 1
+
+![](Additional/Additional_Figure_01.png)
+
+```{r echo = F, eval = T}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_01_plotly.html",
+  button_label = "Additional/Additional_Figure_01_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<iframe
+  src="Additional/Additional_Figure_01_plotly.html"
+  style="width:100%; height:600px;"
+  data-external="1"
+></iframe>
+
+```{r}
+# Plot GWAS results with b covariate
+gg_gwas_summary(title = "Covariate = *b*",
+                traits = paste0(myTraits, "-b"),
+                labels = myLabels,
+                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
+                width = 12, height = 9, filename = "Additional/Additional_Figure_01")
+```
+
+---
+
+## Additional Figure 2
+
+![](Additional/Additional_Figure_02.png)
+
+```{r echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_02_plotly.html",
+  button_label = "Additional/Additional_Figure_02_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<iframe
+  src="Additional/Additional_Figure_02_plotly.html"
+  style="width:100%; height:600px;"
+  data-external="1"
+></iframe>
+
+```{r}
+# Plot GWAS results with c covariate
+gg_gwas_summary(title = "Covariatie = *c*",
+                traits = paste0(myTraits, "-c"),
+                labels = myLabels,
+                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
+                width = 12, height = 9, filename = "Additional/Additional_Figure_02")
 ```
 
 ---
@@ -681,7 +710,10 @@ ggsave("Figure_02.png", mp, width = 12, height = 7)
 
 ![](Figure_03.png)
 
+*Figure 3: Genome-wide association results for the first three principal components (PC1, PC2 and PC3) the b and c coefficients from the photothermal model developed by Wright et al., (2020), and the nominal base temperature (Tb) in Sutherland, Canada 2017 (Su17) for a lentil diversity panel. (a) Histograms of each trait, scaled from 0 to 1. (b) Manhattan and QQ plots for GWAS results using MLM, MLMM, FarmCPU and Blink models. Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
+
 ```{r}
+# Prep data
 expttraits <- c("PCA_PC1", "PTModel_b", "PCA_PC2", "PTModel_c", "PCA_PC3", "Su17_Tb")
 expts      <- c("PC1",     "*b*",       "PC2",     "*c*",       "PC3",     "Su17_*Tb*")
 #
@@ -719,17 +751,17 @@ xx <- xx %>% mutate(`-log10(p)` = ifelse(`-log10(p)` > 10, 10, `-log10(p)`))
 x1 <- xx %>% filter(`-log10(p)` < threshold2)
 x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
 x3 <- xx %>% filter(`-log10(p)` > threshold)
-#
+# Plot phenotypes
 mp1 <- ggplot(yy, aes(x = Value)) +
   geom_histogram(fill = "darkgreen") + 
   facet_grid(ExptTrait ~ "Phenotype", scales = "free") +
   theme_AGL +
   theme(strip.text.y = ggtext::element_markdown()) + 
   labs(x = "Scaled Value", y = "Count")
-#
+# 
 mybreaks <- c(0, 3, threshold2, threshold, 8, 10)
 mylabels <- c(0, 3, round(threshold2,1), round(threshold,1), 8, ">10")
-#
+# Plot GWAS
 mp2 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`, 
                       shape = Model, fill = Model)) +
   geom_vline(data = myGM, alpha = 0.5, color = "red",
@@ -749,9 +781,9 @@ mp2 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`,
         strip.text.y = element_blank() , 
         strip.background.y = element_blank(),
         axis.title.y = ggtext::element_markdown()) +
-  guides(shape = guide_legend(override.aes = list(size = 3))) +
+  guides(shape = guide_legend(override.aes = list(size = 4))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
-#
+# Plot QQ
 mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`, 
                       shape = Model, fill = Model)) +
   geom_point(size = 0.5, color = alpha("white", 0)) +
@@ -771,24 +803,31 @@ mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`,
         axis.ticks.y = element_blank(),
         strip.text.y = ggtext::element_markdown()) +
   labs(y = NULL, x = "Expected")
-#
+# Append
 mpl <- get_legend(mp2, position = "bottom")
 mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), 
-                align = "h", labels = c("a)", "b)", NULL),
+                align = "h", labels = c("(a)", "(b)", NULL),
                 legend.grob = mpl, legend = "bottom", common.legend = T)
-#
+# Save
 ggsave("Figure_03.png", mp, width = 12, height = 10)
 ```
 
 ## Figure 3 Subplots
 
+![](Additional/Figure_03_1.png)
+
+![](Additional/Figure_03_2.png)
+
+![](Additional/Figure_03_3.png)
+
 ```{r}
+# Create function
 fig3_Subplot <- function(expttraits = c("PC1", "*b*")) {
-  #
+  # Prep data
   x1 <- xx %>% filter(ExptTrait %in% expttraits, `-log10(p)` < threshold2)
   x2 <- xx %>% filter(ExptTrait %in% expttraits, `-log10(p)` > threshold2, `-log10(p)` < threshold)
   x3 <- xx %>% filter(ExptTrait %in% expttraits, `-log10(p)` > threshold)
-  #
+  # Plot phenotypes
   mp1 <- ggplot(yy %>% filter(ExptTrait %in% expttraits), aes(x = Value)) +
     geom_histogram(fill = "darkgreen") + 
     facet_grid(ExptTrait ~ "Phenotype", scales = "free") +
@@ -798,7 +837,7 @@ fig3_Subplot <- function(expttraits = c("PC1", "*b*")) {
   #
   mybreaks <- c(0, 3, threshold2, threshold, 8, 10)
   mylabels <- c(0, 3, round(threshold2,1), round(threshold,1), 8, ">10")
-  #
+  # Plot GWAS
   mp2 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`, 
                         shape = Model, fill = Model)) +
     geom_vline(data = myGM, alpha = 0.5, color = "red",
@@ -820,7 +859,7 @@ fig3_Subplot <- function(expttraits = c("PC1", "*b*")) {
           axis.title.y = ggtext::element_markdown()) +
     guides(shape = guide_legend(override.aes = list(size = 3))) +
     labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
-  #
+  # Plot QQ
   mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`, shape = Model,
                         fill = Model)) +
     geom_point(size = 0.5, color = alpha("white", 0)) +
@@ -840,20 +879,22 @@ fig3_Subplot <- function(expttraits = c("PC1", "*b*")) {
           axis.ticks.y = element_blank(),
           strip.text.y = ggtext::element_markdown()) +
     labs(y = NULL, x = "Expected")
-  #
+  # Append
   mpl <- get_legend(mp2, position = "bottom")
   mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), 
                   align = "h", labels = c("a)", "b)", NULL),
                   legend.grob = mpl, legend = "bottom", common.legend = T)
-  #
   mp
 }
+# Plot temperature related
 ggsave("Additional/Figure_03_1.png", 
        fig3_Subplot(expttraits = c("PC1", "*b*")), 
        width = 12, height = 4)
+# Plot photoperiod related
 ggsave("Additional/Figure_03_2.png", 
        fig3_Subplot(expttraits = c("PC2", "*c*")), 
        width = 12, height = 4)
+# Plot PC3
 ggsave("Additional/Figure_03_3.png", 
        fig3_Subplot(expttraits = c("PC3", "Su17_*Tb*")), 
        width = 12, height = 4)
@@ -878,15 +919,16 @@ downloadthis::download_link(
 
 ![](Figure_04.png)
 
+*Figure 4: Genome-wide association results for days from sowing to flower (DTF) with and without covariates for a lentil diversity panel. Manhattan and QQ plots for DTF in (a) Rosthern, Canada 2017 (Ro17) and (b) Cordoba, Spain 2017 (Sp17), using MLM, MLMM, FarmCPU and Blink models. The middle panel shows GWAS results without a covariate, while the top and bottom panel show GWAS results using the c and b (temperature and photoperiod) coefficients from the photothermal model developed by Wright et al. 2020, respectively. Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
+
 ```{r}
+# Prep data
 expttraits <- myTraits
 expts <- expttraits
 for(i in 1:length(expts)) { 
   expts[i] <- substr(expts[i], 1, gregexpr("_", expts)[[i]][1]-1) 
 }
 #
-# i<-"Ro17_DTF"
-#expttraits <- c("Ro17_DTF","Sp17_DTF")
 for(i in expttraits) {
   x1 <- NULL; xb <- NULL; xc <- NULL
   #
@@ -939,7 +981,7 @@ for(i in expttraits) {
   #
   mybreaks <- c(0, 3, threshold2, threshold, 8, 10)
   mylabels <- c(0, 3, round(threshold2,1), round(threshold,1), 8, ">10")
-  #
+  # Plot GWAS
   mp1 <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`,
                         shape = Model, fill = Model)) +
     geom_vline(data = myGM, alpha = 0.5, color = "red",
@@ -958,9 +1000,9 @@ for(i in expttraits) {
     theme(strip.text.y = element_blank() , 
           strip.background.y = element_blank(),
           axis.title.y = ggtext::element_markdown()) +
-    guides(shape = guide_legend(override.aes = list(size = 3))) +
+    guides(shape = guide_legend(override.aes = list(size = 4))) +
     labs(y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
-  #
+  # Plot QQ
   mp2 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`,
                         shape = Model, fill = Model)) +
     geom_point(size = 0.5, color = alpha("white", 0)) +
@@ -980,36 +1022,53 @@ for(i in expttraits) {
           axis.ticks.y = element_blank(),
           strip.text.y = ggtext::element_markdown()) +
     labs(y = NULL, x = "Expected")
-  #
+  # Append
   mp <- ggarrange(mp1, mp2, ncol = 2, widths = c(7,1.5), align = "h",
                   legend = "bottom", common.legend = T)
-  #
+  # Save
   ggsave(paste0("Additional/CV/CV_", i, ".png"), mp, width = 12, height = 6)
 }
 ```
 
 ```{r}
+# Prep (a) 
 im1 <- magick::image_read("Additional/CV/CV_Ro17_DTF.png") %>% 
-  magick::image_annotate("a)", size = 70, weight = 600, location = "+30+10")
+  magick::image_annotate("(a)", size = 70, weight = 600, location = "+30+10")
+# Prep (b)
 im2 <- magick::image_read("Additional/CV/CV_Sp17_DTF.png") %>% 
-  magick::image_annotate("b)", size = 70, weight = 600, location = "+30+10")
+  magick::image_annotate("(b)", size = 70, weight = 600, location = "+30+10")
+# Append
 im <- magick::image_append(c(im1, im2), stack = T)
+# Save
 magick::image_write(im, "Figure_04.png")
 ```
 
 ---
 
 # Figure 5
+ 
+![](Figure_05.png)
 
-```{r eval = T, echo = F}
+*Figure 5: Allelic effects of selected markers on days from sowing to flower (DTF) across contrasting locations in a lentil diversity panel. Sutherland, Canada 2017 (Su17), Jessore, Bangladesh 2017 (Ba17), Bardiya, Nepal 2017 (Ne17) and Metaponto, Italy 2017 (It17). Colors are based on a hierarchical clustering of principal components done by Wright et al. (2020) using 18 site-years of DTF data across the three major lentil growing macroenvironments. (a), (b) and (c) correspond to SNPs at the vertical lines on Figures 1, 2, 3 & 4.*
+
+```{r echo = F}
 downloadthis::download_link(
   link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html",
-  button_label = "Additional/Figure_05_a_plotly.html",
+  button_label = "/Additional/Figure_05_a_plotly.html",
   button_type = "success",
   has_icon = TRUE,
   icon = "fas fa-chart-bar",
   self_contained = FALSE
 )
+```
+
+<iframe
+  src="Additional/Figure_05_a_plotly.html"
+  style="width:100%; height:400px;"
+  data-external="1"
+></iframe>
+
+```{r echo = F}
 downloadthis::download_link(
   link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html",
   button_label = "Additional/Figure_05_b_plotly.html",
@@ -1018,6 +1077,15 @@ downloadthis::download_link(
   icon = "fas fa-chart-bar",
   self_contained = FALSE
 )
+```
+
+<iframe
+  src="Additional/Figure_05_b_plotly.html"
+  style="width:100%; height:400px;"
+  data-external="1"
+></iframe>
+
+```{r echo = F}
 downloadthis::download_link(
   link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html",
   button_label = "Additional/Figure_05_c_plotly.html",
@@ -1028,14 +1096,16 @@ downloadthis::download_link(
 )
 ```
 
-<br>
- 
-![](Figure_05.png)
+<iframe
+  src="Additional/Figure_05_c_plotly.html"
+  style="width:100%; height:400px;"
+  data-external="1"
+></iframe>
 
 ```{r}
+# Prep data chr 2 + 5 markers
 expttraits <- c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF")
 expts <- substr(expttraits, 1, 4)
-#
 markers <- myMs[c(1,2)]
 gg <- myG %>% filter(rs %in% markers) %>% 
   column_to_rownames("rs") %>%
@@ -1058,7 +1128,7 @@ x1 <- xx %>%
   filter(!grepl("M|R|W|S|Y|K|N", Markers), ExptTrait %in% expttraits) %>%
   arrange(Markers) %>%
   mutate(Markers = factor(Markers, levels = c("C - A","C - C","T - A","T - C")))
-#
+# Plot chr 2 + 5 markers
 mp1 <- ggplot(x1, aes(x = Markers, y = Value)) + 
   geom_quasirandom(aes(color = Cluster, key1 = Name, key2 = Origin)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
@@ -1070,7 +1140,7 @@ mp1 <- ggplot(x1, aes(x = Markers, y = Value)) +
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   labs(x = "Lcu.2RBY.Chr2p42556949 - ( C | T )\nLcu.2RBY.Chr5p1069654 - ( A | C )",
        y = "DTF")
-#
+# Prep data FTb
 markers <- myMs[3]
 gg <- myG %>% filter(rs %in% markers) %>% 
   column_to_rownames("rs") %>%
@@ -1092,7 +1162,7 @@ xx <- left_join(yy, gg, by = "Name") %>%
 x1 <- xx %>%
   filter(!grepl("M|R|W|S|Y|K|N", Markers)) %>%
   arrange(Markers)
-#
+# Plot FTb
 mp2 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Value)) + 
   geom_quasirandom(aes(color = Cluster, key1 = Name, key3 = Origin)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
@@ -1104,7 +1174,7 @@ mp2 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Val
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   labs(x = "Lcu.2RBY.Chr6p2528817",
        y = "DTF")
-#
+# Prep data FTa
 markers <- myMs[4]
 gg <- myG %>% filter(rs %in% markers) %>% 
   column_to_rownames("rs") %>%
@@ -1126,7 +1196,7 @@ xx <- left_join(yy, gg, by = "Name") %>%
 x1 <- xx %>%
   filter(!grepl("M|R|W|S|Y|K|N", Markers)) %>%
   arrange(Markers) 
-#
+# Plot FTa
 mp3 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Value)) + 
   geom_quasirandom(aes(color = Cluster, key1 = Name, key3 = Origin)) +
   facet_wrap(Expt ~ ., ncol = 6, scales = "free_y") +
@@ -1138,74 +1208,60 @@ mp3 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Val
         axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   labs(x = "Lcu.2RBY.Chr6p307256203",
        y = "DTF")
-#
-mp <- ggarrange(mp1, mp2, mp3, ncol = 1, labels = c("a)","b)","c)"), 
+# Append
+mp <- ggarrange(mp1, mp2, mp3, ncol = 1, labels = c("(a)","(b)","(c)"), 
                 heights = c(1.2,1,1), legend = "bottom", common.legend = T)
-#
+# Save
 ggsave("Figure_05.png", mp, width = 8, height = 8)
 ggsave("Additional/Figure_05_a.png", mp1, width = 8, height = 4)
 ggsave("Additional/Figure_05_b.png", mp2, width = 8, height = 4)
 ggsave("Additional/Figure_05_c.png", mp3, width = 8, height = 4)
-#
-mp1 <- plotly::ggplotly(mp1)
-htmlwidgets::saveWidget(plotly::as_widget(mp1), 
-                        paste0("Additional/Figure_05_a_plotly.html"), 
-                        selfcontained = T)
-#
-mp2 <- plotly::ggplotly(mp2)
-htmlwidgets::saveWidget(plotly::as_widget(mp2), 
-                        paste0("Additional/Figure_05_b_plotly.html"), 
-                        selfcontained = T)
-#
-mp3 <- plotly::ggplotly(mp3)
-htmlwidgets::saveWidget(plotly::as_widget(mp3), 
-                        paste0("Additional/Figure_05_c_plotly.html"), 
-                        selfcontained = T)
+# Plot chr 2 + 5 markers
+mp1 <- ggplotly(mp1)
+saveWidget(as_widget(mp1),
+           paste0("Additional/Figure_05_a_plotly.html"), 
+           selfcontained = T)
+# Plot FTb
+mp2 <- ggplotly(mp2)
+saveWidget(as_widget(mp2),
+           paste0("Additional/Figure_05_b_plotly.html"), 
+           selfcontained = T)
+# Plot FTa
+mp3 <- ggplotly(mp3)
+saveWidget(as_widget(mp3), 
+           paste0("Additional/Figure_05_c_plotly.html"), 
+           selfcontained = T)
 ```
 
 ---
 
 # Supplemental Figure 1
 
-```{r eval = T, echo = F}
-downloadthis::download_link(
-  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Supplemental_Figure_01_plotly.html",
-  button_label = "Additional/Supplemental_Figure_01_plotly.html",
-  button_type = "success",
-  has_icon = TRUE,
-  icon = "fas fa-chart-bar",
-  self_contained = FALSE
-)
-```
-
-<br>
-
-```{r eval = T, echo = F}
-downloadthis::download_link(
-  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_03_plotly.html",
-  button_label = "Additional/Additional_Figure_03_plotly.html",
-  button_type = "success",
-  has_icon = TRUE,
-  icon = "fas fa-chart-bar",
-  self_contained = FALSE
-)
-downloadthis::download_link(
-  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_04_plotly.html",
-  button_label = "Additional/Additional_Figure_04_plotly.html",
-  button_type = "success",
-  has_icon = TRUE,
-  icon = "fas fa-chart-bar",
-  self_contained = FALSE
-)
-```
-
-<br>
-
 ![](Supplemental_Figure_01.png)
 
+*Supplemental Figure 1: Summary of genome-wide association results using MLM, MLMM, FarmCPU and Blink models on days from sowing to flower (DTF) in a lentil diversity panel using no covariates or with the either the b or c coefficient as a covariate. Larger points represent a significant association (-log10(p) > 6.7) with a trait of interest under one of the GWAS models, while smaller points represent a suggestive association (-log10(p) > 5.3). Rosthern, Canada 2016 and 2017 (Ro16 and Ro17), Sutherland, Canada 2016, 2017 and 2018 (Su16, Su17 and Su18), Central Ferry, USA 2018 (Us18), Bhopal, India 2016 and 2017 (In16 and In17), Jessore, Bangladesh 2016 and 2017 (Ba16 and Ba17), Bardiya, Nepal 2016 and 2017 (Ne16 and Ne17), Marchouch, Morocco 2016 and 2017 (Mo16 and Mo17), Cordoba, Spain (Sp16 and Sp17), Metaponto, Italy 2016 and 2017 (it16 and It17). b and c are coefficients derived from a photothermal model (Wright et al. (2020). Colors are representative of macroenvironments: Temperate (green), South Asian (orange) and Mediterranean (blue). Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
+
+```{r echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_01_plotly.html",
+  button_label = "Supplemental_Figure_01_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<iframe
+  src="Supplemental_Figure_01_plotly.html"
+  style="width:100%; height:600px;"
+  data-external="1"
+></iframe>
+
 ```{r}
+# Create function
 gg_gwas_cv_summary <- function(filename, myTs, hlines, width, height) {
-  #
+  # Prep data
   myTs <- c(myTs, paste0(myTs,"-b"), paste0(myTs, "-c"))
   myLs <- gsub("-b","-*b*", myTs)
   myLs <- gsub("-c","-*c*", myLs)
@@ -1246,7 +1302,7 @@ gg_gwas_cv_summary <- function(filename, myTs, hlines, width, height) {
   #
   x1 <- xx %>% filter(`-log10(p)` > threshold)
   x2 <- xx %>% filter(`-log10(p)` < threshold)
-  #
+  # Plot
   mp <- ggplot(x1, aes(x = Position / 100000000, y = cat_col, 
                        shape = Model, fill = MacroEnv)) + 
     geom_vline(data = myGM, alpha = 0.5, color = "red",
@@ -1266,25 +1322,81 @@ gg_gwas_cv_summary <- function(filename, myTs, hlines, width, height) {
           strip.text.y = element_markdown()) +
     guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
     labs(y = NULL, x = "100 Mbp")
-  #
+  # Save
   ggsave(paste0(filename, ".png"), mp, width = width, height = height)
-  mp <- plotly::ggplotly(mp)
-  htmlwidgets::saveWidget(plotly::as_widget(mp),
-                          paste0(filename, "_plotly.html"), 
-                          knitrOptions = list(fig.width = width, fig.height = height), 
-                          selfcontained = T)
+  # Save HTML
+  mp <- ggplotly(mp) %>% layout(showlegend = FALSE)
+  saveWidget(as_widget(mp),
+             paste0(filename, "_plotly.html"), 
+             knitrOptions = list(fig.width = width, fig.height = height), 
+             selfcontained = T)
 }
+# Plot GWAS results 
 gg_gwas_cv_summary(filename = "Supplemental_Figure_01", 
   myTs = c("Ro16_DTF", "Ro17_DTF", "Su16_DTF", "Su17_DTF", "Su18_DTF", "Us18_DTF",
            "In16_DTF", "In17_DTF", "Ba16_DTF", "Ba17_DTF", "Ne16_DTF", "Ne17_DTF",
            "Mo16_DTF", "Mo17_DTF", "Sp16_DTF", "Sp17_DTF", "It16_DTF", "It17_DTF"),
   hlines = c(6.5,12.5), width = 12, height = 9)
+```
+
+---
+
+## Additional Figure 3
+
+![](Additional/Additional_Figure_03.png)
+
+```{r echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_03_plotly.html",
+  button_label = "Additional/Additional_Figure_03_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<iframe
+  src="Additional/Additional_Figure_03_plotly.html"
+  style="width:100%; height:600px;"
+  data-external="1"
+></iframe>
+
+```{r}
+# Plot GWAS results 
 gg_gwas_cv_summary(filename = "Additional/Additional_Figure_03",
   myTs = c("Su17_Tf", "Ba17_Tf", "It17_Tf",
            "Su17_Tb", "Ba17_Tb", "It17_Tb",
            "Su17_Pf", "Ba17_Pf", "It17_Pf",
            "Su17_Pc", "Ba17_Pc", "It17_Pc"),
   hlines = c(3.5,6.5,9.6), width = 12, height = 9)
+```
+
+---
+
+## Additional Figure 4
+
+![](Additional/Additional_Figure_04.png)
+
+```{r echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Additional_Figure_04_plotly.html",
+  button_label = "Additional/Additional_Figure_04_plotly.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<iframe
+  src="Additional/Additional_Figure_04_plotly.html"
+  style="width:100%; height:400px;"
+  data-external="1"
+></iframe>
+
+```{r}
+# Plot GWAS results 
 gg_gwas_cv_summary(filename = "Additional/Additional_Figure_04",
   myTs = c("PCA_PC1", "PCA_PC2", "PCA_PC3",
            "PTModel_a", "PTModel_b", "PTModel_c"),
@@ -1295,9 +1407,12 @@ gg_gwas_cv_summary(filename = "Additional/Additional_Figure_04",
 
 # Supplemental Figure 2
 
-![](Supplemental_Figure_02.png)
+![](Supplemental_Figure_02.png){width=70%}
+
+*Supplemental Figure 2: Regional genome-wide association results from 35 Mpb to 50 Mbp on chromosome 2 for selected traits with a lentil diversity panel using MLM, MLMM, FarmCPU and Blink models. Traits include days from sowing to flower (DTF) in Sutherland, Canada 2017 (Su17), with and without the c coefficient used as a covariate (CV=c), DTF in Jessore, Bangladesh 2017 (Ba17), DTF in Bardiya, Nepal 2017 (Ne17), DTF in Metaponto, Italy 2017 (It17), the first principal component (PC1) from a principal component analysis of an analysis of 18 site-years of DTF data, and the b coefficient derived from a photothermal model done by Wright et al. (2020). The vertical line represents a specific base pair location to facilitate comparisons across traits.*
 
 ```{r}
+# Prep data
 expttraits <- c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", 
                 "Sp17_DTF", "PCA_PC1", "PTModel_b")
 chr <- 2
@@ -1350,7 +1465,7 @@ x3 <- xx %>% filter(`-log10(p)` > threshold)
 #
 vi <- myGM %>% filter(Chromosome == 2) %>%
   mutate(Chromosome = paste("Chromosome",Chromosome))
-#
+# Plot
 mp <- ggplot() +
   geom_hline(yintercept = threshold,  color = "red") +
   geom_hline(yintercept = threshold2, color = "blue") +
@@ -1373,7 +1488,7 @@ mp <- ggplot() +
         strip.text.y = ggtext::element_markdown()) +
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
-#
+# Save
 ggsave("Supplemental_Figure_02.png", mp, width = 5, height = 10)
 ```
 
@@ -1381,9 +1496,12 @@ ggsave("Supplemental_Figure_02.png", mp, width = 5, height = 10)
 
 # Supplemental Figure 3
 
-![](Supplemental_Figure_03.png)
+![](Supplemental_Figure_03.png){width=70%}
+
+*Supplemental Figure 3: Regional genome-wide association results from 300 Mbp to 315 Mbp on chromosome 6 for selected traits with a lentil diversity panel using MLM, MLMM, FarmCPU and Blink models. Traits include days from sowing to flower (DTF) in Marchouch, Morocco 2016 (Mo16), thermal sum required for flowering (Tf) in Sutherland, Canada 2017 (Su17) and Metaponto, Italy 2017 (It17), nominal base temperature (Tb) in Su17 and It17, and the third principal component (PC3) from a principal component analysis of an analysis of 18 site-years of DTF data (Wright et al., 2020). Vertical lines represent the locations of selected flowering time genes within the associated QTL.*
 
 ```{r}
+# Prep data
 expttraits <- c("PCA_PC3", "Su17_Tb", "It17_Tb", "Su17_Tf", "It17_Tf", "Mo16_DTF")
 markers <- c("Lcu.2RBY.Chr6p307256203",
              "Lcu.2RBY.Chr6p309410465",
@@ -1429,7 +1547,7 @@ vg <- myFTGenes %>%
   mutate(Name = plyr::mapvalues(Name, myGenes, paste0("*",myGenes,"*")),
          Name = factor(Name, levels = paste0("*",myGenes,"*")),
          Chromosome = paste("Chromosome",Chromosome))
-#
+# Plot
 mp <- ggplot() +
   geom_hline(yintercept = threshold,  color = "red") +
   geom_hline(yintercept = threshold2, color = "blue") +
@@ -1457,6 +1575,7 @@ mp <- ggplot() +
         legend.text = ggtext::element_markdown()) +
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
+# Save
 ggsave("Supplemental_Figure_03.png", mp, width = 5, height = 10)
 ```
 
@@ -1479,6 +1598,8 @@ downloadthis::download_link(
 
 ![](Supplemental_Figure_04.png)
 
+*Supplemental Figure 4: Linkage disequilibrium decay across the 7 chromosomes in the lentil genome. (a) Linkage disequilibrium decay for all marker combinations. (b) Linkage disequilibrium decay for marker combinations within a 1 Mbp distance. For each chromosome, 1000 SNP were randomly selected for pairwise LD calculations. Shaded lines represent the moving average of 100 pair-wise marker comparisons. Solid line represents a loess regression used to determine the value (vertical dashed line) in which R2 reaches the 0.2 threshold (blue dashed line). Red dashed lines represent the average R2 for each chromosome.* 
+
 ```{r eval = F}
 library(genetics)
 dna <- data.frame(stringsAsFactors = F,
@@ -1491,8 +1612,7 @@ for(i in 4:ncol(xx)) {
   xx[xx[,i]=="N", i] <- NA 
   xx[,i] <- plyr::mapvalues(xx[,i], dna$Symbol, dna$Value)
 }
-# Num = 50
-# x <- xx
+#
 LD_Decay <- function(x, folder = "Additional/LD/", Chr = 1, Num = 200) {
   xc <- x %>% filter(chrom == Chr) 
   xr <- xc %>% column_to_rownames("rs")
@@ -1510,7 +1630,7 @@ LD_Decay <- function(x, folder = "Additional/LD/", Chr = 1, Num = 200) {
   myLD <- genetics::LD(genetics::makeGenotypes(xi))
   save(myLD, file = paste0(folder, "LD_Chrom_", Chr, "_", Num, ".Rdata"))
 }
-#
+# Calculate LD per chromosome
 LD_Decay(x = xx, Chr = 1, Num = 1000)
 LD_Decay(x = xx, Chr = 2, Num = 1000)
 LD_Decay(x = xx, Chr = 3, Num = 1000)
@@ -1522,11 +1642,11 @@ LD_Decay(x = xx, Chr = 7, Num = 1000)
 
 
 ```{r}
-# Create user-defined function
+# Create function
 movingAverage <- function(x, n = 5) {
   stats::filter(x, rep(1 / n, n), sides = 2)
 }
-#
+# Prep data
 xx <- NULL
 for(i in 1:7) {
   xc <- myG %>% filter(chrom == i) 
@@ -1561,12 +1681,10 @@ x3 <- xx %>% left_join(x1, by = "Chr") %>%
 myChr <-  x1 %>%
   left_join(x2, by = "Chr") %>%
   left_join(x3, by = "Chr")
-  #
+#
 xx <- left_join(xx, myChr, by = "Chr") %>%
   mutate(Chr = as.factor(Chr))
-#
-#mytitle <- paste(myChr$Chr, myChr$Threshold_0.2, sep = "-", collapse = "; ")
-#
+# Plot full chromsomes
 mp1 <- ggplot(xx, aes(x = Distance/1000000, y = Moving_Avg)) +
   geom_line(size = 0.5, alpha = 0.5) +
   geom_hline(data = myChr, aes(yintercept = Mean_LD), color = "red", lty = 2) +
@@ -1577,7 +1695,7 @@ mp1 <- ggplot(xx, aes(x = Distance/1000000, y = Moving_Avg)) +
   theme(legend.position = "none",
         axis.title.y = ggtext::element_markdown()) +
   labs(y = "R^2", x = "Mbp")
-#
+# Plot first 1 Mbp
 yy <- xx %>% filter(Distance < 1000000)
 mp2 <- ggplot(yy, aes(x = Distance/1000, y = Loess)) +
   geom_line(aes(y = Moving_Avg), alpha = 0.5) +
@@ -1585,16 +1703,17 @@ mp2 <- ggplot(yy, aes(x = Distance/1000, y = Loess)) +
   geom_hline(data = myChr, aes(yintercept = Mean_LD), color = "red", lty = 2) +
   geom_hline(yintercept = 0.2, color = "blue", lty = 2) +
   scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0,0.5)) +
-  facet_wrap(paste("Chr =", Chr) + paste("Threshold =", Threshold_0.2) ~ ., ncol = 7, scales = "free_x") +
+  facet_wrap(paste("Chr =", Chr) + paste("Threshold =", Threshold_0.2) ~ ., 
+             ncol = 7, scales = "free_x") +
   geom_vline(data = myChr, lty = 2, size = 0.3, alpha = 0.8,
              aes(xintercept = Threshold_0.2/1000)) +
   theme_AGL + 
   theme(legend.position = "none",
         axis.title.y = ggtext::element_markdown()) +
   labs(y = "R^2", x = "Kbp")
-#
-mp <- ggarrange(mp1, mp2, ncol = 1, labels = c("a)", "b)"))
-#
+# Append
+mp <- ggarrange(mp1, mp2, ncol = 1, labels = c("(a)", "(b)"))
+# Save
 ggsave(paste0("Supplemental_Figure_04.png"), mp , width = 12, height = 8)
 ```
 
@@ -1604,30 +1723,106 @@ ggsave(paste0("Supplemental_Figure_04.png"), mp , width = 12, height = 8)
 
 ![](Supplemental_Figure_05.png)
 
+*Supplemental Figure 5: Diagram of a 290 kb region of lentil chromosome 2 (A) and a 215 kb region of lentil chromosome 5 (B) containing the relevant SNPs Lcu.2RBY.Chr2p42543877, Lcu.2RBY.Chr2p42556949 and Lcu.2RBY.Chr5p1063138 (highlighted in red). The syntenic regions in chickpea and Medicago genomes are also shown for comparison.  The length of the relevant interval for each chromosome was calculated according to the SNP position ± chromosome-specific linkage disequilibrium decay. Numbers over or besides each gene correspond to those shown in Supplemental Table 2.*
+
+---
+
+# Supplemental Figure 6
+
+```{r echo = F}
+downloadthis::download_link(
+  link = "https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_06.html",
+  button_label = "Supplemental_Figure_06.html",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fas fa-chart-bar",
+  self_contained = FALSE
+)
+```
+
+<iframe
+  src="Supplemental_Figure_06.html"
+  style="width:100%; height:600px;"
+  data-external="1"
+></iframe>
+
+![](Supplemental_Figure_06.png)
+
+*Supplemental Figure 6: Pair-wise plots of a principal component analysis of genetic marker data from a lentil diversity panel. Colors are based on a hierarchical clustering of principal components done by Wright et al. (2020) using 18 site-years of days from sowing to flower data across the three major lentil growing macroenvironments.*
+
+```{r}
+# Prep data
+pca <- read.csv("Results/GAPIT.PCA.csv") %>%
+  rename(Name=taxa) %>%
+  left_join(myLDP, by = "Name")
+# Plot PCs
+mp1 <- ggplot(pca, aes(x = PC1, y = PC2, color = Cluster)) +
+  geom_point() +
+  scale_color_manual(name = "DTF Cluster", values = myColors_Cluster) +
+  guides(colour = guide_legend(nrow = 1, override.aes = list(size=2))) +
+  theme_AGL
+mp2 <- ggplot(pca, aes(x = PC1, y = PC3, color = Cluster)) +
+  geom_point() +
+  scale_color_manual(name = "DTF Cluster", values = myColors_Cluster) +
+  theme_AGL
+mp3 <- ggplot(pca, aes(x = PC2, y = PC3, color = Cluster)) +
+  geom_point() +
+  scale_color_manual(name = "DTF Cluster", values = myColors_Cluster) +
+  theme_AGL
+# Append
+mp <- ggarrange(mp1, mp2, mp3, nrow = 1, ncol = 3,
+                common.legend = T, legend = "bottom")
+# Save
+ggsave("Supplemental_Figure_06.png", mp, width = 8, height = 3)
+# Plotly
+mp <- plot_ly(pca, x = ~PC1, y = ~PC2, z = ~PC3, 
+        color = ~Cluster, colors = myColors_Cluster, 
+        hoverinfo = "text",
+        text = ~paste(Entry, "|", Name,
+                      "\nOrigin:", Origin, 
+                      "\nDTF_Cluster:", Cluster)) %>%
+  add_markers()
+# Save
+saveWidget(as_widget(mp), "Supplemental_Figure_06.html")
+```
+
 ---
 
 # Supplemental Table 2
 
-https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_02.xlsx
+```{r eval = T, echo = F}
+downloadthis::download_link(
+  link = "Supplemental_Table_02.xlsx",
+  button_label = "Supplemental_Table_02.xlsx",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = F
+)
+```
+
+*Supplemental Table 2: List of genes in the regions associated with flowering time in lentils chromosomes 2 and 5, and the syntenic regions of chickpea (Cicer arietinum) and Medicago truncatula.*
 
 ---
 
 # Additional Plots
 
-# Phenotype Data
+## Phenotype Data
 
-![](Additional/Additional_Figure_00.png)
+![](Additional/Additional_Figure_05.png)
 
 ```{r}
+# Prep data
 xx <- myY %>% 
   gather(ExptTrait, Value, 2:ncol(.)) %>%
   mutate(ExptTrait = factor(ExptTrait, levels = colnames(myY)[-1]))
-#
+# Plot
 mp <- ggplot(xx, aes(x = Value)) + 
   geom_histogram(fill = "darkgreen", color = "black", alpha = 0.7) + 
   facet_wrap(ExptTrait~., ncol = 9, scales = "free") +
   theme_AGL
-ggsave("Additional/Additional_Figure_00.png", mp, width = 14, height = 7)
+# Save
+ggsave("Additional/Additional_Figure_05.png", mp, width = 14, height = 7)
 ```
 
 ---
@@ -1667,21 +1862,16 @@ downloadthis::download_link(
 
 ![](Additional/Man_Grouped/Man_DTF_c_SouthAsia.png)
 
-
 ![](Additional/Man_Grouped/Man_Tf_Tb.png)
 
 ![](Additional/Man_Grouped/Man_Pf_Pc.png)
 
 ```{r eval = F}
+# Create function
 gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF"),
                           folder = "Results/", filename = "Fig01.png", title = filename,
                           markers = myMs, height = 10) {
-  #
-  #vt <- myP %>% filter(paste(Expt, Trait, sep = "_") %in% expttraits) %>% 
-  #  arrange(P.value) %>% 
-  #  filter(!duplicated(SNP)) %>%
-  #  mutate(FT_Genes = ifelse(FT_Distance < 1000000, FT_Genes, NA),
-  #         ExptTrait = paste(Expt, Trait, sep="_"))
+  # Prep data
   xx <- NULL
   xs <- NULL
   for(i in expttraits) {
@@ -1715,7 +1905,7 @@ gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It
   x1 <- xx %>% filter(`-log10(p)` < threshold2)
   x2 <- xx %>% filter(`-log10(p)` > threshold2, `-log10(p)` < threshold)
   x3 <- xx %>% filter(`-log10(p)` > threshold)
-  #
+  # Plot
   mp <- ggplot(x1, aes(x = Position / 100000000, y = `-log10(p)`, 
                        shape = Model, fill = Model)) +
     geom_vline(data = myGM, color = "red", alpha = 0.6,
@@ -1735,7 +1925,7 @@ gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It
     theme(legend.position = "bottom") +
     guides(shape = guide_legend(override.aes = list(size = 3))) +
     labs(title = title, y = NULL, x = "100 Mbp")
-  #
+  # Save
   ggsave(paste0("Additional/Man_Grouped/", filename, ".png"), 
          mp, width = 10, height = height)
 }
@@ -1825,10 +2015,11 @@ downloadthis::download_link(
 ![](Additional/Man_Multi/ManQQ_Su17_DTF.png)
 
 ```{r eval = F}
+# Create function
 gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
                    colors = c("darkgreen","darkgoldenrod3","darkgreen","darkgoldenrod3",
                               "darkgreen", "darkgoldenrod3","darkgreen")) {
-  #
+  # Prep data
   expt <- substr(expttrait, 1, gregexpr("_", expttrait)[[1]][1]-1 )
   trait <- substr(expttrait, gregexpr("_", expttrait)[[1]][1]+1, nchar(expttrait) )
   fnames <- grep(paste0(expttrait, ".GWAS.Results"), list.files(folder))
@@ -1870,7 +2061,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
   x1 <- xx %>% filter(-log10(P.value) > 0.5, -log10(P.value) < threshold2)
   x2 <- xx %>% filter(-log10(P.value) > threshold2 & -log10(P.value) < threshold)
   x3 <- xx %>% filter(-log10(P.value) > threshold)
-  # Man plot
+  # Plot GWAS
   mp1 <- ggplot(xx, aes(x = Position / 100000000, y = -log10(P.value))) +
     geom_vline(data = myGM, alpha = 0.5, color = "red",
              aes(xintercept = Position / 100000000)) +
@@ -1888,7 +2079,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
           axis.title.y = ggtext::element_markdown()) +
     labs(title = paste0(expttrait, suffix), 
          y = "-log<sub>10</sub>(*p*)", x = "100 Mbp")
-  # QQ plot
+  # Plot QQ
   mp2 <- ggplot(x1, aes(y = `-log10(p)`, x = `-log10(p)_Exp`)) +
     geom_point(pch = 16, size = 0.75, color = colors[1]) +
     geom_point(data = x2, pch = 18, size = 1,    color = "darkred") +
@@ -1905,7 +2096,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
          mp, width = 10, height = 7)
   #
   xs <- xs %>% arrange(P.value) %>% filter(!duplicated(FT_Genes))
-  # Phenotype Plots
+  # Plot phenotypes
   mp1.1 <- ggplot(myY %>% select(Name, Value=expttrait)) +
     geom_histogram(aes(x = Value), fill = colors[1], alpha = 0.8) +
     facet_grid(. ~ paste0(expttrait, suffix)) +
@@ -1917,7 +2108,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     facet_grid(. ~ "Accum. Dist.") +
     theme_AGL +
     labs(x = "Density", y = "Accumulation")
-  # Manhattan Plot
+  # Plot GWAS
   mp2 <- ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value), 
                         shape = Model, fill = Model)) +
     geom_vline(data = myGM, alpha = 0.5, color = "red",
@@ -1936,7 +2127,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     theme(axis.title.y = ggtext::element_markdown()) +
     guides(shape = guide_legend(override.aes = list(size = 3))) +
     labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
-  # QQ plot
+  # Plot QQ
   mp3.1 <- ggplot(x1, aes(y = `-log10(p)`, x = `-log10(p)_Exp`, shape = Model, fill = Model)) +
     geom_point(size = 0.5, color = alpha("white", 0)) +
     geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
@@ -1951,7 +2142,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     theme_AGL +
     theme(legend.position = "none") +
     labs(title = "", y = NULL, x = "Expected")
-  # MAF plot
+  # Plot MAF
   mp3.2 <- ggplot(x1, aes(y = `-log10(p)`, x = maf * 100, shape = Model, fill = Model)) +
     geom_point(size = 0.3, color = alpha("white", 0)) +
     geom_point(data = x2, size = 0.75, color = alpha("white", 0)) +
@@ -1965,16 +2156,16 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     theme_AGL +
     theme(legend.position = "none") +
     labs(y = NULL, x = "%")
-  # Append and save plots
+  # Append
   mp1 <- ggarrange(mp1.1, mp1.2, ncol = 1, align = "v")
   mp3 <- ggarrange(mp3.1, mp3.2, ncol = 1, align = "v")
   mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h",
                   widths = c(1.5,7,1.5), legend = "top")
-  #
+  # Save
   ggsave(paste0("Additional/Man_Multi/ManQQ_", expt, "_", trait, suffix, ".png"), 
          mp, width = 12, height = 4)
 }
-#
+# Plot
 expttraits <- colnames(myY)[2:ncol(myY)]
 for(i in expttraits) {
   gg_Man(folder = "Results/", expttrait = i)
@@ -1993,7 +2184,7 @@ for(i in expttraits[!grepl("PTModel_c", expttraits)]) {
 
 ```{r eval = T, echo = F}
 downloadthis::download_link(
-  link = "Additiona/Markers/Markers_Chr_1.pdf",
+  link = "Additional/Markers/Markers_Chr_1.pdf",
   button_label = "Additiona/Markers/Markers_Chr_1.pdf",
   button_type = "success",
   has_icon = TRUE,
@@ -2001,7 +2192,7 @@ downloadthis::download_link(
   self_contained = FALSE
 )
 downloadthis::download_link(
-  link = "Additiona/Markers/Markers_Chr_2.pdf",
+  link = "Additional/Markers/Markers_Chr_2.pdf",
   button_label = "Additiona/Markers/Markers_Chr_2.pdf",
   button_type = "success",
   has_icon = TRUE,
@@ -2009,7 +2200,7 @@ downloadthis::download_link(
   self_contained = FALSE
 )
 downloadthis::download_link(
-  link = "Additiona/Markers/Markers_Chr_3.pdf",
+  link = "Additional/Markers/Markers_Chr_3.pdf",
   button_label = "Additiona/Markers/Markers_Chr_3.pdf",
   button_type = "success",
   has_icon = TRUE,
@@ -2017,7 +2208,7 @@ downloadthis::download_link(
   self_contained = FALSE
 )
 downloadthis::download_link(
-  link = "Additiona/Markers/Markers_Chr_4.pdf",
+  link = "Additional/Markers/Markers_Chr_4.pdf",
   button_label = "Additiona/Markers/Markers_Chr_4.pdf",
   button_type = "success",
   has_icon = TRUE,
@@ -2025,7 +2216,7 @@ downloadthis::download_link(
   self_contained = FALSE
 )
 downloadthis::download_link(
-  link = "Additiona/Markers/Markers_Chr_5.pdf",
+  link = "Additional/Markers/Markers_Chr_5.pdf",
   button_label = "Additiona/Markers/Markers_Chr_5.pdf",
   button_type = "success",
   has_icon = TRUE,
@@ -2033,7 +2224,7 @@ downloadthis::download_link(
   self_contained = FALSE
 )
 downloadthis::download_link(
-  link = "Additiona/Markers/Markers_Chr_6.pdf",
+  link = "Additional/Markers/Markers_Chr_6.pdf",
   button_label = "Additiona/Markers/Markers_Chr_6.pdf",
   button_type = "success",
   has_icon = TRUE,
@@ -2041,7 +2232,7 @@ downloadthis::download_link(
   self_contained = FALSE
 )
 downloadthis::download_link(
-  link = "Additiona/Markers/Markers_Chr_7.pdf",
+  link = "Additional/Markers/Markers_Chr_7.pdf",
   button_label = "Additiona/Markers/Markers_Chr_7.pdf",
   button_type = "success",
   has_icon = TRUE,
@@ -2061,10 +2252,11 @@ downloadthis::download_link(
 ![](Additional/Markers/Markers_Lcu.2RBY.Chr6p307256203.png)
 
 ```{r eval = F}
+# Create function
 gg_Marker <- function(marker = myMs[1],
                       expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF",
                                      "Su17_Tf", "Su17_Pf", "PTModel_b", "PTModel_c")) {
-  #
+  # Prep data
   gg <- myG %>% filter(rs == marker) %>% 
     column_to_rownames("rs") %>%
     select(11:ncol(.)) %>%
@@ -2085,6 +2277,7 @@ gg_Marker <- function(marker = myMs[1],
   #
   fg <- myP %>% filter(SNP == marker) %>% slice(1)
   fg <- paste(fg$FT_Genes, fg$FT_Distances, sep = "\n")
+  # Plot
   mp <- ggplot(x1, aes(x = Marker, y = Value)) + 
     geom_quasirandom(aes(color = Cluster)) +
     facet_wrap(ExptTrait ~ ., ncol = 4, scales = "free_y") +
@@ -2098,42 +2291,42 @@ gg_Marker <- function(marker = myMs[1],
          x = NULL, y = "DTF")
   mp
 }
-#
-i<-myMs[1]
+# Plot Markers
 for(i in myMs) {
   mp <- gg_Marker(marker = i)
   ggsave(paste0("Additional/Markers/Markers_",i,".png"), mp, width = 8, height = 6)
 }
+# Chr 1
 pdf("Additional/Markers/Markers_Chr_1.pdf", width = 8, height = 6)
 myPi <- myP %>% filter(Chromosome == 1)
 for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
 dev.off()
-#
+# Chr 2
 pdf("Additional/Markers/Markers_Chr_2.pdf", width = 8, height = 6)
 myPi <- myP %>% filter(Chromosome == 2)
 for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
 dev.off()
-#
+# Chr 3
 pdf("Additional/Markers/Markers_Chr_3.pdf", width = 8, height = 6)
 myPi <- myP %>% filter(Chromosome == 3)
 for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
 dev.off()
-#
+# Chr 4
 pdf("Additional/Markers/Markers_Chr_4.pdf", width = 8, height = 6)
 myPi <- myP %>% filter(Chromosome == 4)
 for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
 dev.off()
-#
+# Chr 5
 pdf("Additional/Markers/Markers_Chr_5.pdf", width = 8, height = 6)
 myPi <- myP %>% filter(Chromosome == 5)
 for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
 dev.off()
-#
+# Chr 6
 pdf("Additional/Markers/Markers_Chr_6.pdf", width = 8, height = 6)
 myPi <- myP %>% filter(Chromosome == 6)
 for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
 dev.off()
-#
+# Chr 7
 pdf("Additional/Markers/Markers_Chr_7.pdf", width = 8, height = 6)
 myPi <- myP %>% filter(Chromosome == 7)
 for(i in unique(myPi$SNP)) { print(gg_Marker(marker = i)) }
@@ -2180,7 +2373,9 @@ downloadthis::download_link(
 ```
 
 ```{r}
+# Create function
 pdfGenePlots <- function(GeneName = "LcELF3a") {
+  # Prep data
   myGene <- myFTGenes %>% filter(Name == GeneName)
   expttraits <- c(
     "PCA_PC1", "PCA_PC2", "PCA_PC3",
@@ -2241,7 +2436,7 @@ pdfGenePlots <- function(GeneName = "LcELF3a") {
     x1 <- xx %>% filter(-log10(P.value) < threshold2)
     x2 <- xx %>% filter(-log10(P.value) > threshold2, -log10(P.value) < threshold)
     x3 <- xx %>% filter(-log10(P.value) > threshold)
-    #
+    # Plot
     print(ggplot(x1, aes(x = Position / 100000000, y = -log10(P.value),
                          shape = Model, fill = Model)) +
             geom_vline(data = myGene, xintercept = myGene$Start / 100000000) +
@@ -2262,6 +2457,7 @@ pdfGenePlots <- function(GeneName = "LcELF3a") {
     }
   dev.off()
 }
+# Plot genes
 pdfGenePlots(GeneName = "LcELF3a")
 pdfGenePlots(GeneName = "LcFTb1")
 pdfGenePlots(GeneName = "LcFTa1")
