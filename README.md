@@ -32,7 +32,7 @@ Medik.)**. *Plants, People, Planet*.
 pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/README.pdf)
 
 [View as
-HTML](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/README.html)
+HTML](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/README.html)
 
 [Source Code Vignette
 (GWAS_Phenology_Vignette.html)](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/GWAS_Phenology_Vignette.html)
