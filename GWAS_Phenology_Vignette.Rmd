@@ -534,8 +534,7 @@ mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`,
   labs(y = NULL, x = "Expected")
 # Append
 mpl <- get_legend(mp2, position = "bottom")
-mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h",
-                widths = c(2,7, 1.5), labels = c("(a)", "(b)", NULL),
+mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h", widths = c(2,7, 1.5),
                 legend.grob = mpl, legend = "bottom", common.legend = T)
 # Save
 ggsave("Figure_01.png", mp, width = 12, height = 7)
@@ -805,8 +804,7 @@ mp3 <- ggplot(x1, aes(x = `-log10(p)_Exp`, y = `-log10(p)`,
   labs(y = NULL, x = "Expected")
 # Append
 mpl <- get_legend(mp2, position = "bottom")
-mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), 
-                align = "h", labels = c("(a)", "(b)", NULL),
+mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), align = "h", 
                 legend.grob = mpl, legend = "bottom", common.legend = T)
 # Save
 ggsave("Figure_03.png", mp, width = 12, height = 10)
@@ -881,8 +879,7 @@ fig3_Subplot <- function(expttraits = c("PC1", "*b*")) {
     labs(y = NULL, x = "Expected")
   # Append
   mpl <- get_legend(mp2, position = "bottom")
-  mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), 
-                  align = "h", labels = c("a)", "b)", NULL),
+  mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), align = "h",
                   legend.grob = mpl, legend = "bottom", common.legend = T)
   mp
 }
