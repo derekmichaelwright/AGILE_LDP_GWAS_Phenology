@@ -434,7 +434,7 @@ nrow(myP %>% filter(`-log10(p)` > threshold) %>% filter(!duplicated(SNP)))
 
 # Figure 1
 
-![](Figure_01.png)
+![](Figure_01.jpg)
 
 *Figure 1: Genome-wide association results for days from sowing to flower (DTF) in Sutherland, Canada 2017 (Su17), Jessore, Bangladesh 2017 (Ba17), Bardiya, Nepal 2017 (Ne17) and Metaponto, Italy 2017 (It17) for a lentil diversity panel. (a) Histograms of DTF. (b) Manhattan and QQ plots for GWAS results using MLM, MLMM, FarmCPU and Blink models. Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
 
@@ -537,14 +537,14 @@ mpl <- get_legend(mp2, position = "bottom")
 mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h", widths = c(2,7, 1.5),
                 legend.grob = mpl, legend = "bottom", common.legend = T)
 # Save
-ggsave("Figure_01.png", mp, width = 12, height = 7)
+ggsave("Figure_01.jpg", mp, width = 12, height = 7)
 ```
 
 ---
 
 # Figure 2
 
-![](Figure_02.png)
+![](Figure_02.jpg)
 
 *Figure 2: Summary of genome-wide association results using MLM, MLMM, FarmCPU and Blink models on single environment and multi-environment traits related to days from sowing to flower (DTF) in a lentil diversity panel. Larger points represent a significant association (-log10(p) > 6.7) with a trait of interest under one of the GWAS models, while smaller points represent a suggestive association (-log10(p) > 5.3). PC1, PC2, PC3, represent the first three principal components of an analysis of 18 site-years of DTF data (Wright et al., 2020) in Rosthern, Canada 2016 and 2017 (Ro16 and Ro17), Sutherland, Canada 2016, 2017 and 2018 (Su16, Su17 and Su18), Central Ferry, USA 2018 (Us18), Bhopal, India 2016 and 2017 (In16 and In17), Jessore, Bangladesh 2016 and 2017 (Ba16 and Ba17), Bardiya, Nepal 2016 and 2017 (Ne16 and Ne17), Marchouch, Morocco 2016 and 2017 (Mo16 and Mo17), Cordoba, Spain (Sp16 and Sp17), Metaponto, Italy 2016 and 2017 (It16 and It17). a, b and c are coefficients from a photothermal model (Wright et al., 2020) and used to calculate the nominal base temperature (Tb), nominal base photoperiod (Pc), thermal sum required for flowering (Tf) and the photoperiod sum required for flowering (Pf). Colors are representative of macroenvironments: Temperate (green), South Asian (orange) Mediterranean (blue) and multi-environment traits (grey). Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
 
@@ -625,7 +625,7 @@ gg_gwas_summary <- function(traits, labels = traits,
     guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
     labs(title = title, y = NULL, x = "100 Mbp")
   # Save
-  ggsave(paste0(filename, ".png"), mp, width = width, height = height)
+  ggsave(paste0(filename, ".jpg"), mp, width = width, height = height)
   # Save HTML
   mp <- ggplotly(mp) %>% layout(showlegend = FALSE)
   saveWidget(as_widget(mp),
@@ -643,7 +643,7 @@ gg_gwas_summary(traits = myTraits, labels = myLabels,
 
 ## Additional Figure 1
 
-![](Additional/Additional_Figure_01.png)
+![](Additional/Additional_Figure_01.jpg)
 
 ```{r echo = F, eval = T}
 downloadthis::download_link(
@@ -675,7 +675,7 @@ gg_gwas_summary(title = "Covariate = *b*",
 
 ## Additional Figure 2
 
-![](Additional/Additional_Figure_02.png)
+![](Additional/Additional_Figure_02.jpg)
 
 ```{r echo = F}
 downloadthis::download_link(
@@ -707,7 +707,7 @@ gg_gwas_summary(title = "Covariatie = *c*",
 
 # Figure 3
 
-![](Figure_03.png)
+![](Figure_03.jpg)
 
 *Figure 3: Genome-wide association results for the first three principal components (PC1, PC2 and PC3) the b and c coefficients from the photothermal model developed by Wright et al., (2020), and the nominal base temperature (Tb) in Sutherland, Canada 2017 (Su17) for a lentil diversity panel. (a) Histograms of each trait, scaled from 0 to 1. (b) Manhattan and QQ plots for GWAS results using MLM, MLMM, FarmCPU and Blink models. Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
 
@@ -807,16 +807,16 @@ mpl <- get_legend(mp2, position = "bottom")
 mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), align = "h", 
                 legend.grob = mpl, legend = "bottom", common.legend = T)
 # Save
-ggsave("Figure_03.png", mp, width = 12, height = 10)
+ggsave("Figure_03.jpg", mp, width = 12, height = 10)
 ```
 
 ## Figure 3 Subplots
 
-![](Additional/Figure_03_1.png)
+![](Additional/Figure_03_1.jpg)
 
-![](Additional/Figure_03_2.png)
+![](Additional/Figure_03_2.jpg)
 
-![](Additional/Figure_03_3.png)
+![](Additional/Figure_03_3.jpg)
 
 ```{r}
 # Create function
@@ -884,15 +884,15 @@ fig3_Subplot <- function(expttraits = c("PC1", "*b*")) {
   mp
 }
 # Plot temperature related
-ggsave("Additional/Figure_03_1.png", 
+ggsave("Additional/Figure_03_1.jpg", 
        fig3_Subplot(expttraits = c("PC1", "*b*")), 
        width = 12, height = 4)
 # Plot photoperiod related
-ggsave("Additional/Figure_03_2.png", 
+ggsave("Additional/Figure_03_2.jpg", 
        fig3_Subplot(expttraits = c("PC2", "*c*")), 
        width = 12, height = 4)
 # Plot PC3
-ggsave("Additional/Figure_03_3.png", 
+ggsave("Additional/Figure_03_3.jpg", 
        fig3_Subplot(expttraits = c("PC3", "Su17_*Tb*")), 
        width = 12, height = 4)
 ```
@@ -914,7 +914,7 @@ downloadthis::download_link(
 
 <br>
 
-![](Figure_04.png)
+![](Figure_04.jpg)
 
 *Figure 4: Genome-wide association results for days from sowing to flower (DTF) with and without covariates for a lentil diversity panel. Manhattan and QQ plots for DTF in (a) Rosthern, Canada 2017 (Ro17) and (b) Cordoba, Spain 2017 (Sp17), using MLM, MLMM, FarmCPU and Blink models. The middle panel shows GWAS results without a covariate, while the top and bottom panel show GWAS results using the c and b (temperature and photoperiod) coefficients from the photothermal model developed by Wright et al. 2020, respectively. Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
 
@@ -925,7 +925,7 @@ expts <- expttraits
 for(i in 1:length(expts)) { 
   expts[i] <- substr(expts[i], 1, gregexpr("_", expts)[[i]][1]-1) 
 }
-#
+# expttraits <- c("Sp17_DTF", "Ro17_DTF")
 for(i in expttraits) {
   x1 <- NULL; xb <- NULL; xc <- NULL
   #
@@ -1023,28 +1023,28 @@ for(i in expttraits) {
   mp <- ggarrange(mp1, mp2, ncol = 2, widths = c(7,1.5), align = "h",
                   legend = "bottom", common.legend = T)
   # Save
-  ggsave(paste0("Additional/CV/CV_", i, ".png"), mp, width = 12, height = 6)
+  ggsave(paste0("Additional/CV/CV_", i, ".jpg"), mp, width = 12, height = 6)
 }
 ```
 
 ```{r}
 # Prep (a) 
-im1 <- magick::image_read("Additional/CV/CV_Ro17_DTF.png") %>% 
+im1 <- magick::image_read("Additional/CV/CV_Ro17_DTF.jpg") %>% 
   magick::image_annotate("(a)", size = 70, weight = 600, location = "+30+10")
 # Prep (b)
-im2 <- magick::image_read("Additional/CV/CV_Sp17_DTF.png") %>% 
+im2 <- magick::image_read("Additional/CV/CV_Sp17_DTF.jpg") %>% 
   magick::image_annotate("(b)", size = 70, weight = 600, location = "+30+10")
 # Append
 im <- magick::image_append(c(im1, im2), stack = T)
 # Save
-magick::image_write(im, "Figure_04.png")
+magick::image_write(im, "Figure_04.jpg")
 ```
 
 ---
 
 # Figure 5
  
-![](Figure_05.png)
+![](Figure_05.jpg)
 
 *Figure 5: Allelic effects of selected markers on days from sowing to flower (DTF) across contrasting locations in a lentil diversity panel. Sutherland, Canada 2017 (Su17), Jessore, Bangladesh 2017 (Ba17), Bardiya, Nepal 2017 (Ne17) and Metaponto, Italy 2017 (It17). Colors are based on a hierarchical clustering of principal components done by Wright et al. (2020) using 18 site-years of DTF data across the three major lentil growing macroenvironments. (a), (b) and (c) correspond to SNPs at the vertical lines on Figures 1, 2, 3 & 4.*
 
@@ -1209,10 +1209,10 @@ mp3 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Val
 mp <- ggarrange(mp1, mp2, mp3, ncol = 1, labels = c("(a)","(b)","(c)"), 
                 heights = c(1.2,1,1), legend = "bottom", common.legend = T)
 # Save
-ggsave("Figure_05.png", mp, width = 8, height = 8)
-ggsave("Additional/Figure_05_a.png", mp1, width = 8, height = 4)
-ggsave("Additional/Figure_05_b.png", mp2, width = 8, height = 4)
-ggsave("Additional/Figure_05_c.png", mp3, width = 8, height = 4)
+ggsave("Figure_05.jpg", mp, width = 8, height = 8)
+ggsave("Additional/Figure_05_a.jpg", mp1, width = 8, height = 4)
+ggsave("Additional/Figure_05_b.jpg", mp2, width = 8, height = 4)
+ggsave("Additional/Figure_05_c.jpg", mp3, width = 8, height = 4)
 # Plot chr 2 + 5 markers
 mp1 <- ggplotly(mp1)
 saveWidget(as_widget(mp1),
@@ -1234,7 +1234,7 @@ saveWidget(as_widget(mp3),
 
 # Supplemental Figure 1
 
-![](Supplemental_Figure_01.png)
+![](Supplemental_Figure_01.jpg)
 
 *Supplemental Figure 1: Summary of genome-wide association results using MLM, MLMM, FarmCPU and Blink models on days from sowing to flower (DTF) in a lentil diversity panel using no covariates or with the either the b or c coefficient as a covariate. Larger points represent a significant association (-log10(p) > 6.7) with a trait of interest under one of the GWAS models, while smaller points represent a suggestive association (-log10(p) > 5.3). Rosthern, Canada 2016 and 2017 (Ro16 and Ro17), Sutherland, Canada 2016, 2017 and 2018 (Su16, Su17 and Su18), Central Ferry, USA 2018 (Us18), Bhopal, India 2016 and 2017 (In16 and In17), Jessore, Bangladesh 2016 and 2017 (Ba16 and Ba17), Bardiya, Nepal 2016 and 2017 (Ne16 and Ne17), Marchouch, Morocco 2016 and 2017 (Mo16 and Mo17), Cordoba, Spain (Sp16 and Sp17), Metaponto, Italy 2016 and 2017 (it16 and It17). b and c are coefficients derived from a photothermal model (Wright et al. (2020). Colors are representative of macroenvironments: Temperate (green), South Asian (orange) and Mediterranean (blue). Vertical lines represent specific base pair locations to facilitate comparisons across traits.*
 
@@ -1320,7 +1320,7 @@ gg_gwas_cv_summary <- function(filename, myTs, hlines, width, height) {
     guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
     labs(y = NULL, x = "100 Mbp")
   # Save
-  ggsave(paste0(filename, ".png"), mp, width = width, height = height)
+  ggsave(paste0(filename, ".jpg"), mp, width = width, height = height)
   # Save HTML
   mp <- ggplotly(mp) %>% layout(showlegend = FALSE)
   saveWidget(as_widget(mp),
@@ -1340,7 +1340,7 @@ gg_gwas_cv_summary(filename = "Supplemental_Figure_01",
 
 ## Additional Figure 3
 
-![](Additional/Additional_Figure_03.png)
+![](Additional/Additional_Figure_03.jpg)
 
 ```{r echo = F}
 downloadthis::download_link(
@@ -1373,7 +1373,7 @@ gg_gwas_cv_summary(filename = "Additional/Additional_Figure_03",
 
 ## Additional Figure 4
 
-![](Additional/Additional_Figure_04.png)
+![](Additional/Additional_Figure_04.jpg)
 
 ```{r echo = F}
 downloadthis::download_link(
@@ -1404,7 +1404,7 @@ gg_gwas_cv_summary(filename = "Additional/Additional_Figure_04",
 
 # Supplemental Figure 2
 
-![](Supplemental_Figure_02.png){width=70%}
+![](Supplemental_Figure_02.jpg){width=70%}
 
 *Supplemental Figure 2: Regional genome-wide association results from 35 Mpb to 50 Mbp on chromosome 2 for selected traits with a lentil diversity panel using MLM, MLMM, FarmCPU and Blink models. Traits include days from sowing to flower (DTF) in Sutherland, Canada 2017 (Su17), with and without the c coefficient used as a covariate (CV=c), DTF in Jessore, Bangladesh 2017 (Ba17), DTF in Bardiya, Nepal 2017 (Ne17), DTF in Metaponto, Italy 2017 (It17), the first principal component (PC1) from a principal component analysis of an analysis of 18 site-years of DTF data, and the b coefficient derived from a photothermal model done by Wright et al. (2020). The vertical line represents a specific base pair location to facilitate comparisons across traits.*
 
@@ -1486,14 +1486,14 @@ mp <- ggplot() +
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
 # Save
-ggsave("Supplemental_Figure_02.png", mp, width = 5, height = 10)
+ggsave("Supplemental_Figure_02.jpg", mp, width = 5, height = 10)
 ```
 
 ---
 
 # Supplemental Figure 3
 
-![](Supplemental_Figure_03.png){width=70%}
+![](Supplemental_Figure_03.jpg){width=70%}
 
 *Supplemental Figure 3: Regional genome-wide association results from 300 Mbp to 315 Mbp on chromosome 6 for selected traits with a lentil diversity panel using MLM, MLMM, FarmCPU and Blink models. Traits include days from sowing to flower (DTF) in Marchouch, Morocco 2016 (Mo16), thermal sum required for flowering (Tf) in Sutherland, Canada 2017 (Su17) and Metaponto, Italy 2017 (It17), nominal base temperature (Tb) in Su17 and It17, and the third principal component (PC3) from a principal component analysis of an analysis of 18 site-years of DTF data (Wright et al., 2020). Vertical lines represent the locations of selected flowering time genes within the associated QTL.*
 
@@ -1573,7 +1573,7 @@ mp <- ggplot() +
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
 # Save
-ggsave("Supplemental_Figure_03.png", mp, width = 5, height = 10)
+ggsave("Supplemental_Figure_03.jpg", mp, width = 5, height = 10)
 ```
 
 ---
@@ -1593,7 +1593,7 @@ downloadthis::download_link(
 
 <br>
 
-![](Supplemental_Figure_04.png)
+![](Supplemental_Figure_04.jpg)
 
 *Supplemental Figure 4: Linkage disequilibrium decay across the 7 chromosomes in the lentil genome. (a) Linkage disequilibrium decay for all marker combinations. (b) Linkage disequilibrium decay for marker combinations within a 1 Mbp distance. For each chromosome, 1000 SNP were randomly selected for pairwise LD calculations. Shaded lines represent the moving average of 100 pair-wise marker comparisons. Solid line represents a loess regression used to determine the value (vertical dashed line) in which R2 reaches the 0.2 threshold (blue dashed line). Red dashed lines represent the average R2 for each chromosome.* 
 
@@ -1711,14 +1711,14 @@ mp2 <- ggplot(yy, aes(x = Distance/1000, y = Loess)) +
 # Append
 mp <- ggarrange(mp1, mp2, ncol = 1, labels = c("(a)", "(b)"))
 # Save
-ggsave(paste0("Supplemental_Figure_04.png"), mp , width = 12, height = 8)
+ggsave(paste0("Supplemental_Figure_04.jpg"), mp , width = 12, height = 8)
 ```
 
 ---
 
 # Supplemental Figure 5
 
-![](Supplemental_Figure_05.png)
+![](Supplemental_Figure_05.jpg)
 
 *Supplemental Figure 5: Diagram of a 290 kb region of lentil chromosome 2 (A) and a 215 kb region of lentil chromosome 5 (B) containing the relevant SNPs Lcu.2RBY.Chr2p42543877, Lcu.2RBY.Chr2p42556949 and Lcu.2RBY.Chr5p1063138 (highlighted in red). The syntenic regions in chickpea and Medicago genomes are also shown for comparison.  The length of the relevant interval for each chromosome was calculated according to the SNP position ± chromosome-specific linkage disequilibrium decay. Numbers over or besides each gene correspond to those shown in Supplemental Table 2.*
 
@@ -1743,7 +1743,7 @@ downloadthis::download_link(
   data-external="1"
 ></iframe>
 
-![](Supplemental_Figure_06.png)
+![](Supplemental_Figure_06.jpg)
 
 *Supplemental Figure 6: Pair-wise plots of a principal component analysis of genetic marker data from a lentil diversity panel. Colors are based on a hierarchical clustering of principal components done by Wright et al. (2020) using 18 site-years of days from sowing to flower data across the three major lentil growing macroenvironments.*
 
@@ -1770,7 +1770,7 @@ mp3 <- ggplot(pca, aes(x = PC2, y = PC3, color = Cluster)) +
 mp <- ggarrange(mp1, mp2, mp3, nrow = 1, ncol = 3,
                 common.legend = T, legend = "bottom")
 # Save
-ggsave("Supplemental_Figure_06.png", mp, width = 8, height = 3)
+ggsave("Supplemental_Figure_06.jpg", mp, width = 8, height = 3)
 # Plotly
 mp <- plot_ly(pca, x = ~PC1, y = ~PC2, z = ~PC3, 
         color = ~Cluster, colors = myColors_Cluster, 
@@ -1806,7 +1806,7 @@ downloadthis::download_link(
 
 ## Phenotype Data
 
-![](Additional/Additional_Figure_05.png)
+![](Additional/Additional_Figure_05.jpg)
 
 ```{r}
 # Prep data
@@ -1819,7 +1819,7 @@ mp <- ggplot(xx, aes(x = Value)) +
   facet_wrap(ExptTrait~., ncol = 9, scales = "free") +
   theme_AGL
 # Save
-ggsave("Additional/Additional_Figure_05.png", mp, width = 14, height = 7)
+ggsave("Additional/Additional_Figure_05.jpg", mp, width = 14, height = 7)
 ```
 
 ---
@@ -1839,34 +1839,34 @@ downloadthis::download_link(
 
 <br>
 
-![](Additional/Man_Grouped/Man_PCA_abc.png)
+![](Additional/Man_Grouped/Man_PCA_abc.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_Temperate.png)
+![](Additional/Man_Grouped/Man_DTF_Temperate.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_b_Temperate.png)
+![](Additional/Man_Grouped/Man_DTF_b_Temperate.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_c_Temperate.png)
+![](Additional/Man_Grouped/Man_DTF_c_Temperate.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_Mediterranean.png)
+![](Additional/Man_Grouped/Man_DTF_Mediterranean.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_b_Mediterranean.png)
+![](Additional/Man_Grouped/Man_DTF_b_Mediterranean.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_c_Mediterranean.png)
+![](Additional/Man_Grouped/Man_DTF_c_Mediterranean.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_SouthAsia.png)
+![](Additional/Man_Grouped/Man_DTF_SouthAsia.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_b_SouthAsia.png)
+![](Additional/Man_Grouped/Man_DTF_b_SouthAsia.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_c_SouthAsia.png)
+![](Additional/Man_Grouped/Man_DTF_c_SouthAsia.jpg)
 
-![](Additional/Man_Grouped/Man_Tf_Tb.png)
+![](Additional/Man_Grouped/Man_Tf_Tb.jpg)
 
-![](Additional/Man_Grouped/Man_Pf_Pc.png)
+![](Additional/Man_Grouped/Man_Pf_Pc.jpg)
 
 ```{r eval = F}
 # Create function
 gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It17_DTF"),
-                          folder = "Results/", filename = "Fig01.png", title = filename,
+                          folder = "Results/", filename = "Fig01.jpg", title = filename,
                           markers = myMs, height = 10) {
   # Prep data
   xx <- NULL
@@ -1923,7 +1923,7 @@ gg_Custom_Man <- function(expttraits = c("Su17_DTF", "Ba17_DTF", "Ne17_DTF", "It
     guides(shape = guide_legend(override.aes = list(size = 3))) +
     labs(title = title, y = NULL, x = "100 Mbp")
   # Save
-  ggsave(paste0("Additional/Man_Grouped/", filename, ".png"), 
+  ggsave(paste0("Additional/Man_Grouped/", filename, ".jpg"), 
          mp, width = 10, height = height)
 }
 # DTF
@@ -1993,7 +1993,7 @@ downloadthis::download_link(
 
 <br>
 
-![](Additional/Man_Facet/ManQQ_Su17_DTF.png)
+![](Additional/Man_Facet/ManQQ_Su17_DTF.jpg)
 
 
 ```{r eval = T, echo = F}
@@ -2009,7 +2009,7 @@ downloadthis::download_link(
 
 <br>
 
-![](Additional/Man_Multi/ManQQ_Su17_DTF.png)
+![](Additional/Man_Multi/ManQQ_Su17_DTF.jpg)
 
 ```{r eval = F}
 # Create function
@@ -2089,7 +2089,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
     labs(title = "", y = NULL, x = "Expected")
   # Append and save plots
   mp <- ggarrange(mp1, mp2, ncol = 2, widths = c(4,1), align = "h")
-  ggsave(paste0("Additional/Man_Facet/ManQQ_", expt, "_", trait, suffix, ".png"), 
+  ggsave(paste0("Additional/Man_Facet/ManQQ_", expt, "_", trait, suffix, ".jpg"), 
          mp, width = 10, height = 7)
   #
   xs <- xs %>% arrange(P.value) %>% filter(!duplicated(FT_Genes))
@@ -2159,7 +2159,7 @@ gg_Man <- function(folder = "Results/", expttrait = "Ro17_DTF", suffix = NULL,
   mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h",
                   widths = c(1.5,7,1.5), legend = "top")
   # Save
-  ggsave(paste0("Additional/Man_Multi/ManQQ_", expt, "_", trait, suffix, ".png"), 
+  ggsave(paste0("Additional/Man_Multi/ManQQ_", expt, "_", trait, suffix, ".jpg"), 
          mp, width = 12, height = 4)
 }
 # Plot
@@ -2240,13 +2240,13 @@ downloadthis::download_link(
 
 <br>
 
-![](Additional/Markers/Markers_Lcu.2RBY.Chr2p42556949.png)
+![](Additional/Markers/Markers_Lcu.2RBY.Chr2p42556949.jpg)
 
-![](Additional/Markers/Markers_Lcu.2RBY.Chr5p1069654.png)
+![](Additional/Markers/Markers_Lcu.2RBY.Chr5p1069654.jpg)
 
-![](Additional/Markers/Markers_Lcu.2RBY.Chr6p2528817.png)
+![](Additional/Markers/Markers_Lcu.2RBY.Chr6p2528817.jpg)
 
-![](Additional/Markers/Markers_Lcu.2RBY.Chr6p307256203.png)
+![](Additional/Markers/Markers_Lcu.2RBY.Chr6p307256203.jpg)
 
 ```{r eval = F}
 # Create function
@@ -2291,7 +2291,7 @@ gg_Marker <- function(marker = myMs[1],
 # Plot Markers
 for(i in myMs) {
   mp <- gg_Marker(marker = i)
-  ggsave(paste0("Additional/Markers/Markers_",i,".png"), mp, width = 8, height = 6)
+  ggsave(paste0("Additional/Markers/Markers_",i,".jpg"), mp, width = 8, height = 6)
 }
 # Chr 1
 pdf("Additional/Markers/Markers_Chr_1.pdf", width = 8, height = 6)
