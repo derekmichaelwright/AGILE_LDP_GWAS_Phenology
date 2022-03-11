@@ -68,7 +68,7 @@ HTML](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/README.html)
 
 ## Figure 1
 
-![](Figure_01.png)
+![](Figure_01.jpg)
 
 *Figure 1: Genome-wide association results for days from sowing to
 flower (DTF) in Sutherland, Canada 2017 (Su17), Jessore, Bangladesh 2017
@@ -84,7 +84,7 @@ comparisons across traits.*
 
 [Additional/Figure_02_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_02_plotly.html)
 
-![](Figure_02.png)
+![](Figure_02.jpg)
 
 *Figure 2: Summary of genome-wide association results using MLM, MLMM,
 FarmCPU and Blink models on single environment and multi-environment
@@ -113,7 +113,7 @@ traits.*
 
 ## Figure 3
 
-![](Figure_03.png)
+![](Figure_03.jpg)
 
 *Figure 3: Genome-wide association results for the first three principal
 components (PC1, PC2 and PC3) the b and c coefficients from the
@@ -128,7 +128,7 @@ facilitate comparisons across traits.*
 
 ## Figure 4
 
-![](Figure_04.png)
+![](Figure_04.jpg)
 
 *Figure 4: Genome-wide association results for days from sowing to
 flower (DTF) with and without covariates for a lentil diversity panel.
@@ -150,7 +150,7 @@ specific base pair locations to facilitate comparisons across traits.*
 
 [Additional/Figure_05_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
-![](Figure_05.png)
+![](Figure_05.jpg)
 
 *Figure 5: Allelic effects of selected markers on days from sowing to
 flower (DTF) across contrasting locations in a lentil diversity panel.
@@ -204,7 +204,7 @@ of chickpea (Cicer arietinum) and Medicago truncatula.*
 
 [Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_01_plotly.html)
 
-![](Supplemental_Figure_01.png)
+![](Supplemental_Figure_01.jpg)
 
 *Supplemental Figure 1: Summary of genome-wide association results using
 MLM, MLMM, FarmCPU and Blink models on days from sowing to flower (DTF)
@@ -228,7 +228,7 @@ locations to facilitate comparisons across traits.*
 
 ## Supplemental Figure 2
 
-<img src="Supplemental_Figure_02.png" style="width:70.0%" />
+<img src="Supplemental_Figure_02.jpg" style="width:70.0%" />
 
 *Supplemental Figure 2: Regional genome-wide association results from 35
 Mpb to 50 Mbp on chromosome 2 for selected traits with a lentil
@@ -247,7 +247,7 @@ across traits.*
 
 ## Supplemental Figure 3
 
-<img src="Supplemental_Figure_03.png" style="width:70.0%" />
+<img src="Supplemental_Figure_03.jpg" style="width:70.0%" />
 
 *Supplemental Figure 3: Regional genome-wide association results from
 300 Mbp to 315 Mbp on chromosome 6 for selected traits with a lentil
@@ -264,7 +264,7 @@ selected flowering time genes within the associated QTL.*
 
 ## Supplemental Figure 4
 
-![](Supplemental_Figure_04.png)
+![](Supplemental_Figure_04.jpg)
 
 *Supplemental Figure 4: Linkage disequilibrium decay across the 7
 chromosomes in the lentil genome. (a) Linkage disequilibrium decay for
@@ -280,7 +280,7 @@ Red dashed lines represent the average R2 for each chromosome.*
 
 ## Supplemental Figure 5
 
-![](Supplemental_Figure_05.png)
+![](Supplemental_Figure_05.jpg)
 
 *Supplemental Figure 5: Diagram of a 290 kb region of lentil chromosome
 2 (A) and a 215 kb region of lentil chromosome 5 (B) containing the
@@ -298,7 +298,7 @@ Supplemental Table 2.*
 
 [Supplemental_Figure_06_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_06_plotly.html)
 
-![](Supplemental_Figure_06.png)
+![](Supplemental_Figure_06.jpg)
 
 *Supplemental Figure 6: Pair-wise plots of a principal component
 analysis of genetic marker data from a lentil diversity panel. Colors
@@ -312,23 +312,23 @@ data across the three major lentil growing macroenvironments.*
 
 ## Additional Figure 1
 
-![](Additional/Additional_Figure_01.png)
+![](Additional/Additional_Figure_01.jpg)
 
 ## Additional Figure 2
 
-![](Additional/Additional_Figure_02.png)
+![](Additional/Additional_Figure_02.jpg)
 
 ## Additional Figure 3
 
-![](Additional/Additional_Figure_03.png)
+![](Additional/Additional_Figure_03.jpg)
 
 ## Additional Figure 4
 
-![](Additional/Additional_Figure_04.png)
+![](Additional/Additional_Figure_04.jpg)
 
 ## Additional Figure 5
 
-![](Additional/Additional_Figure_05.png)
+![](Additional/Additional_Figure_05.jpg)
 
 ------------------------------------------------------------------------
 
@@ -336,29 +336,29 @@ data across the three major lentil growing macroenvironments.*
 
 [Additional/Man_Grouped/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Grouped)
 
-![](Additional/Man_Grouped/Man_PCA_abc.png)
+![](Additional/Man_Grouped/Man_PCA_abc.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_Temperate.png)
+![](Additional/Man_Grouped/Man_DTF_Temperate.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_b_Temperate.png)
+![](Additional/Man_Grouped/Man_DTF_b_Temperate.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_c_Temperate.png)
+![](Additional/Man_Grouped/Man_DTF_c_Temperate.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_Mediterranean.png)
+![](Additional/Man_Grouped/Man_DTF_Mediterranean.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_b_Mediterranean.png)
+![](Additional/Man_Grouped/Man_DTF_b_Mediterranean.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_c_Mediterranean.png)
+![](Additional/Man_Grouped/Man_DTF_c_Mediterranean.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_SouthAsia.png)
+![](Additional/Man_Grouped/Man_DTF_SouthAsia.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_b_SouthAsia.png)
+![](Additional/Man_Grouped/Man_DTF_b_SouthAsia.jpg)
 
-![](Additional/Man_Grouped/Man_DTF_c_SouthAsia.png)
+![](Additional/Man_Grouped/Man_DTF_c_SouthAsia.jpg)
 
-![](Additional/Man_Grouped/Man_Tf_Tb.png)
+![](Additional/Man_Grouped/Man_Tf_Tb.jpg)
 
-![](Additional/Man_Grouped/Man_Pf_Pc.png)
+![](Additional/Man_Grouped/Man_Pf_Pc.jpg)
 
 ------------------------------------------------------------------------
 
@@ -366,11 +366,11 @@ data across the three major lentil growing macroenvironments.*
 
 [Additional/Man_Facet/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Facet)
 
-![](Additional/Man_Facet/ManQQ_Su18_DTF.png)
+![](Additional/Man_Facet/ManQQ_Su18_DTF.jpg)
 
 [Additional/Man_Multi/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Multi)
 
-![](Additional/Man_Multi/ManQQ_Su18_DTF.png)
+![](Additional/Man_Multi/ManQQ_Su18_DTF.jpg)
 
 ------------------------------------------------------------------------
 
@@ -390,13 +390,13 @@ data across the three major lentil growing macroenvironments.*
 
 [Additional/Markers/Markers_Chr_7.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_7.pdf)
 
-![](Additional/Markers/Markers_Lcu.2RBY.Chr2p42556949.png)
+![](Additional/Markers/Markers_Lcu.2RBY.Chr2p42556949.jpg)
 
-![](Additional/Markers/Markers_Lcu.2RBY.Chr5p1069654.png)
+![](Additional/Markers/Markers_Lcu.2RBY.Chr5p1069654.jpg)
 
-![](Additional/Markers/Markers_Lcu.2RBY.Chr6p2528817.png)
+![](Additional/Markers/Markers_Lcu.2RBY.Chr6p2528817.jpg)
 
-![](Additional/Markers/Markers_Lcu.2RBY.Chr6p307256203.png)
+![](Additional/Markers/Markers_Lcu.2RBY.Chr6p307256203.jpg)
 
 ------------------------------------------------------------------------
 
