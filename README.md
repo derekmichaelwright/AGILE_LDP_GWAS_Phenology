@@ -2,7 +2,7 @@ Focusing the GWAS Lens on days to flower using latent variable
 phenotypes derived from global multi-environment trials
 ================
 Derek Michael Wright <derek.wright@usask.ca>
-22-02-2022
+10-08-2022
 
 ------------------------------------------------------------------------
 
@@ -228,9 +228,25 @@ locations to facilitate comparisons across traits.*
 
 ## Supplemental Figure 2
 
-<img src="Supplemental_Figure_02.jpg" style="width:70.0%" />
+<img src="Supplemental_Figure_02_edited.jpg" style="width:70.0%" />
 
-*Supplemental Figure 2: Regional genome-wide association results from 35
+*Supplemental Figure 2: Correlations along with the corresponding
+correlation coefficients (R2) for the first three principal components
+(PC1, PC2 & PC3) of an analysis of 18 site-years of days from sowing to
+flower (DTF) data (Wright et al., 2020), coefficients from a
+photothermal model (a, b & c), DTF, photoperiod sum required for
+flowering (Pf), nominal base photoperiod (Pc), thermal sum required for
+flowering (Tf) and nominal base temperature (Tb) in Sutherland, Canada
+2017 (SU17), Jessore, Bangladesh 2017 (Ba17) and Metaponto, Italy 2017
+(It17). Colors are based on a hierarchical clustering of the PCAs.*
+
+------------------------------------------------------------------------
+
+## Supplemental Figure 3
+
+<img src="Supplemental_Figure_03.jpg" style="width:70.0%" />
+
+*Supplemental Figure 3: Regional genome-wide association results from 35
 Mpb to 50 Mbp on chromosome 2 for selected traits with a lentil
 diversity panel using MLM, MLMM, FarmCPU and Blink models. Traits
 include days from sowing to flower (DTF) in Sutherland, Canada 2017
@@ -245,11 +261,11 @@ across traits.*
 
 ------------------------------------------------------------------------
 
-## Supplemental Figure 3
+## Supplemental Figure 4
 
-<img src="Supplemental_Figure_03.jpg" style="width:70.0%" />
+<img src="Supplemental_Figure_04.jpg" style="width:70.0%" />
 
-*Supplemental Figure 3: Regional genome-wide association results from
+*Supplemental Figure 4: Regional genome-wide association results from
 300 Mbp to 315 Mbp on chromosome 6 for selected traits with a lentil
 diversity panel using MLM, MLMM, FarmCPU and Blink models. Traits
 include days from sowing to flower (DTF) in Marchouch, Morocco 2016
@@ -262,11 +278,11 @@ selected flowering time genes within the associated QTL.*
 
 ------------------------------------------------------------------------
 
-## Supplemental Figure 4
+## Supplemental Figure 5
 
-![](Supplemental_Figure_04.jpg)
+![](Supplemental_Figure_05.jpg)
 
-*Supplemental Figure 4: Linkage disequilibrium decay across the 7
+*Supplemental Figure 5: Linkage disequilibrium decay across the 7
 chromosomes in the lentil genome. (a) Linkage disequilibrium decay for
 all marker combinations. (b) Linkage disequilibrium decay for marker
 combinations within a 1 Mbp distance. For each chromosome, 1000 SNP were
@@ -278,11 +294,11 @@ Red dashed lines represent the average R2 for each chromosome.*
 
 ------------------------------------------------------------------------
 
-## Supplemental Figure 5
+## Supplemental Figure 6
 
-![](Supplemental_Figure_05.jpg)
+![](Supplemental_Figure_06.jpg)
 
-*Supplemental Figure 5: Diagram of a 290 kb region of lentil chromosome
+*Supplemental Figure 6: Diagram of a 290 kb region of lentil chromosome
 2 (A) and a 215 kb region of lentil chromosome 5 (B) containing the
 relevant SNPs Lcu.2RBY.Chr2p42543877, Lcu.2RBY.Chr2p42556949 and
 Lcu.2RBY.Chr5p1063138 (highlighted in red). The syntenic regions in
@@ -294,13 +310,13 @@ Supplemental Table 2.*
 
 ------------------------------------------------------------------------
 
-## Supplemental Figure 6
+## Supplemental Figure 7
 
-[Supplemental_Figure_06_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_06_plotly.html)
+[Supplemental_Figure_07_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_07_plotly.html)
 
-![](Supplemental_Figure_06.jpg)
+![](Supplemental_Figure_07.jpg)
 
-*Supplemental Figure 6: Pair-wise plots of a principal component
+*Supplemental Figure 7: Pair-wise plots of a principal component
 analysis of genetic marker data from a lentil diversity panel. Colors
 are based on a hierarchical clustering of principal components done by
 Wright et al. (2020) using 18 site-years of days from sowing to flower
