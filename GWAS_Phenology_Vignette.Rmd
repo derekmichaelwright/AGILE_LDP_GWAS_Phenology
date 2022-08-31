@@ -1483,7 +1483,8 @@ mp3 <- ggplot(xx, aes(x = Value, y = PCA_PC3, color = Cluster)) +
   scale_color_manual(values = myColors_Cluster) +
   theme_AGL
 mp <- ggarrange(mp1, mp2, mp3, ncol = 1, nrow = 3, 
-                common.legend = T, legend = "right")
+                common.legend = T, legend = "right") +
+  bgcolor("white")
 ggsave("Additional/Additional_Figure_05.jpg", 
        mp, width = 18, height = 6, dpi = 600)
 ```
@@ -1856,7 +1857,8 @@ mp3 <- ggplot(pca, aes(x = PC2, y = PC3, color = Cluster)) +
   theme_AGL
 # Append
 mp <- ggarrange(mp1, mp2, mp3, nrow = 1, ncol = 3,
-                common.legend = T, legend = "bottom")
+                common.legend = T, legend = "bottom") +
+  bgcolor("white")
 # Save
 ggsave("Supplemental_Figure_07.jpg", mp, width = 8, height = 3)
 # Plotly

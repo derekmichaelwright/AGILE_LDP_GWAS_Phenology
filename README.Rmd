@@ -3,8 +3,6 @@ title: "Focusing the GWAS Lens on days to flower using latent variable phenotype
 author: "Derek Michael Wright <derek.wright@usask.ca>"
 date: "10-08-2022"
 output:
-  pdf_document:
-    toc: yes
   rmdformats::readthedown:
     self_contained: no
     lightbox: true
@@ -12,6 +10,8 @@ output:
     highlight: tango
     css: custom.css
   github_document: default
+  pdf_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -126,7 +126,7 @@ https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology
 
 [Supplemental_Table_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
 
-```{r echo = F, eval = F}
+```{r echo = F, eval = T}
 DT::datatable(read.csv("Supplemental_Table_01.csv"))
 ```
 
