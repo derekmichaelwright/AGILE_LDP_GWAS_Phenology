@@ -238,7 +238,7 @@ myY <- read.csv("myY.csv")
 myLDP <- read.csv("myLDP.csv") %>%
   mutate(Cluster = factor(Cluster))
 # List of flowering time genes
-myFTGenes <- read.csv("Lentil_FT_Genes.csv") %>% 
+myFTGenes <- read.csv("Lentil_FT_Genes.csv", fileEncoding = "UTF-8") %>% 
   rename(Chromosome=Chr) %>%
   mutate(Expt = "FT genes", Model = "MLM", Position = as.numeric(Start))
 # Nucleotide symbols
@@ -538,7 +538,7 @@ mpl <- get_legend(mp2, position = "bottom")
 mp <- ggarrange(mp1, mp2, mp3, ncol = 3, align = "h", widths = c(2,7, 1.5),
                 legend.grob = mpl, legend = "bottom", common.legend = T)
 # Save
-ggsave("Figure_01.jpg", mp, width = 12, height = 7)
+ggsave("Figure_01.jpg", mp, width = 12, height = 7, dpi = 600, bg = "white")
 ```
 
 ---
@@ -620,7 +620,7 @@ gg_gwas_summary <- function(traits, labels = traits,
     guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
     labs(title = title, y = NULL, x = "100 Mbp")
   # Save
-  ggsave(paste0(filename, ".jpg"), mp, width = width, height = height)
+  ggsave(paste0(filename, ".jpg"), mp, width = width, height = height, dpi = 600)
   # Save HTML
   mp <- ggplotly(mp) %>% layout(showlegend = FALSE)
   saveWidget(as_widget(mp),
@@ -656,7 +656,7 @@ downloadthis::download_link(
 gg_gwas_summary(title = "Covariate = *b*",
                 traits = paste0(myTraits, "-b"),
                 labels = myLabels,
-                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
+                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,32.5), 
                 width = 12, height = 9, filename = "Additional/Additional_Figure_01")
 ```
 
@@ -682,7 +682,7 @@ downloadthis::download_link(
 gg_gwas_summary(title = "Covariatie = *c*",
                 traits = paste0(myTraits, "-c"),
                 labels = myLabels,
-                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,33.5), 
+                hlines = c(3.5,6.5,9.5,12.5,18.5,24.5,30.5,32.5), 
                 width = 12, height = 9, filename = "Additional/Additional_Figure_02")
 ```
 
@@ -790,7 +790,7 @@ mpl <- get_legend(mp2, position = "bottom")
 mp <- ggarrange(mp1, mp2, mp3, ncol = 3, widths = c(2,7,1.5), align = "h", 
                 legend.grob = mpl, legend = "bottom", common.legend = T)
 # Save
-ggsave("Figure_03.jpg", mp, width = 12, height = 10)
+ggsave("Figure_03.jpg", mp, width = 12, height = 10, dpi = 600, bg = "white")
 ```
 
 ## Figure 3 Subplots
@@ -869,15 +869,15 @@ fig3_Subplot <- function(expttraits = c("PC1", "*b*")) {
 # Plot temperature related
 ggsave("Additional/Figure_03_1.jpg", 
        fig3_Subplot(expttraits = c("PC1", "*b*")), 
-       width = 12, height = 4)
+       width = 12, height = 4, dpi = 600, bg = "white")
 # Plot photoperiod related
 ggsave("Additional/Figure_03_2.jpg", 
        fig3_Subplot(expttraits = c("PC2", "*c*")), 
-       width = 12, height = 4)
+       width = 12, height = 4, dpi = 600, bg = "white")
 # Plot PC3
 ggsave("Additional/Figure_03_3.jpg", 
        fig3_Subplot(expttraits = c("PC3", "Su17_*Tb*")), 
-       width = 12, height = 4)
+       width = 12, height = 4, dpi = 600, bg = "white")
 ```
 
 ---
@@ -1006,7 +1006,8 @@ for(i in expttraits) {
   mp <- ggarrange(mp1, mp2, ncol = 2, widths = c(7,1.5), align = "h",
                   legend = "bottom", common.legend = T)
   # Save
-  ggsave(paste0("Additional/CV/CV_", i, ".jpg"), mp, width = 12, height = 6)
+  ggsave(paste0("Additional/CV/CV_", i, ".jpg"), mp, 
+         width = 12, height = 6, dpi = 600, bg = "white")
 }
 ```
 
@@ -1192,10 +1193,10 @@ mp3 <- ggplot(x1 %>% filter(ExptTrait %in% expttraits), aes(x = Markers, y = Val
 mp <- ggarrange(mp1, mp2, mp3, ncol = 1, labels = c("(a)","(b)","(c)"), 
                 heights = c(1.2,1,1), legend = "bottom", common.legend = T)
 # Save
-ggsave("Figure_05.jpg", mp, width = 8, height = 8)
-ggsave("Additional/Figure_05_a.jpg", mp1, width = 8, height = 4)
-ggsave("Additional/Figure_05_b.jpg", mp2, width = 8, height = 4)
-ggsave("Additional/Figure_05_c.jpg", mp3, width = 8, height = 4)
+ggsave("Figure_05.jpg", mp, width = 8, height = 8, dpi = 600, bg = "white")
+ggsave("Additional/Figure_05_a.jpg", mp1, width = 8, height = 4, dpi = 600)
+ggsave("Additional/Figure_05_b.jpg", mp2, width = 8, height = 4, dpi = 600)
+ggsave("Additional/Figure_05_c.jpg", mp3, width = 8, height = 4, dpi = 600)
 # Plot chr 2 + 5 markers
 mp1 <- ggplotly(mp1)
 saveWidget(as_widget(mp1),
@@ -1297,7 +1298,7 @@ gg_gwas_cv_summary <- function(filename, myTs, hlines, width, height) {
     guides(shape = guide_legend(override.aes = list(size = 4, fill = "black"))) +
     labs(y = NULL, x = "100 Mbp")
   # Save
-  ggsave(paste0(filename, ".jpg"), mp, width = width, height = height)
+  ggsave(paste0(filename, ".jpg"), mp, width = width, height = height, dpi = 600)
   # Save HTML
   mp <- ggplotly(mp) %>% layout(showlegend = FALSE)
   saveWidget(as_widget(mp),
@@ -1454,13 +1455,13 @@ ggsave("Supplemental_Figure_02.jpg",
 
 ```{r}
 # Prep data
-myTraits1 <- c("PCA_PC1", "PCA_PC2", "PCA_PC3")
+myTraits1 <- c("PCA_PC1",   "PCA_PC2",   "PCA_PC3")
 myTraits2 <- c("PTModel_a", "PTModel_b", "PTModel_c",
-              "Su17_DTF", "It17_DTF", "Ba17_DTF",
-              "Su17_Tf", "It17_Tf", "Ba17_Tf",
-              "Su17_Tb", "It17_Tb", "Ba17_Tb",
-              "Su17_Pf", "It17_Pf", "Ba17_Pf",
-              "Su17_Pc", "It17_Pc", "Ba17_Pc")
+               "Su17_DTF",  "It17_DTF",  "Ba17_DTF",
+               "Su17_Tf",   "It17_Tf",   "Ba17_Tf",
+               "Su17_Tb",   "It17_Tb",   "Ba17_Tb",
+               "Su17_Pf",   "It17_Pf",   "Ba17_Pf",
+               "Su17_Pc",   "It17_Pc",   "Ba17_Pc")
 xx <- myY %>% left_join(myLDP, by = "Name") %>%
   select(Name, Cluster, myTraits2) %>%
   gather(Trait, Value, 3:ncol(.)) %>%
@@ -1468,25 +1469,33 @@ xx <- myY %>% left_join(myLDP, by = "Name") %>%
   left_join(select(myY, Name, myTraits1), by = "Name")
 # Plot
 mp1 <- ggplot(xx, aes(x = Value, y = PCA_PC1, color = Cluster)) +
-  geom_point(alpha = 0.7) +
+  geom_point(alpha = 0.7, size = 0.5) +
   facet_grid(. ~ Trait, scales = "free_x") +
   scale_color_manual(values = myColors_Cluster) +
-  theme_AGL
+  theme_AGL + labs(x = NULL) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  guides(colour = guide_legend(override.aes = list(size = 2)))
 mp2 <- ggplot(xx, aes(x = Value, y = PCA_PC2, color = Cluster)) +
-  geom_point(alpha = 0.7) +
+  geom_point(alpha = 0.7, size = 0.5) +
   facet_grid(. ~ Trait, scales = "free_x") +
   scale_color_manual(values = myColors_Cluster) +
-  theme_AGL
+  theme_AGL + labs(x = NULL) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  guides(colour = guide_legend(override.aes = list(size = 2)))
 mp3 <- ggplot(xx, aes(x = Value, y = PCA_PC3, color = Cluster)) +
-  geom_point(alpha = 0.7) +
+  geom_point(alpha = 0.7, size = 0.5) +
   facet_grid(. ~ Trait, scales = "free_x") +
   scale_color_manual(values = myColors_Cluster) +
-  theme_AGL
+  theme_AGL + labs(x = NULL) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  guides(colour = guide_legend(override.aes = list(size = 2)))
 mp <- ggarrange(mp1, mp2, mp3, ncol = 1, nrow = 3, 
-                common.legend = T, legend = "right") +
-  bgcolor("white")
+                common.legend = T, legend = "right")
 ggsave("Additional/Additional_Figure_05.jpg", 
-       mp, width = 18, height = 6, dpi = 600)
+       mp, width = 16, height = 4, dpi = 600, bg = "white")
 ```
 
 ---
@@ -1575,7 +1584,7 @@ mp <- ggplot() +
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
 # Save
-ggsave("Supplemental_Figure_03.jpg", mp, width = 5, height = 10)
+ggsave("Supplemental_Figure_03.jpg", mp, width = 5, height = 10, dpi = 600)
 ```
 
 ---
@@ -1662,7 +1671,7 @@ mp <- ggplot() +
   guides(shape = guide_legend(override.aes = list(size = 3))) +
   labs(y = "-log<sub>10</sub>(*p*)", x = "Mbp")
 # Save
-ggsave("Supplemental_Figure_04.jpg", mp, width = 5, height = 10)
+ggsave("Supplemental_Figure_04.jpg", mp, width = 5, height = 10, dpi = 600)
 ```
 
 ---
@@ -1800,7 +1809,7 @@ mp2 <- ggplot(yy, aes(x = Distance/1000, y = Loess)) +
 # Append
 mp <- ggarrange(mp1, mp2, ncol = 1, labels = c("(a)", "(b)"))
 # Save
-ggsave(paste0("Supplemental_Figure_05.jpg"), mp , width = 12, height = 8)
+ggsave(paste0("Supplemental_Figure_05.jpg"), mp , width = 12, height = 8, dpi = 600)
 ```
 
 ---
@@ -1857,10 +1866,9 @@ mp3 <- ggplot(pca, aes(x = PC2, y = PC3, color = Cluster)) +
   theme_AGL
 # Append
 mp <- ggarrange(mp1, mp2, mp3, nrow = 1, ncol = 3,
-                common.legend = T, legend = "bottom") +
-  bgcolor("white")
+                common.legend = T, legend = "bottom")
 # Save
-ggsave("Supplemental_Figure_07.jpg", mp, width = 8, height = 3)
+ggsave("Supplemental_Figure_07.jpg", mp, width = 8, height = 3, dpi = 600, bg = "white")
 # Plotly
 mp <- plot_ly(pca, x = ~PC1, y = ~PC2, z = ~PC3, 
         color = ~Cluster, colors = myColors_Cluster, 
@@ -1909,7 +1917,7 @@ mp <- ggplot(xx, aes(x = Value)) +
   facet_wrap(ExptTrait~., ncol = 9, scales = "free") +
   theme_AGL
 # Save
-ggsave("Additional/Additional_Figure_06.jpg", mp, width = 14, height = 7)
+ggsave("Additional/Additional_Figure_06.jpg", mp, width = 14, height = 7, dpi = 600)
 ```
 
 ---

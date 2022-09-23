@@ -228,7 +228,7 @@ locations to facilitate comparisons across traits.*
 
 ## Supplemental Figure 2
 
-![](Supplemental_Figure_02_edited.jpg)
+![](Supplemental_Figure_02_edited_small.png)
 
 *Supplemental Figure 2: Correlations along with the corresponding
 correlation coefficients (R2) for the first three principal components
