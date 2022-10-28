@@ -1,7 +1,8 @@
 ---
-title: "Focusing the GWAS Lens on days to flower using latent variable phenotypes derived from global multi-environment trials "
+title: "Focusing the GWAS *Lens* on days to flower using latent variable phenotypes derived from global multi-environment trials"
+subtitle: "*The Plant Genome*. (2022) e20269."
 author: "Derek Michael Wright <derek.wright@usask.ca>"
-date: "10-08-2022"
+date: "25-10-2022"
 output:
   rmdformats::readthedown:
     self_contained: no
@@ -9,9 +10,9 @@ output:
     gallery: true
     highlight: tango
     css: custom.css
-  github_document: default
   pdf_document:
     toc: yes
+  github_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -22,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE, message = F, warning = F, comment = NA, out.w
 
 ---
 
-[Sandesh Neupane, Derek Wright, Raul Martinez, Jakob Butler, Jim Weller, Kirstin Bett (2020) **Focusing the GWAS Lens on days to flower using latent variable phenotypes derived from global multi-environment trials**. *The Plant Genome*.e20269.](https://doi.org/10.1002/tpg2.20269) 
+[Sandesh Neupane, Derek Wright, Raul Martinez, Jakob Butler, Jim Weller, Kirstin Bett (2022) **Focusing the GWAS *Lens* on days to flower using latent variable phenotypes derived from global multi-environment trials**. *The Plant Genome*. e20269.](https://doi.org/10.1002/tpg2.20269) 
 
 which is follow-up to:
 

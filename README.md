@@ -1,16 +1,16 @@
-Focusing the GWAS Lens on days to flower using latent variable
+Focusing the GWAS *Lens* on days to flower using latent variable
 phenotypes derived from global multi-environment trials
 ================
 Derek Michael Wright <derek.wright@usask.ca>
-10-08-2022
+25-10-2022
 
 ------------------------------------------------------------------------
 
 [Sandesh Neupane, Derek Wright, Raul Martinez, Jakob Butler, Jim Weller,
-Kirstin Bett (2020) **Focusing the GWAS Lens on days to flower using
+Kirstin Bett (2022) **Focusing the GWAS *Lens* on days to flower using
 latent variable phenotypes derived from global multi-environment
-trials**. *The Plant
-Genome*.e20269.](https://doi.org/10.1002/tpg2.20269)
+trials**. *The Plant Genome*.
+e20269.](https://doi.org/10.1002/tpg2.20269)
 
 which is follow-up to:
 
