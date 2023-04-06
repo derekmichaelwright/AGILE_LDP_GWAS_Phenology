@@ -6,22 +6,23 @@ Derek Michael Wright <derek.wright@usask.ca>
 
 ------------------------------------------------------------------------
 
-[Sandesh Neupane, Derek Wright, Raul Martinez, Jakob Butler, Jim Weller,
-Kirstin Bett (2022) **Focusing the GWAS *Lens* on days to flower using
-latent variable phenotypes derived from global multi-environment
-trials**. *The Plant Genome*.
-e20269.](https://doi.org/10.1002/tpg2.20269)
+[Sandesh Neupane, Derek M. Wright, Raul O. Martinez, Jakob Butler, Jim
+L. Weller, Kirstin E. Bett. **Focusing the GWAS *Lens* on days to flower
+using latent variable phenotypes derived from global multi-environment
+trials**. *The Plant Genome*. (**2022**) e20269.
+doi.org/10.1002/tpg2.20269](https://doi.org/10.1002/tpg2.20269)
 
 which is follow-up to:
 
-[Derek Wright, Sandesh Neupane, Taryn Heidecker, Teketel Haile, Clarice
-Coyne, Rebecca McGee, Sripada Udupa, Fatima Henkrar, Eleonora Barilli,
-Diego Rubiales, Tania Gioia, Giuseppina Logozzo, Stefania Marzario,
-Reena Mehra, Ashutosh Sarker, Rajeev Dhakal, Babul Anwar, Debashish
-Sarker, Albert Vandenberg, and Kirstin Bett. (2020) **Understanding
-photothermal interactions can help expand production range and increase
-genetic diversity of lentil (*Lens culinaris* Medik.)**. *Plants,
-People, Planet*. 00:1-11.](https://doi.org/10.1002/ppp3.10158)
+[Derek M. Wright, Sandesh Neupane, Taryn Heidecker, Teketel A. Haile,
+Crystal Chan, Clarice J. Coyne, Rebecca J. McGee, Sripada Udupa, Fatima
+Henkrar, Eleonora Barilli, Diego Rubiales, Tania Gioia, Giuseppina
+Logozzo, Stefania Marzario, Reena Mehra, Ashutosh Sarker, Rajeev Dhakal,
+Babul Anwar, Debashish Sarker, Albert Vandenberg & Kirstin E. Bett.
+**Understanding photothermal interactions can help expand production
+range and increase genetic diversity of lentil (*Lens culinaris*
+Medik.)**. *Plants, People, Planet*. (**2020**) 00:1-11.
+doi.org/10.1002/ppp3.10158](https://doi.org/10.1002/ppp3.10158)
 
 ------------------------------------------------------------------------
 
@@ -38,10 +39,10 @@ HTML](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/README.html)
 
 # Contents
 
--   [Figures](#figures)
--   [Supplemental Tables](#supplemental-tables)
--   [Supplemental Figures](#supplemental-figures)
--   [Additional Figures](#additional-figures)
+- [Figures](#figures)
+- [Supplemental Tables](#supplemental-tables)
+- [Supplemental Figures](#supplemental-figures)
+- [Additional Figures](#additional-figures)
 
 # AGILE Project
 
@@ -49,17 +50,17 @@ HTML](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/README.html)
 
 ## Collaborators
 
--   Department of Plant Sciences and Crop Development Centre, University
-    of Saskatchewan, Saskatoon, Saskatchewan, Canada
--   UTAZ
+- Department of Plant Sciences and Crop Development Centre, University
+  of Saskatchewan, Saskatoon, Saskatchewan, Canada
+- UTAZ
 
 ## Sponsors
 
--   Saskatchewan Pulse Growers Association
--   Western Grains Research Foundation
--   GenomePrairie
--   GenomeCanada
--   Saskatchewan Ministry of Agriculture
+- Saskatchewan Pulse Growers Association
+- Western Grains Research Foundation
+- GenomePrairie
+- GenomeCanada
+- Saskatchewan Ministry of Agriculture
 
 ------------------------------------------------------------------------
 
