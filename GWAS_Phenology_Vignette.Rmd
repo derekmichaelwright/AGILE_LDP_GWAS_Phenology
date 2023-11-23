@@ -1,6 +1,6 @@
 ---
 title: "Focusing the GWAS *Lens* on days to flower using latent variable phenotypes derived from global multi-environment trials"
-subtitle: "R Script Vignette"
+subtitle: "*The Plant Genome*. (2022) e20269."
 author: "Derek Michael Wright <derek.wright@usask.ca>"
 date: "25-10-2022"
 output:
@@ -24,15 +24,13 @@ knitr::opts_chunk$set(eval = F, echo = T, message = F, warning = F,
 
 This vignette contains the `r shiny::icon("r-project")` code and analysis done for the paper:
 
-`r shiny::icon("newspaper")` [Sandesh Neupane, Derek M. Wright, Raul O. Martinez, Jakob Butler, Jim L. Weller, Kirstin E. Bett. **Focusing the GWAS *Lens* on days to flower using latent variable phenotypes derived from global multi-environment trials**. *The Plant Genome*. (**2022**) e20269. doi.org/10.1002/tpg2.20269](https://doi.org/10.1002/tpg2.20269) 
-
-`r shiny::icon("github")` https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology
+> `r shiny::icon("newspaper")` [Sandesh Neupane, Derek M. Wright, Raul O. Martinez, Jakob Butler, Jim L. Weller, Kirstin E. Bett. **Focusing the GWAS *Lens* on days to flower using latent variable phenotypes derived from global multi-environment trials**. *The Plant Genome*. (**2022**) e20269. doi.org/10.1002/tpg2.20269](https://doi.org/10.1002/tpg2.20269) 
+> `r shiny::icon("github")` https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology
 
 which is follow-up to:
 
-`r shiny::icon("newspaper")` [Derek M. Wright, Sandesh Neupane, Taryn Heidecker, Teketel A. Haile, Crystal Chan, Clarice J. Coyne, Rebecca J. McGee, Sripada Udupa, Fatima Henkrar, Eleonora Barilli, Diego Rubiales, Tania Gioia, Giuseppina Logozzo, Stefania Marzario, Reena Mehra, Ashutosh Sarker, Rajeev Dhakal, Babul Anwar, Debashish Sarker, Albert Vandenberg & Kirstin E. Bett. **Understanding photothermal interactions can help expand production range and increase genetic diversity of lentil (*Lens culinaris* Medik.)**. *Plants, People, Planet*. (**2020**) 00:1-11. doi.org/10.1002/ppp3.10158](https://doi.org/10.1002/ppp3.10158)
-
-`r shiny::icon("github")` https://github.com/derekmichaelwright/AGILE_LDP_Phenology
+> `r shiny::icon("newspaper")` [Derek M. Wright, Sandesh Neupane, Taryn Heidecker, Teketel A. Haile, Crystal Chan, Clarice J. Coyne, Rebecca J. McGee, Sripada Udupa, Fatima Henkrar, Eleonora Barilli, Diego Rubiales, Tania Gioia, Giuseppina Logozzo, Stefania Marzario, Reena Mehra, Ashutosh Sarker, Rajeev Dhakal, Babul Anwar, Debashish Sarker, Albert Vandenberg & Kirstin E. Bett. **Understanding photothermal interactions can help expand production range and increase genetic diversity of lentil (*Lens culinaris* Medik.)**. *Plants, People, Planet*. (**2021**) 3(2): 171-181. doi.org/10.1002/ppp3.10158](https://doi.org/10.1002/ppp3.10158)
+> `r shiny::icon("github")` https://github.com/derekmichaelwright/AGILE_LDP_Phenology
 
 ---
 
@@ -143,13 +141,10 @@ write.csv(myLDP, "myLDP.csv", row.names = F)
 
 # GWAS
 
-`r shiny::icon("save")` [myG_LDP.zip](myG_LDP.zip)
-
-`r shiny::icon("save")` [myY.csv](myY.csv)
-
-`r shiny::icon("save")` [myLDP.csv](myLDP.csv)
-
-`r shiny::icon("save")` [Lentil_FT_Genes.csv](Lentil_FT_Genes.csv)
+> `r shiny::icon("save")` [myG_LDP.zip](myG_LDP.zip)
+> `r shiny::icon("save")` [myY.csv](myY.csv)
+> `r shiny::icon("save")` [myLDP.csv](myLDP.csv)
+> `r shiny::icon("save")` [Lentil_FT_Genes.csv](Lentil_FT_Genes.csv)
 
 ```{r eval = F}
 # Genotypes
@@ -276,7 +271,7 @@ dir.create("Additional/Man_Grouped/")
 
 # Supplemental Table 1
 
-`r shiny::icon("save")` [Supplemental_Table_01.csv](Supplemental_Table_01.csv)
+> `r shiny::icon("save")` [Supplemental_Table_01.csv](Supplemental_Table_01.csv)
 
 *Supplemental Table 1: GWAS results for SNPs significantly associated with the traits of interest used in this study. Traits include days from sowing to flower (DTF), the first three principal components from a principal component analysis (PCA) of the DTF data (PC1, PC2, PC3), the a, b and c coefficients from a photothermal model (PTModel), the nominal base temperature (Tb), nominal base photoperiod (Pc), thermal sum required for flowering (Tf) and the photoperiod sum required for flowering (Pf). Rosthern, Canada 2016 and 2017 (Ro16 and Ro17), Sutherland, Canada 2016, 2017 and 2018 (Su16, Su17 and Su18), Central Ferry, USA 2018 (Us18), Bhopal, India 2016 and 2017 (In16 and In17), Jessore, Bangladesh 2016 and 2017 (Ba16 and Ba17), Bardiya, Nepal 2016 and 2017 (Ne16 and Ne17), Marchouch, Morocco 2016 and 2017 (Mo16 and Mo17), Cordoba, Spain (Sp16 and Sp17), Metaponto, Italy 2016 and 2017 (It16 and It17). For further details see Wright et al. (2020). Traits run with the b or c coefficients as a covariate are indicated with the “-b” and “-c” suffix in the trait column.*
 
@@ -509,7 +504,7 @@ ggsave("Figure_01.jpg", mp, width = 12, height = 7, dpi = 600, bg = "white")
 
 # Figure 2
 
-`r shiny::icon("chart-line")` [Figure_02_plotly.html](Figure_02_plotly.html)
+> `r shiny::icon("chart-line")` [Figure_02_plotly.html](Figure_02_plotly.html)
 
 ![](Figure_02.jpg)
 
@@ -593,7 +588,7 @@ gg_gwas_summary(traits = myTraits, labels = myLabels,
 
 ## Additional Figure 1
 
-`r shiny::icon("chart-line")` [Additional/Additional_Figure_01_plotly.html](Additional/Additional_Figure_01_plotly.html)
+> `r shiny::icon("chart-line")` [Additional/Additional_Figure_01_plotly.html](Additional/Additional_Figure_01_plotly.html)
 
 ![](Additional/Additional_Figure_01.jpg)
 
@@ -610,7 +605,7 @@ gg_gwas_summary(title = "Covariate = *b*",
 
 ## Additional Figure 2
 
-`r shiny::icon("chart-line")` [Additional/Additional_Figure_02_plotly.html](Additional/Additional_Figure_02_plotly.html)
+> `r shiny::icon("chart-line")` [Additional/Additional_Figure_02_plotly.html](Additional/Additional_Figure_02_plotly.html)
 
 ![](Additional/Additional_Figure_02.jpg)
 
@@ -821,7 +816,7 @@ ggsave("Additional/Figure_03_3.jpg",
 
 # Figure 4
 
-`r shiny::icon("chart-line")` [Additional/CV/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/CV)
+> `r shiny::icon("chart-line")` [Additional/CV/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/CV)
 
 ![](Figure_04.jpg)
 
@@ -958,7 +953,7 @@ magick::image_write(im, "Figure_04.jpg")
 
 *Figure 5: Allelic effects of selected markers on days from sowing to flower (DTF) across contrasting locations in a lentil diversity panel. Sutherland, Canada 2017 (Su17), Jessore, Bangladesh 2017 (Ba17), Bardiya, Nepal 2017 (Ne17) and Metaponto, Italy 2017 (It17). Colors are based on a hierarchical clustering of principal components done by Wright et al. (2020) using 18 site-years of DTF data across the three major lentil growing macroenvironments. (a), (b) and (c) correspond to SNPs at the vertical lines on Figures 1, 2, 3 & 4.*
 
-`r shiny::icon("chart-line")` [Additional/Figure_05_a_plotly.html](Additional/Figure_05_a_plotly.html)
+> `r shiny::icon("chart-line")` [Additional/Figure_05_a_plotly.html](Additional/Figure_05_a_plotly.html)
 
 <iframe
   src="Additional/Figure_05_a_plotly.html"
@@ -966,7 +961,7 @@ magick::image_write(im, "Figure_04.jpg")
   data-external="1"
 ></iframe>
 
-`r shiny::icon("chart-line")` [Additional/Figure_05_b_plotly.html](Additional/Figure_05_b_plotly.html)
+> `r shiny::icon("chart-line")` [Additional/Figure_05_b_plotly.html](Additional/Figure_05_b_plotly.html)
 
 <iframe
   src="Additional/Figure_05_b_plotly.html"
@@ -974,7 +969,7 @@ magick::image_write(im, "Figure_04.jpg")
   data-external="1"
 ></iframe>
 
-`r shiny::icon("chart-line")` [Additional/Figure_05_c_plotly.html](Additional/Figure_05_c_plotly.html)
+> `r shiny::icon("chart-line")` [Additional/Figure_05_c_plotly.html](Additional/Figure_05_c_plotly.html)
 
 <iframe
   src="Additional/Figure_05_c_plotly.html"
@@ -1117,7 +1112,7 @@ saveWidget(as_widget(mp3),
 
 # Supplemental Figure 1
 
-`r shiny::icon("chart-line")` [Supplemental_Figure_01_plotly.html](Supplemental_Figure_01_plotly.html)
+> `r shiny::icon("chart-line")` [Supplemental_Figure_01_plotly.html](Supplemental_Figure_01_plotly.html)
 
 ![](Supplemental_Figure_01.jpg)
 
@@ -1208,7 +1203,7 @@ gg_gwas_cv_summary(filename = "Supplemental_Figure_01",
 
 ## Additional Figure 3
 
-`r shiny::icon("chart-line")` [Additional/Additional_Figure_03_plotly.html](Additional/Additional_Figure_03_plotly.html)
+> `r shiny::icon("chart-line")` [Additional/Additional_Figure_03_plotly.html](Additional/Additional_Figure_03_plotly.html)
 
 ![](Additional/Additional_Figure_03.jpg)
 
@@ -1226,7 +1221,7 @@ gg_gwas_cv_summary(filename = "Additional/Additional_Figure_03",
 
 ## Additional Figure 4
 
-`r shiny::icon("chart-line")` [Additional/Additional_Figure_04_plotly.html](Additional/Additional_Figure_04_plotly.html)
+> `r shiny::icon("chart-line")` [Additional/Additional_Figure_04_plotly.html](Additional/Additional_Figure_04_plotly.html)
 
 ![](Additional/Additional_Figure_04.jpg)
 
@@ -1550,7 +1545,7 @@ ggsave("Supplemental_Figure_04.jpg", mp, width = 5, height = 10, dpi = 600)
 
 # Supplemental Figure 5
 
-`r shiny::icon("chart-line")` [Additional/LD/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/LD)
+> `r shiny::icon("chart-line")` [Additional/LD/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/LD)
 
 ![](Supplemental_Figure_05.jpg)
 
@@ -1685,7 +1680,7 @@ ggsave(paste0("Supplemental_Figure_05.jpg"), mp , width = 12, height = 8, dpi = 
 
 # Supplemental Figure 7
 
-`r shiny::icon("chart-line")` [Supplemental_Figure_07.html](Supplemental_Figure_07.html)
+> `r shiny::icon("chart-line")` [Supplemental_Figure_07.html](Supplemental_Figure_07.html)
 
 <iframe
   src="Supplemental_Figure_07.html"
@@ -1737,7 +1732,7 @@ saveWidget(as_widget(mp), "Supplemental_Figure_07.html")
 
 # Supplemental Table 2
 
-`r shiny::icon("save")` [Supplemental_Table_02.xlsx](Supplemental_Table_02.xlsx)
+> `r shiny::icon("save")` [Supplemental_Table_02.xlsx](Supplemental_Table_02.xlsx)
 
 *Supplemental Table 2: List of genes in the regions associated with flowering time in lentils chromosomes 2 and 5, and the syntenic regions of chickpea (Cicer arietinum) and Medicago truncatula.*
 
@@ -1767,7 +1762,7 @@ ggsave("Additional/Additional_Figure_06.jpg", mp, width = 14, height = 7, dpi = 
 
 ## Grouped Manhattan Plots
 
-`r shiny::icon("chart-line")` [Additional/Man_Grouped/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Grouped/)
+> `r shiny::icon("chart-line")` [Additional/Man_Grouped/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Grouped/)
 
 ![](Additional/Man_Grouped/Man_PCA_abc.jpg)
 
@@ -1910,9 +1905,8 @@ gg_Custom_Man(expttraits = c("Ne16_DTF", "Ne17_DTF", "Ba16_DTF",
 
 ## Facetted & Multi-Modeled Manhattan Plots
 
-`r shiny::icon("chart-line")` [Additional/Man_Facet/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Facet)
-
-`r shiny::icon("chart-line")` [Additional/Man_Multi/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Multi)
+> `r shiny::icon("chart-line")` [Additional/Man_Facet/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Facet)
+> `r shiny::icon("chart-line")` [Additional/Man_Multi/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Multi)
 
 ![](Additional/Man_Facet/ManQQ_Su17_DTF.jpg)
 
@@ -2086,19 +2080,13 @@ for(i in expttraits[!grepl("PTModel_c", expttraits)]) {
 
 ## Marker Plots
 
-`r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_1.pdf](Additional/Markers/Markers_Chr_1.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_2.pdf](Additional/Markers/Markers_Chr_2.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_3.pdf](Additional/Markers/Markers_Chr_3.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_4.pdf](Additional/Markers/Markers_Chr_4.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_5.pdf](Additional/Markers/Markers_Chr_5.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_6.pdf](Additional/Markers/Markers_Chr_6.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_7.pdf](Additional/Markers/Markers_Chr_7.pdf)
+> `r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_1.pdf](Additional/Markers/Markers_Chr_1.pdf)
+> `r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_2.pdf](Additional/Markers/Markers_Chr_2.pdf)
+> `r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_3.pdf](Additional/Markers/Markers_Chr_3.pdf)
+> `r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_4.pdf](Additional/Markers/Markers_Chr_4.pdf)
+> `r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_5.pdf](Additional/Markers/Markers_Chr_5.pdf)
+> `r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_6.pdf](Additional/Markers/Markers_Chr_6.pdf)
+> `r shiny::icon("file-pdf")` [Additional/Markers/Markers_Chr_7.pdf](Additional/Markers/Markers_Chr_7.pdf)
 
 ![](Additional/Markers/Markers_Lcu.2RBY.Chr2p42556949.jpg)
 
@@ -2194,13 +2182,10 @@ dev.off()
 
 ## Flowering Time Genes GWAS Results
 
-`r shiny::icon("file-pdf")` [Additional/LcFTa1.pdf](Additional/LcFTa1.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/LcFTb1.pdf](Additional/LcFTb1.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/LcELF3a.pdf](Additional/LcELF3a.pdf)
-
-`r shiny::icon("file-pdf")` [Additional/LcGI.pdf](Additional/LcGI.pdf)
+> `r shiny::icon("file-pdf")` [Additional/LcFTa1.pdf](Additional/LcFTa1.pdf)
+> `r shiny::icon("file-pdf")` [Additional/LcFTb1.pdf](Additional/LcFTb1.pdf)
+> `r shiny::icon("file-pdf")` [Additional/LcELF3a.pdf](Additional/LcELF3a.pdf)
+> `r shiny::icon("file-pdf")` [Additional/LcGI.pdf](Additional/LcGI.pdf)
 
 ```{r}
 # Create function

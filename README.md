@@ -6,36 +6,35 @@ Derek Michael Wright <derek.wright@usask.ca>
 
 ------------------------------------------------------------------------
 
-[Sandesh Neupane, Derek M. Wright, Raul O. Martinez, Jakob Butler, Jim
-L. Weller, Kirstin E. Bett. **Focusing the GWAS *Lens* on days to flower
-using latent variable phenotypes derived from global multi-environment
-trials**. *The Plant Genome*. (**2022**) e20269.
-doi.org/10.1002/tpg2.20269](https://doi.org/10.1002/tpg2.20269)
+> [Sandesh Neupane, Derek M. Wright, Raul O. Martinez, Jakob Butler, Jim
+> L. Weller, Kirstin E. Bett. **Focusing the GWAS *Lens* on days to
+> flower using latent variable phenotypes derived from global
+> multi-environment trials**. *The Plant Genome*. (**2022**) e20269.
+> doi.org/10.1002/tpg2.20269](https://doi.org/10.1002/tpg2.20269)
 
 which is follow-up to:
 
-[Derek M. Wright, Sandesh Neupane, Taryn Heidecker, Teketel A. Haile,
-Crystal Chan, Clarice J. Coyne, Rebecca J. McGee, Sripada Udupa, Fatima
-Henkrar, Eleonora Barilli, Diego Rubiales, Tania Gioia, Giuseppina
-Logozzo, Stefania Marzario, Reena Mehra, Ashutosh Sarker, Rajeev Dhakal,
-Babul Anwar, Debashish Sarker, Albert Vandenberg & Kirstin E. Bett.
-**Understanding photothermal interactions can help expand production
-range and increase genetic diversity of lentil (*Lens culinaris*
-Medik.)**. *Plants, People, Planet*. (**2020**) 00:1-11.
-doi.org/10.1002/ppp3.10158](https://doi.org/10.1002/ppp3.10158)
+> [Derek M. Wright, Sandesh Neupane, Taryn Heidecker, Teketel A. Haile,
+> Crystal Chan, Clarice J. Coyne, Rebecca J. McGee, Sripada Udupa,
+> Fatima Henkrar, Eleonora Barilli, Diego Rubiales, Tania Gioia,
+> Giuseppina Logozzo, Stefania Marzario, Reena Mehra, Ashutosh Sarker,
+> Rajeev Dhakal, Babul Anwar, Debashish Sarker, Albert Vandenberg &
+> Kirstin E. Bett. **Understanding photothermal interactions can help
+> expand production range and increase genetic diversity of lentil
+> (*Lens culinaris* Medik.)**. *Plants, People, Planet*. (**2021**)
+> 3(2): 171-181.
+> doi.org/10.1002/ppp3.10158](https://doi.org/10.1002/ppp3.10158)
 
 ------------------------------------------------------------------------
 
 <https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology>
 
-[View as
-pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/README.pdf)
-
-[View as
-HTML](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/README.html)
-
-[Source Code Vignette
-(GWAS_Phenology_Vignette.html)](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/GWAS_Phenology_Vignette.html)
+> [View as
+> pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/README.pdf)
+> [View as
+> HTML](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/README.html)
+> [Source Code Vignette
+> (GWAS_Phenology_Vignette.html)](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/GWAS_Phenology_Vignette.html)
 
 # Contents
 
@@ -82,7 +81,7 @@ comparisons across traits.*
 
 ## Figure 2
 
-[Additional/Figure_02_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_02_plotly.html)
+> [Additional/Figure_02_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_02_plotly.html)
 
 ![](Figure_02.jpg)
 
@@ -144,11 +143,9 @@ specific base pair locations to facilitate comparisons across traits.*
 
 ## Figure 5
 
-[Additional/Figure_05_a\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html)
-
-[Additional/Figure_05_b\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html)
-
-[Additional/Figure_05_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
+> [Additional/Figure_05_a\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_a_plotly.html)
+> [Additional/Figure_05_b\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_b_plotly.html)
+> [Additional/Figure_05_c\_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Additional/Figure_05_c_plotly.html)
 
 ![](Figure_05.jpg)
 
@@ -167,7 +164,7 @@ SNPs at the vertical lines on Figures 1, 2, 3 & 4.*
 
 ## Supplemental Table 1
 
-[Supplemental_Table_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
+> [Supplemental_Table_01.csv](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_01.csv)
 
 *Supplemental Table 1: GWAS results for SNPs significantly associated
 with the traits of interest used in this study. Traits include days from
@@ -190,7 +187,7 @@ run with the b or c coefficients as a covariate are indicated with the
 
 ## Supplemental Table 2
 
-[Supplemental_Table_02.xlsx](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_02.xlsx)
+> [Supplemental_Table_02.xlsx](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/blob/master/Supplemental_Table_02.xlsx)
 
 *Supplemental Table 2: List of genes in the regions associated with
 flowering time in lentils chromosomes 2 and 5, and the syntenic regions
@@ -202,7 +199,7 @@ of chickpea (Cicer arietinum) and Medicago truncatula.*
 
 ## Supplemental Figure 1
 
-[Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_01_plotly.html)
+> [Supplemental_Figure_01_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_01_plotly.html)
 
 ![](Supplemental_Figure_01.jpg)
 
@@ -312,7 +309,7 @@ Supplemental Table 2.*
 
 ## Supplemental Figure 7
 
-[Supplemental_Figure_07_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_07_plotly.html)
+> [Supplemental_Figure_07_plotly.html](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/Supplemental_Figure_07_plotly.html)
 
 ![](Supplemental_Figure_07.jpg)
 
@@ -350,7 +347,7 @@ data across the three major lentil growing macroenvironments.*
 
 ## Grouped Manhattan Plots
 
-[Additional/Man_Grouped/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Grouped)
+> [Additional/Man_Grouped/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Grouped)
 
 ![](Additional/Man_Grouped/Man_PCA_abc.jpg)
 
@@ -380,11 +377,11 @@ data across the three major lentil growing macroenvironments.*
 
 ## Facetted & Multi-Modeled Manhattan Plots
 
-[Additional/Man_Facet/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Facet)
+> [Additional/Man_Facet/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Facet)
 
 ![](Additional/Man_Facet/ManQQ_Su18_DTF.jpg)
 
-[Additional/Man_Multi/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Multi)
+> [Additional/Man_Multi/](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/tree/master/Additional/Man_Multi)
 
 ![](Additional/Man_Multi/ManQQ_Su18_DTF.jpg)
 
@@ -392,19 +389,13 @@ data across the three major lentil growing macroenvironments.*
 
 ## Marker Plots
 
-[Additional/Markers/Markers_Chr_1.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_1.pdf)
-
-[Additional/Markers/Markers_Chr_2.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_2.pdf)
-
-[Additional/Markers/Markers_Chr_3.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_3.pdf)
-
-[Additional/Markers/Markers_Chr_4.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_4.pdf)
-
-[Additional/Markers/Markers_Chr_5.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_5.pdf)
-
-[Additional/Markers/Markers_Chr_6.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_6.pdf)
-
-[Additional/Markers/Markers_Chr_7.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_7.pdf)
+> [Additional/Markers/Markers_Chr_1.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_1.pdf)
+> [Additional/Markers/Markers_Chr_2.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_2.pdf)
+> [Additional/Markers/Markers_Chr_3.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_3.pdf)
+> [Additional/Markers/Markers_Chr_4.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_4.pdf)
+> [Additional/Markers/Markers_Chr_5.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_5.pdf)
+> [Additional/Markers/Markers_Chr_6.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_6.pdf)
+> [Additional/Markers/Markers_Chr_7.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/Markers/Markers_Chr_7.pdf)
 
 ![](Additional/Markers/Markers_Lcu.2RBY.Chr2p42556949.jpg)
 
@@ -418,13 +409,10 @@ data across the three major lentil growing macroenvironments.*
 
 ## Flowering Time Genes
 
-[Additional/LcFTa1.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/LcFTa1.pdf)
-
-[Additional/LcFTb1.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/LcFTb1.pdf)
-
-[Additional/LcELF3a.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/LcELF3a.pdf)
-
-[Additional/LcGI.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/LcGI.pdf)
+> [Additional/LcFTa1.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/LcFTa1.pdf)
+> [Additional/LcFTb1.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/LcFTb1.pdf)
+> [Additional/LcELF3a.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/LcELF3a.pdf)
+> [Additional/LcGI.pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/Additional/LcGI.pdf)
 
 ------------------------------------------------------------------------
 
