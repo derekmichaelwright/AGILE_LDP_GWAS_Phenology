@@ -27,8 +27,7 @@ which is follow-up to:
 
 ------------------------------------------------------------------------
 
-<https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology>
-
+> - <https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology>
 > - [View as
 >   pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/README.pdf)
 > - [View as
