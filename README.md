@@ -29,12 +29,12 @@ which is follow-up to:
 
 <https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology>
 
-> [View as
-> pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/README.pdf)
-> [View as
-> HTML](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/README.html)
-> [Source Code Vignette
-> (GWAS_Phenology_Vignette.html)](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/GWAS_Phenology_Vignette.html)
+> - [View as
+>   pdf](https://github.com/derekmichaelwright/AGILE_LDP_GWAS_Phenology/raw/master/README.pdf)
+> - [View as
+>   HTML](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/README.html)
+> - [Source Code Vignette
+>   (GWAS_Phenology_Vignette.html)](https://derekmichaelwright.github.io/AGILE_LDP_GWAS_Phenology/GWAS_Phenology_Vignette.html)
 
 # Contents
 
